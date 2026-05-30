@@ -14,9 +14,12 @@ public class Character {
     private int level;
     private int exp;
     private int statPoints;
-    private int hp; private int maxHp;
-    private int mp; private int maxMp;
-    private int attack; private int defense;
+    private int hp;
+    private int maxHp;
+    private int mp;
+    private int maxMp;
+    private int attack;
+    private int defense;
     private int gold;
     @Enumerated(EnumType.STRING)
     private CharacterStatus status;
