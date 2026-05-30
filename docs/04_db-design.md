@@ -39,10 +39,10 @@
 | base_mp | INT | 初期MP |
 | base_attack | INT | 初期攻撃力 |
 | base_defense | INT | 初期防御力 |
-| hp_per_point | INT | ステータスポイント1あたりのHP増加量 |
-| mp_per_point | INT | ステータスポイント1あたりのMP増加量 |
-| attack_per_point | INT | ステータスポイント1あたりの攻撃力増加量 |
-| defense_per_point | INT | ステータスポイント1あたりの防御力増加量 |
+| hp_per_level | INT | レベルアップ1回あたりのHP増加量 |
+| mp_per_level | INT | レベルアップ1回あたりのMP増加量 |
+| attack_per_level | INT | レベルアップ1回あたりの攻撃力増加量 |
+| defense_per_level | INT | レベルアップ1回あたりの防御力増加量 |
 
 ### skills（スキル・魔法）
 
@@ -141,7 +141,6 @@
 | job_id | VARCHAR(36) FK | jobs.id（ON DELETE RESTRICT） |
 | level | INT | レベル（デフォルト 1） |
 | exp | INT | 現在EXP（デフォルト 0） |
-| stat_points | INT | 未振り分けポイント（デフォルト 0） |
 | hp | INT | 現在HP |
 | max_hp | INT | 最大HP |
 | mp | INT | 現在MP |

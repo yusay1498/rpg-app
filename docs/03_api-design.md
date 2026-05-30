@@ -8,7 +8,6 @@
 | `GET` | `/api/characters/{id}` | キャラ情報取得 |
 | `GET` | `/api/characters/{id}/status` | ステータス詳細 |
 | `PATCH` | `/api/characters/{id}` | キャラ名変更（部分更新） |
-| `PUT` | `/api/characters/{id}/stats` | ステータスポイント配分（全体更新） |
 | `DELETE` | `/api/characters/{id}` | キャラクター削除 |
 
 ## ダンジョン探索
