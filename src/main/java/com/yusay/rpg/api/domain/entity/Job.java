@@ -15,6 +15,10 @@ public class Job {
     private int baseMp;
     private int baseAttack;
     private int baseDefense;
+    private int hpPerPoint;
+    private int mpPerPoint;
+    private int attackPerPoint;
+    private int defensePerPoint;
 
     public String getId() {
         return id;
@@ -70,5 +74,37 @@ public class Job {
 
     public void setBaseDefense(int baseDefense) {
         this.baseDefense = baseDefense;
+    }
+
+    public int getHpPerPoint() {
+        return hpPerPoint;
+    }
+
+    public void setHpPerPoint(int hpPerPoint) {
+        this.hpPerPoint = hpPerPoint;
+    }
+
+    public int getMpPerPoint() {
+        return mpPerPoint;
+    }
+
+    public void setMpPerPoint(int mpPerPoint) {
+        this.mpPerPoint = mpPerPoint;
+    }
+
+    public int getAttackPerPoint() {
+        return attackPerPoint;
+    }
+
+    public void setAttackPerPoint(int attackPerPoint) {
+        this.attackPerPoint = attackPerPoint;
+    }
+
+    public int getDefensePerPoint() {
+        return defensePerPoint;
+    }
+
+    public void setDefensePerPoint(int defensePerPoint) {
+        this.defensePerPoint = defensePerPoint;
     }
 }

@@ -39,6 +39,10 @@
 | base_mp | INT | 初期MP |
 | base_attack | INT | 初期攻撃力 |
 | base_defense | INT | 初期防御力 |
+| hp_per_point | INT | ステータスポイント1あたりのHP増加量 |
+| mp_per_point | INT | ステータスポイント1あたりのMP増加量 |
+| attack_per_point | INT | ステータスポイント1あたりの攻撃力増加量 |
+| defense_per_point | INT | ステータスポイント1あたりの防御力増加量 |
 
 ### skills（スキル・魔法）
 

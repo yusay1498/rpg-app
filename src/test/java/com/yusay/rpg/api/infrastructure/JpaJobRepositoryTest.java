@@ -56,6 +56,10 @@ class JpaJobRepositoryTest {
             assertThat(job.getBaseMp()).isEqualTo(5);
             assertThat(job.getBaseAttack()).isEqualTo(20);
             assertThat(job.getBaseDefense()).isEqualTo(20);
+            assertThat(job.getHpPerPoint()).isEqualTo(1);
+            assertThat(job.getMpPerPoint()).isEqualTo(1);
+            assertThat(job.getAttackPerPoint()).isEqualTo(1);
+            assertThat(job.getDefensePerPoint()).isEqualTo(1);
         });
         assertThat(result).anySatisfy(job -> {
             assertThat(job.getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440002");
@@ -65,6 +69,10 @@ class JpaJobRepositoryTest {
             assertThat(job.getBaseMp()).isEqualTo(30);
             assertThat(job.getBaseAttack()).isEqualTo(25);
             assertThat(job.getBaseDefense()).isEqualTo(10);
+            assertThat(job.getHpPerPoint()).isEqualTo(1);
+            assertThat(job.getMpPerPoint()).isEqualTo(1);
+            assertThat(job.getAttackPerPoint()).isEqualTo(1);
+            assertThat(job.getDefensePerPoint()).isEqualTo(1);
         });
         assertThat(result).anySatisfy(job -> {
             assertThat(job.getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440003");
@@ -74,6 +82,10 @@ class JpaJobRepositoryTest {
             assertThat(job.getBaseMp()).isEqualTo(25);
             assertThat(job.getBaseAttack()).isEqualTo(10);
             assertThat(job.getBaseDefense()).isEqualTo(15);
+            assertThat(job.getHpPerPoint()).isEqualTo(1);
+            assertThat(job.getMpPerPoint()).isEqualTo(1);
+            assertThat(job.getAttackPerPoint()).isEqualTo(1);
+            assertThat(job.getDefensePerPoint()).isEqualTo(1);
         });
     }
 
@@ -98,6 +110,10 @@ class JpaJobRepositoryTest {
             assertThat(job.getBaseMp()).isEqualTo(5);
             assertThat(job.getBaseAttack()).isEqualTo(20);
             assertThat(job.getBaseDefense()).isEqualTo(20);
+            assertThat(job.getHpPerPoint()).isEqualTo(1);
+            assertThat(job.getMpPerPoint()).isEqualTo(1);
+            assertThat(job.getAttackPerPoint()).isEqualTo(1);
+            assertThat(job.getDefensePerPoint()).isEqualTo(1);
         });
     }
 }
