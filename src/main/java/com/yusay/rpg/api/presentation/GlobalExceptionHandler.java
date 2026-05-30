@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleException(Exception e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                e.getMessage()
+                "Internal server error"
         );
         return ResponseEntity.of(problemDetail).build();
     }
