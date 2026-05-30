@@ -6,20 +6,16 @@ import com.yusay.rpg.api.domain.repository.CharacterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.SecureRandom;
 import java.util.UUID;
-import java.util.random.RandomGenerator;
 
 @Service
 @Transactional
 public class CharacterApplicationService {
 
     private final CharacterRepository characterRepository;
-    private final RandomGenerator randomGenerator;
 
     public CharacterApplicationService(CharacterRepository characterRepository) {
         this.characterRepository = characterRepository;
-        this.randomGenerator = new SecureRandom();
     }
 
     public Character lookup(String id) {
@@ -40,7 +36,7 @@ public class CharacterApplicationService {
         return characterRepository.save(character);
     }
 
-    public Character allocateStatPoints(Character character) {
+    public Character rename(Character character) {
         if (character == null) {
             throw new IllegalArgumentException("character must not be null");
         }
@@ -48,18 +44,8 @@ public class CharacterApplicationService {
         Character updatedCharacter = characterRepository.findById(character.getId())
                 .orElseThrow(() -> new CharacterNotFoundException(character.getId()));
 
-        updatedCharacter.setExp(updatedCharacter.getExp() + 10);
-        updatedCharacter.setLevel(updatedCharacter.getLevel() + 1);
-        updatedCharacter.setHp((int) (updatedCharacter.getMaxHp() + 5 * character.getJob().getHpPerLevel() * randomMultiplier()));
-        updatedCharacter.setMp((int) (updatedCharacter.getMaxMp() + 3 * character.getJob().getMpPerLevel() * randomMultiplier()));
-        updatedCharacter.setAttack((int) (updatedCharacter.getAttack() + 3 * character.getJob().getAttackPerLevel() * randomMultiplier()));
-        updatedCharacter.setDefense((int) (updatedCharacter.getDefense() + 3 * character.getJob().getDefensePerLevel() * randomMultiplier()));
+        updatedCharacter.setName(character.getName());
 
         return characterRepository.save(updatedCharacter);
-    }
-
-    private double randomMultiplier() {
-        // 1〜10の整数を一度に生成して10.0で割ることで0.1〜1.0（小数第一位）を得る
-        return (randomGenerator.nextInt(10) + 1) / 10.0;
     }
 }
