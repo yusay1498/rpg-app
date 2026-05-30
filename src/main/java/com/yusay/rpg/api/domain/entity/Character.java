@@ -24,7 +24,8 @@ public class Character {
     private int defense;
     private int gold;
     @Enumerated(EnumType.STRING)
-    private CharacterStatus status;
+    @Column(nullable = false, length = 10)
+    private CharacterStatus status = CharacterStatus.ALIVE;
 
     public String getId() {
         return id;
