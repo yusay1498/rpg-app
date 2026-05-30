@@ -26,12 +26,13 @@ public class CharacterRestController {
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody @Valid Character character) {
-        Character newCharacter = characterApplicationService.create(character);
+        CharacterResponse newCharacter = CharacterResponse
+                .from(characterApplicationService.create(character));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(newCharacter.getId())
+                .buildAndExpand(newCharacter.id())
                 .toUri();
 
         return ResponseEntity.created(location).build();
