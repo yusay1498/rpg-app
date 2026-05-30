@@ -1,6 +1,8 @@
 package com.yusay.rpg.api.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,9 +15,11 @@ public class Character {
     @Column(length = 36)
     private String id;
     @Column(nullable = false, length = 100)
+    @NotBlank
     private String name;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id", nullable = false)
+    @NotNull
     private Job job;
     private int level;
     private int exp;
@@ -29,6 +33,7 @@ public class Character {
     private int gold;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
+    @NotNull
     private CharacterStatus status = CharacterStatus.ALIVE;
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

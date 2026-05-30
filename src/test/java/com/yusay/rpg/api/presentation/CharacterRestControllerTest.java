@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
@@ -140,7 +141,7 @@ class CharacterRestControllerTest {
         MvcTestResult actual = mockMvcTester
                 .post()
                 .uri("/characters")
-                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
                             "name": "Jiro",
@@ -165,5 +166,133 @@ class CharacterRestControllerTest {
                 .hasStatus(201)
                 .headers()
                 .hasValue("Location", "http://localhost/characters/660e8400-e29b-41d4-a716-446655440002");
+    }
+
+    @Test
+    @DisplayName("リクエストボディにidが含まれる場合、400を返す")
+    void givenRequestWithId_whenCreate_thenReturnStatus400() {
+        // Given
+        Mockito.when(characterApplicationService.create(Mockito.any(Character.class)))
+                .thenThrow(new IllegalArgumentException("id must be null or blank when creating a character"));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "id": "660e8400-e29b-41d4-a716-446655440099",
+                            "name": "Jiro",
+                            "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
+                            "level": 1,
+                            "exp": 0,
+                            "statPoints": 0,
+                            "hp": 25,
+                            "maxHp": 25,
+                            "mp": 10,
+                            "maxMp": 10,
+                            "attack": 15,
+                            "defense": 15,
+                            "gold": 0,
+                            "status": "ALIVE"
+                        }
+                        """)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
+    }
+
+    @Test
+    @DisplayName("不正なstatusが指定された場合、400を返す")
+    void givenInvalidStatus_whenCreate_thenReturnStatus400() {
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "name": "Jiro",
+                            "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
+                            "level": 1,
+                            "exp": 0,
+                            "statPoints": 0,
+                            "hp": 25,
+                            "maxHp": 25,
+                            "mp": 10,
+                            "maxMp": 10,
+                            "attack": 15,
+                            "defense": 15,
+                            "gold": 0,
+                            "status": "UNKNOWN"
+                        }
+                        """)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
+    }
+
+    @Test
+    @DisplayName("nameが空の場合、@NotBlank違反で400を返す")
+    void givenBlankName_whenCreate_thenReturnStatus400() {
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "name": "",
+                            "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
+                            "level": 1,
+                            "exp": 0,
+                            "statPoints": 0,
+                            "hp": 25,
+                            "maxHp": 25,
+                            "mp": 10,
+                            "maxMp": 10,
+                            "attack": 15,
+                            "defense": 15,
+                            "gold": 0,
+                            "status": "ALIVE"
+                        }
+                        """)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
+    }
+
+    @Test
+    @DisplayName("jobがnullの場合、@NotNull違反で400を返す")
+    void givenNullJob_whenCreate_thenReturnStatus400() {
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "name": "Jiro",
+                            "level": 1,
+                            "exp": 0,
+                            "statPoints": 0,
+                            "hp": 25,
+                            "maxHp": 25,
+                            "mp": 10,
+                            "maxMp": 10,
+                            "attack": 15,
+                            "defense": 15,
+                            "gold": 0,
+                            "status": "ALIVE"
+                        }
+                        """)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
     }
 }
