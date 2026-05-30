@@ -189,7 +189,6 @@ CREATE INDEX IF NOT EXISTS idx_rooms_dungeon_id ON rooms(dungeon_id);
 CREATE INDEX IF NOT EXISTS idx_enemies_dungeon_id ON enemies(dungeon_id);
 CREATE INDEX IF NOT EXISTS idx_enemies_drop_item_id ON enemies(drop_item_id);
 CREATE INDEX IF NOT EXISTS idx_characters_job_id ON characters(job_id);
-CREATE INDEX IF NOT EXISTS idx_character_skills_character_id ON character_skills(character_id);
 CREATE INDEX IF NOT EXISTS idx_character_skills_skill_id ON character_skills(skill_id);
 CREATE INDEX IF NOT EXISTS idx_inventories_character_id ON inventories(character_id);
 CREATE INDEX IF NOT EXISTS idx_inventories_item_id ON inventories(item_id);
