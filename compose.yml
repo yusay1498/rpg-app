@@ -1,14 +1,46 @@
 services:
-  db:
-    image: postgres:17
+  event-reservation:
+    build:
+      context: .
+      args:
+        JAR: ./target/*.jar
     environment:
-      POSTGRES_DB: rpg
-      POSTGRES_USER: rpg
-      POSTGRES_PASSWORD: rpg
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/rpg
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+  postgres:
+    image: postgres:latest
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_DB: rpg
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    command: |
+      postgres -c 'max_connections=2000'
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - "./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql"
+    healthcheck:
+      test: pg_isready -h 127.0.0.1 -U postgres -d rpg
+      interval: 5s
 
-volumes:
-  db-data:
+  dbgate:
+    image: dbgate/dbgate
+    environment:
+      CONNECTIONS: conn1
+      LABEL_conn1: postgres
+      SERVER_conn1: postgres
+      USER_conn1: postgres
+      PASSWORD_conn1: postgres
+      PORT_conn1: 5432
+      ENGINE_conn1: postgres@dbgate-plugin-postgres
+    ports:
+      - "5480:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
