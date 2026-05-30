@@ -24,8 +24,12 @@ public class CharacterApplicationService {
     }
 
     public Character create(Character character) {
-        character.setId(UUID.randomUUID().toString());
+        java.util.Objects.requireNonNull(character, "character must not be null");
+        if (character.getId() != null && !character.getId().isBlank()) {
+            throw new IllegalArgumentException("id must be null or blank when creating a character");
+        }
 
+        character.setId(UUID.randomUUID().toString());
         return characterRepository.save(character);
     }
 }
