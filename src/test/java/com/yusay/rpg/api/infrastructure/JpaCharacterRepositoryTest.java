@@ -3,6 +3,7 @@ package com.yusay.rpg.api.infrastructure;
 import com.yusay.rpg.api.config.TestcontainersConfiguration;
 import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.domain.entity.CharacterStatus;
+import com.yusay.rpg.api.domain.entity.Job;
 import com.yusay.rpg.api.domain.repository.CharacterRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -96,6 +97,94 @@ class JpaCharacterRepositoryTest {
                     assertThat(updatedCharacter.getName()).isEqualTo("Jiro");
                     assertThat(updatedCharacter.getCreatedAt()).isEqualTo(originalCreatedAt);
                     assertThat(updatedCharacter.getUpdatedAt()).isAfter(LocalDateTime.of(2000, 1, 1, 0, 0));
+                });
+    }
+
+    @Test
+    @DisplayName("キャラクターを新規保存するとcreatedAtとupdatedAtが自動設定される")
+    @Sql(statements = """
+            INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
+            VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
+    """)
+    void givenCharacter_whenSave_thenPersistCharacter() {
+        // Given
+        Job job = testEntityManager.find(Job.class, "550e8400-e29b-41d4-a716-446655440001");
+        Character character = new Character();
+        character.setId("660e8400-e29b-41d4-a716-446655440002");
+        character.setName("Jiro");
+        character.setJob(job);
+        character.setLevel(1);
+        character.setExp(0);
+        character.setStatPoints(0);
+        character.setHp(25);
+        character.setMaxHp(25);
+        character.setMp(10);
+        character.setMaxMp(10);
+        character.setAttack(15);
+        character.setDefense(15);
+        character.setGold(0);
+        character.setStatus(CharacterStatus.ALIVE);
+
+        // When
+        characterRepository.save(character);
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        // Then
+        assertThat(characterRepository.findById("660e8400-e29b-41d4-a716-446655440002"))
+                .hasValueSatisfying(saved -> {
+                    assertThat(saved.getId()).isEqualTo("660e8400-e29b-41d4-a716-446655440002");
+                    assertThat(saved.getName()).isEqualTo("Jiro");
+                    assertThat(saved.getJob().getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
+                    assertThat(saved.getLevel()).isEqualTo(1);
+                    assertThat(saved.getExp()).isEqualTo(0);
+                    assertThat(saved.getStatPoints()).isEqualTo(0);
+                    assertThat(saved.getHp()).isEqualTo(25);
+                    assertThat(saved.getMaxHp()).isEqualTo(25);
+                    assertThat(saved.getMp()).isEqualTo(10);
+                    assertThat(saved.getMaxMp()).isEqualTo(10);
+                    assertThat(saved.getAttack()).isEqualTo(15);
+                    assertThat(saved.getDefense()).isEqualTo(15);
+                    assertThat(saved.getGold()).isEqualTo(0);
+                    assertThat(saved.getStatus()).isEqualTo(CharacterStatus.ALIVE);
+                    assertThat(saved.getCreatedAt()).isNotNull();
+                    assertThat(saved.getUpdatedAt()).isNotNull();
+                });
+    }
+
+    @Test
+    @DisplayName("既存キャラクターをsaveで更新するとフィールドが反映されupdatedAtが更新される")
+    @Sql(statements = """
+            INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
+            VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
+            INSERT INTO characters (id, name, job_id, level, exp, stat_points, hp, max_hp, mp, max_mp, attack, defense, gold, status, created_at, updated_at)
+            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001',
+                    1, 0, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE',
+                    TIMESTAMP '2000-01-01 00:00:00', TIMESTAMP '2000-01-01 00:00:00');
+    """)
+    void givenExistingCharacter_whenSave_thenUpdateFieldsAndRefreshUpdatedAt() {
+        // Given
+        Character character = characterRepository.findById("660e8400-e29b-41d4-a716-446655440001").orElseThrow();
+        LocalDateTime originalCreatedAt = character.getCreatedAt();
+        character.setLevel(2);
+        character.setExp(100);
+        character.setHp(35);
+        character.setMaxHp(35);
+
+        // When
+        characterRepository.save(character);
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        // Then
+        assertThat(characterRepository.findById("660e8400-e29b-41d4-a716-446655440001"))
+                .hasValueSatisfying(updated -> {
+                    assertThat(updated.getLevel()).isEqualTo(2);
+                    assertThat(updated.getExp()).isEqualTo(100);
+                    assertThat(updated.getHp()).isEqualTo(35);
+                    assertThat(updated.getMaxHp()).isEqualTo(35);
+                    assertThat(updated.getCreatedAt()).isEqualTo(originalCreatedAt);
+                    assertThat(updated.getUpdatedAt()).isAfter(LocalDateTime.of(2000, 1, 1, 0, 0));
                 });
     }
 }
