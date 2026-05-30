@@ -85,9 +85,7 @@ class CharacterRestControllerTest {
                     "attack": 20,
                     "defense": 20,
                     "gold": 0,
-                    "status": "ALIVE",
-                    "createdAt": null,
-                    "updatedAt": null
+                    "status": "ALIVE"
                 }
                 """;
         assertThat(actual)
