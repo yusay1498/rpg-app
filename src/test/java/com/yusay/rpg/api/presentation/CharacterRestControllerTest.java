@@ -38,6 +38,10 @@ class CharacterRestControllerTest {
         warrior.setBaseMp(5);
         warrior.setBaseAttack(20);
         warrior.setBaseDefense(20);
+        warrior.setHpPerPoint(1);
+        warrior.setMpPerPoint(1);
+        warrior.setAttackPerPoint(1);
+        warrior.setDefensePerPoint(1);
         Character character = new Character();
         character.setId("660e8400-e29b-41d4-a716-446655440001");
         character.setName("Taro");
@@ -74,7 +78,11 @@ class CharacterRestControllerTest {
                         "baseHp": 30,
                         "baseMp": 5,
                         "baseAttack": 20,
-                        "baseDefense": 20
+                        "baseDefense": 20,
+                        "hpPerPoint": 1,
+                        "mpPerPoint": 1,
+                        "attackPerPoint": 1,
+                        "defensePerPoint": 1
                     },
                     "level": 1,
                     "exp": 0,
