@@ -5,6 +5,8 @@ import com.yusay.rpg.api.domain.entity.Job;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/jobs")
 public class JobRestController {
@@ -13,6 +15,11 @@ public class JobRestController {
 
     public JobRestController(JobApplicationService jobApplicationService) {
         this.jobApplicationService = jobApplicationService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Job>> get() {
+        return ResponseEntity.ok(jobApplicationService.list());
     }
 
     @GetMapping("/{id}")

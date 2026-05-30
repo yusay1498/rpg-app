@@ -12,6 +12,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @WebMvcTest(JobRestController.class)
@@ -21,6 +23,63 @@ class JobRestControllerTest {
 
     @MockitoBean
     private JobApplicationService jobApplicationService;
+
+    @Test
+    @DisplayName("成功した場合、全職業のリストと200番を返す")
+    void givenJobs_whenGet_thenReturnJobsAndStatus200() {
+        // Given
+        Job warrior = new Job();
+        warrior.setId("550e8400-e29b-41d4-a716-446655440001");
+        warrior.setName("warrior");
+        warrior.setDescription("戦士");
+        warrior.setBaseHp(30);
+        warrior.setBaseMp(5);
+        warrior.setBaseAttack(20);
+        warrior.setBaseDefense(20);
+        Job mage = new Job();
+        mage.setId("550e8400-e29b-41d4-a716-446655440002");
+        mage.setName("mage");
+        mage.setDescription("魔法使い");
+        mage.setBaseHp(15);
+        mage.setBaseMp(30);
+        mage.setBaseAttack(25);
+        mage.setBaseDefense(10);
+        Mockito.when(jobApplicationService.list()).thenReturn(List.of(warrior, mage));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .get()
+                .uri("/jobs")
+                .exchange();
+
+        // Then
+        String expectedResponse = """
+                [
+                    {
+                        "id": "550e8400-e29b-41d4-a716-446655440001",
+                        "name": "warrior",
+                        "description": "戦士",
+                        "baseHp": 30,
+                        "baseMp": 5,
+                        "baseAttack": 20,
+                        "baseDefense": 20
+                    },
+                    {
+                        "id": "550e8400-e29b-41d4-a716-446655440002",
+                        "name": "mage",
+                        "description": "魔法使い",
+                        "baseHp": 15,
+                        "baseMp": 30,
+                        "baseAttack": 25,
+                        "baseDefense": 10
+                    }
+                ]
+                """;
+        assertThat(actual)
+                .hasStatusOk()
+                .bodyJson()
+                .isStrictlyEqualTo(expectedResponse);
+    }
 
     @Test
     @DisplayName("成功した場合、指定した職業と200番を返す")
