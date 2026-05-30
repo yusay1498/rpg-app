@@ -23,6 +23,7 @@ public class Character {
     private Job job;
     private int level;
     private int exp;
+    private int statPoints;
     private int hp;
     private int maxHp;
     private int mp;
@@ -79,6 +80,14 @@ public class Character {
 
     public void setExp(int exp) {
         this.exp = exp;
+    }
+
+    public int getStatPoints() {
+        return statPoints;
+    }
+
+    public void setStatPoints(int statPoints) {
+        this.statPoints = statPoints;
     }
 
     public int getHp() {

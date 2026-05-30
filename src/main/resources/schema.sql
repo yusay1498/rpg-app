@@ -39,10 +39,10 @@ CREATE TABLE IF NOT EXISTS jobs (
     base_mp     INT          NOT NULL,
     base_attack INT          NOT NULL,
     base_defense INT         NOT NULL,
-    hp_per_level INT         NOT NULL DEFAULT 1,
-    mp_per_level INT         NOT NULL DEFAULT 1,
-    attack_per_level INT     NOT NULL DEFAULT 1,
-    defense_per_level INT    NOT NULL DEFAULT 1
+    hp_per_point INT         NOT NULL DEFAULT 1,
+    mp_per_point INT         NOT NULL DEFAULT 1,
+    attack_per_point INT     NOT NULL DEFAULT 1,
+    defense_per_point INT    NOT NULL DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS skills (
@@ -124,6 +124,7 @@ CREATE TABLE IF NOT EXISTS characters (
     job_id      VARCHAR(36)  NOT NULL REFERENCES jobs(id) ON DELETE RESTRICT,
     level       INT          NOT NULL DEFAULT 1,
     exp         INT          NOT NULL DEFAULT 0,
+    stat_points INT          NOT NULL DEFAULT 0,
     hp          INT          NOT NULL,
     max_hp      INT          NOT NULL,
     mp          INT          NOT NULL,

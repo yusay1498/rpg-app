@@ -36,10 +36,10 @@ class JobRestControllerTest {
         warrior.setBaseMp(5);
         warrior.setBaseAttack(20);
         warrior.setBaseDefense(20);
-        warrior.setHpPerLevel(1);
-        warrior.setMpPerLevel(1);
-        warrior.setAttackPerLevel(1);
-        warrior.setDefensePerLevel(1);
+        warrior.setHpPerPoint(1);
+        warrior.setMpPerPoint(1);
+        warrior.setAttackPerPoint(1);
+        warrior.setDefensePerPoint(1);
         Job mage = new Job();
         mage.setId("550e8400-e29b-41d4-a716-446655440002");
         mage.setName("mage");
@@ -48,10 +48,10 @@ class JobRestControllerTest {
         mage.setBaseMp(30);
         mage.setBaseAttack(25);
         mage.setBaseDefense(10);
-        mage.setHpPerLevel(1);
-        mage.setMpPerLevel(1);
-        mage.setAttackPerLevel(1);
-        mage.setDefensePerLevel(1);
+        mage.setHpPerPoint(1);
+        mage.setMpPerPoint(1);
+        mage.setAttackPerPoint(1);
+        mage.setDefensePerPoint(1);
         Mockito.when(jobApplicationService.list()).thenReturn(List.of(warrior, mage));
 
         // When
@@ -71,10 +71,10 @@ class JobRestControllerTest {
                         "baseMp": 5,
                         "baseAttack": 20,
                         "baseDefense": 20,
-                        "hpPerLevel": 1,
-                        "mpPerLevel": 1,
-                        "attackPerLevel": 1,
-                        "defensePerLevel": 1
+                        "hpPerPoint": 1,
+                        "mpPerPoint": 1,
+                        "attackPerPoint": 1,
+                        "defensePerPoint": 1
                     },
                     {
                         "id": "550e8400-e29b-41d4-a716-446655440002",
@@ -84,10 +84,10 @@ class JobRestControllerTest {
                         "baseMp": 30,
                         "baseAttack": 25,
                         "baseDefense": 10,
-                        "hpPerLevel": 1,
-                        "mpPerLevel": 1,
-                        "attackPerLevel": 1,
-                        "defensePerLevel": 1
+                        "hpPerPoint": 1,
+                        "mpPerPoint": 1,
+                        "attackPerPoint": 1,
+                        "defensePerPoint": 1
                     }
                 ]
                 """;
@@ -109,10 +109,10 @@ class JobRestControllerTest {
         testJob.setBaseMp(20);
         testJob.setBaseAttack(15);
         testJob.setBaseDefense(15);
-        testJob.setHpPerLevel(1);
-        testJob.setMpPerLevel(1);
-        testJob.setAttackPerLevel(1);
-        testJob.setDefensePerLevel(1);
+        testJob.setHpPerPoint(1);
+        testJob.setMpPerPoint(1);
+        testJob.setAttackPerPoint(1);
+        testJob.setDefensePerPoint(1);
 
         Mockito.when(jobApplicationService.lookup("550e1400-e29b-41d4-a716-446655440001"))
                 .thenReturn(testJob);
@@ -131,10 +131,10 @@ class JobRestControllerTest {
                     "baseMp": 20,
                     "baseAttack": 15,
                     "baseDefense": 15,
-                    "hpPerLevel": 1,
-                    "mpPerLevel": 1,
-                    "attackPerLevel": 1,
-                    "defensePerLevel": 1
+                    "hpPerPoint": 1,
+                    "mpPerPoint": 1,
+                    "attackPerPoint": 1,
+                    "defensePerPoint": 1
                 }
                 """;
 

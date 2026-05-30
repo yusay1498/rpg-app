@@ -38,16 +38,17 @@ class CharacterRestControllerTest {
         warrior.setBaseMp(5);
         warrior.setBaseAttack(20);
         warrior.setBaseDefense(20);
-        warrior.setHpPerLevel(1);
-        warrior.setMpPerLevel(1);
-        warrior.setAttackPerLevel(1);
-        warrior.setDefensePerLevel(1);
+        warrior.setHpPerPoint(1);
+        warrior.setMpPerPoint(1);
+        warrior.setAttackPerPoint(1);
+        warrior.setDefensePerPoint(1);
         Character character = new Character();
         character.setId("660e8400-e29b-41d4-a716-446655440001");
         character.setName("Taro");
         character.setJob(warrior);
         character.setLevel(1);
         character.setExp(0);
+        character.setStatPoints(0);
         character.setHp(30);
         character.setMaxHp(30);
         character.setMp(5);
@@ -78,13 +79,14 @@ class CharacterRestControllerTest {
                         "baseMp": 5,
                         "baseAttack": 20,
                         "baseDefense": 20,
-                        "hpPerLevel": 1,
-                        "mpPerLevel": 1,
-                        "attackPerLevel": 1,
-                        "defensePerLevel": 1
+                        "hpPerPoint": 1,
+                        "mpPerPoint": 1,
+                        "attackPerPoint": 1,
+                        "defensePerPoint": 1
                     },
                     "level": 1,
                     "exp": 0,
+                    "statPoints": 0,
                     "hp": 30,
                     "maxHp": 30,
                     "mp": 5,
@@ -131,6 +133,7 @@ class CharacterRestControllerTest {
         newCharacter.setJob(warrior);
         newCharacter.setLevel(1);
         newCharacter.setExp(0);
+        newCharacter.setStatPoints(0);
         newCharacter.setHp(25);
         newCharacter.setMaxHp(25);
         newCharacter.setMp(10);
@@ -153,6 +156,7 @@ class CharacterRestControllerTest {
                             "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
                             "level": 1,
                             "exp": 0,
+                            "statPoints": 0,
                             "hp": 25,
                             "maxHp": 25,
                             "mp": 10,
@@ -191,6 +195,7 @@ class CharacterRestControllerTest {
                             "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
                             "level": 1,
                             "exp": 0,
+                            "statPoints": 0,
                             "hp": 25,
                             "maxHp": 25,
                             "mp": 10,
@@ -221,6 +226,7 @@ class CharacterRestControllerTest {
                             "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
                             "level": 1,
                             "exp": 0,
+                            "statPoints": 0,
                             "hp": 25,
                             "maxHp": 25,
                             "mp": 10,
@@ -251,6 +257,7 @@ class CharacterRestControllerTest {
                             "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
                             "level": 1,
                             "exp": 0,
+                            "statPoints": 0,
                             "hp": 25,
                             "maxHp": 25,
                             "mp": 10,
@@ -280,6 +287,7 @@ class CharacterRestControllerTest {
                             "name": "Jiro",
                             "level": 1,
                             "exp": 0,
+                            "statPoints": 0,
                             "hp": 25,
                             "maxHp": 25,
                             "mp": 10,
