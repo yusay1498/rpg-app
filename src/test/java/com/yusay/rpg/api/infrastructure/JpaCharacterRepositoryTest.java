@@ -15,7 +15,9 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +38,9 @@ class JpaCharacterRepositoryTest {
 
     @Autowired
     CharacterRepository characterRepository;
+
+    @Autowired
+    org.springframework.jdbc.core.simple.JdbcClient jdbcClient;
 
     @Test
     @DisplayName("指定のIDで対象のキャラクターを取得する")
@@ -126,30 +131,50 @@ class JpaCharacterRepositoryTest {
         character.setStatus(CharacterStatus.ALIVE);
 
         // When
-        characterRepository.save(character);
+        Character saved = characterRepository.save(character);
         testEntityManager.flush();
-        testEntityManager.clear();
 
-        // Then
-        assertThat(characterRepository.findById("660e8400-e29b-41d4-a716-446655440002"))
-                .hasValueSatisfying(saved -> {
-                    assertThat(saved.getId()).isEqualTo("660e8400-e29b-41d4-a716-446655440002");
-                    assertThat(saved.getName()).isEqualTo("Jiro");
-                    assertThat(saved.getJob().getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
-                    assertThat(saved.getLevel()).isEqualTo(1);
-                    assertThat(saved.getExp()).isEqualTo(0);
-                    assertThat(saved.getStatPoints()).isEqualTo(0);
-                    assertThat(saved.getHp()).isEqualTo(25);
-                    assertThat(saved.getMaxHp()).isEqualTo(25);
-                    assertThat(saved.getMp()).isEqualTo(10);
-                    assertThat(saved.getMaxMp()).isEqualTo(10);
-                    assertThat(saved.getAttack()).isEqualTo(15);
-                    assertThat(saved.getDefense()).isEqualTo(15);
-                    assertThat(saved.getGold()).isEqualTo(0);
-                    assertThat(saved.getStatus()).isEqualTo(CharacterStatus.ALIVE);
-                    assertThat(saved.getCreatedAt()).isNotNull();
-                    assertThat(saved.getUpdatedAt()).isNotNull();
-                });
+        // Then: 返却値の検証
+        assertThat(saved.getId()).isEqualTo("660e8400-e29b-41d4-a716-446655440002");
+        assertThat(saved.getName()).isEqualTo("Jiro");
+        assertThat(saved.getJob().getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
+        assertThat(saved.getLevel()).isEqualTo(1);
+        assertThat(saved.getExp()).isEqualTo(0);
+        assertThat(saved.getStatPoints()).isEqualTo(0);
+        assertThat(saved.getHp()).isEqualTo(25);
+        assertThat(saved.getMaxHp()).isEqualTo(25);
+        assertThat(saved.getMp()).isEqualTo(10);
+        assertThat(saved.getMaxMp()).isEqualTo(10);
+        assertThat(saved.getAttack()).isEqualTo(15);
+        assertThat(saved.getDefense()).isEqualTo(15);
+        assertThat(saved.getGold()).isEqualTo(0);
+        assertThat(saved.getStatus()).isEqualTo(CharacterStatus.ALIVE);
+        assertThat(saved.getCreatedAt()).isNotNull();
+        assertThat(saved.getUpdatedAt()).isNotNull();
+
+        // Then: DB永続化の検証
+        testEntityManager.clear();
+        Map<String, Object> row = jdbcClient
+                .sql("SELECT * FROM characters WHERE id = :id")
+                .param("id", "660e8400-e29b-41d4-a716-446655440002")
+                .query()
+                .singleRow();
+        assertThat(row.get("id")).isEqualTo("660e8400-e29b-41d4-a716-446655440002");
+        assertThat(row.get("name")).isEqualTo("Jiro");
+        assertThat(row.get("job_id")).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
+        assertThat(row.get("level")).isEqualTo(1);
+        assertThat(row.get("exp")).isEqualTo(0);
+        assertThat(row.get("stat_points")).isEqualTo(0);
+        assertThat(row.get("hp")).isEqualTo(25);
+        assertThat(row.get("max_hp")).isEqualTo(25);
+        assertThat(row.get("mp")).isEqualTo(10);
+        assertThat(row.get("max_mp")).isEqualTo(10);
+        assertThat(row.get("attack")).isEqualTo(15);
+        assertThat(row.get("defense")).isEqualTo(15);
+        assertThat(row.get("gold")).isEqualTo(0);
+        assertThat(row.get("status")).isEqualTo("ALIVE");
+        assertThat(row.get("created_at")).isNotNull();
+        assertThat(row.get("updated_at")).isNotNull();
     }
 
     @Test
@@ -172,19 +197,32 @@ class JpaCharacterRepositoryTest {
         character.setMaxHp(35);
 
         // When
-        characterRepository.save(character);
+        Character saved = characterRepository.save(character);
         testEntityManager.flush();
-        testEntityManager.clear();
 
-        // Then
-        assertThat(characterRepository.findById("660e8400-e29b-41d4-a716-446655440001"))
-                .hasValueSatisfying(updated -> {
-                    assertThat(updated.getLevel()).isEqualTo(2);
-                    assertThat(updated.getExp()).isEqualTo(100);
-                    assertThat(updated.getHp()).isEqualTo(35);
-                    assertThat(updated.getMaxHp()).isEqualTo(35);
-                    assertThat(updated.getCreatedAt()).isEqualTo(originalCreatedAt);
-                    assertThat(updated.getUpdatedAt()).isAfter(LocalDateTime.of(2000, 1, 1, 0, 0));
-                });
+        // Then: 返却値の検証
+        assertThat(saved.getId()).isEqualTo("660e8400-e29b-41d4-a716-446655440001");
+        assertThat(saved.getName()).isEqualTo("Taro");
+        assertThat(saved.getJob().getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
+        assertThat(saved.getLevel()).isEqualTo(2);
+        assertThat(saved.getExp()).isEqualTo(100);
+        assertThat(saved.getHp()).isEqualTo(35);
+        assertThat(saved.getMaxHp()).isEqualTo(35);
+        assertThat(saved.getCreatedAt()).isEqualTo(originalCreatedAt);
+        assertThat(saved.getUpdatedAt()).isAfter(LocalDateTime.of(2000, 1, 1, 0, 0));
+
+        // Then: DB永続化の検証
+        testEntityManager.clear();
+        Map<String, Object> row = jdbcClient
+                .sql("SELECT * FROM characters WHERE id = :id")
+                .param("id", "660e8400-e29b-41d4-a716-446655440001")
+                .query()
+                .singleRow();
+        assertThat(row.get("level")).isEqualTo(2);
+        assertThat(row.get("exp")).isEqualTo(100);
+        assertThat(row.get("hp")).isEqualTo(35);
+        assertThat(row.get("max_hp")).isEqualTo(35);
+        assertThat(((Timestamp) row.get("created_at")).toLocalDateTime()).isEqualTo(originalCreatedAt);
+        assertThat(((Timestamp) row.get("updated_at")).toLocalDateTime()).isAfter(LocalDateTime.of(2000, 1, 1, 0, 0));
     }
 }
