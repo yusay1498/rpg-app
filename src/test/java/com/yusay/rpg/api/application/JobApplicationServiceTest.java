@@ -5,7 +5,10 @@ import com.yusay.rpg.api.domain.repository.JobRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.MissingResourceException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,5 +43,20 @@ class JobApplicationServiceTest {
         assertThat(result.getBaseMp()).isEqualTo(10);
         assertThat(result.getBaseAttack()).isEqualTo(25);
         assertThat(result.getBaseDefense()).isEqualTo(15);
+    }
+
+    @Test
+    @DisplayName("存在しないIDの場合、MissingResourceExceptionをスローする")
+    void givenNonExistentId_whenLookup_thenThrowMissingResourceException() {
+        // Given
+        JobRepository jobRepository = mock(JobRepository.class);
+        JobApplicationService jobApplicationService = new JobApplicationService(jobRepository);
+        String nonExistentId = "non-existent-id";
+        when(jobRepository.findById(nonExistentId)).thenReturn(java.util.Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> jobApplicationService.lookup(nonExistentId))
+                .isInstanceOf(MissingResourceException.class)
+                .hasMessageContaining("Job not found");
     }
 }
