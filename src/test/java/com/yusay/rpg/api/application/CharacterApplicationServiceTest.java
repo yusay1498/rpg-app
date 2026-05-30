@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -77,5 +78,49 @@ class CharacterApplicationServiceTest {
         assertThatThrownBy(() -> characterApplicationService.lookup(nonExistentId))
                 .isInstanceOf(CharacterNotFoundException.class)
                 .hasMessageContaining("Character not found");
+    }
+
+    @Test
+    @DisplayName("キャラクターを作成するとUUIDが採番されて保存されたキャラクターを返す")
+    void givenCharacter_whenCreate_thenReturnSavedCharacterWithId() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(characterRepository);
+        Job warrior = new Job();
+        warrior.setId("550e8400-e29b-41d4-a716-446655440001");
+        Character character = new Character();
+        character.setName("Taro");
+        character.setJob(warrior);
+        character.setLevel(1);
+        character.setExp(0);
+        character.setStatPoints(0);
+        character.setHp(30);
+        character.setMaxHp(30);
+        character.setMp(5);
+        character.setMaxMp(5);
+        character.setAttack(20);
+        character.setDefense(20);
+        character.setGold(0);
+        character.setStatus(CharacterStatus.ALIVE);
+        when(characterRepository.save(any(Character.class))).thenReturn(character);
+
+        // When
+        Character result = characterApplicationService.create(character);
+
+        // Then
+        assertThat(result.getId()).matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
+        assertThat(result.getName()).isEqualTo("Taro");
+        assertThat(result.getJob().getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
+        assertThat(result.getLevel()).isEqualTo(1);
+        assertThat(result.getExp()).isEqualTo(0);
+        assertThat(result.getStatPoints()).isEqualTo(0);
+        assertThat(result.getHp()).isEqualTo(30);
+        assertThat(result.getMaxHp()).isEqualTo(30);
+        assertThat(result.getMp()).isEqualTo(5);
+        assertThat(result.getMaxMp()).isEqualTo(5);
+        assertThat(result.getAttack()).isEqualTo(20);
+        assertThat(result.getDefense()).isEqualTo(20);
+        assertThat(result.getGold()).isEqualTo(0);
+        assertThat(result.getStatus()).isEqualTo(CharacterStatus.ALIVE);
     }
 }
