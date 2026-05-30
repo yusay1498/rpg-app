@@ -3,6 +3,7 @@
 ## 共通ルール
 
 - PK / FK はすべて `VARCHAR(36)`（UUID形式）
+  - 例外：`level_exp_thresholds.level` は意味のある整数値のため `INT PK` とする
 - UUIDはアプリケーション側で `UUID.randomUUID().toString()` により生成
 - タイムスタンプは `TIMESTAMP` 型
 
@@ -92,11 +93,14 @@
 | drop_rate | DECIMAL | ドロップ率 |
 | is_boss | BOOLEAN | ボスフラグ（デフォルト false） |
 
+> `enemies` はダンジョン単位で管理する。戦闘開始時にダンジョンに紐づく敵の中からランダムに抽選する。
+> `Room` と `Enemy` の直接関連はない。
+
 ### level_exp_thresholds（レベルアップEXP閾値）
 
 | カラム | 型 | 説明 |
 |-------|----|------|
-| level | INT PK | レベル |
+| level | INT PK | レベル（意味のある整数値のためINT PKを使用。共通ルールの例外） |
 | required_exp | INT | そのレベルに上がるのに必要な累計EXP |
 
 ---
@@ -141,6 +145,8 @@
 | character_id | VARCHAR(36) FK | characters.id |
 | item_id | VARCHAR(36) FK | items.id |
 | quantity | INT | 所持数 |
+
+※ `(character_id, item_id)` にユニーク制約
 
 ### equipments（装備中アイテム）
 
@@ -189,12 +195,11 @@ jobs ──< job_skills >── skills
  └──< characters
           │
           ├──< character_skills >── skills
-          ├──< inventories >── items
-          ├──< equipments >── items
+          ├──< inventories >── items  ※(character_id, item_id) ユニーク
+          ├──< equipments >── items   ※(character_id, slot) ユニーク
           │
           ├── explore_sessions ── rooms ──< dungeons
-          │                          └──> enemies
-          └── battle_sessions ── enemies
+          └── battle_sessions ── enemies ──< dungeons
                                      └──> items (drop)
 
 level_exp_thresholds（独立マスタ）

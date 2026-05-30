@@ -28,11 +28,11 @@
 | `GET` | `/api/characters/{id}/battle/current` | 戦闘状況取得 |
 | `POST` | `/api/characters/{id}/battle/action` | アクション実行（attack / skill / item / run） |
 
-### 戦闘アクションレスポンス例
+### 戦闘アクションレスポンス例（勝利）
 
 ```json
 {
-  "battleResult": "WIN",
+  "battleResult": "win",
   "expGained": 120,
   "levelUp": {
     "occurred": true,
@@ -46,6 +46,20 @@
   }
 }
 ```
+
+### 戦闘アクションレスポンス例（敗北）
+
+```json
+{
+  "battleResult": "lose",
+  "penalty": {
+    "goldHalved": true,
+    "hpRestoredTo": 1
+  }
+}
+```
+
+> 敗北時は `explore_session` を削除し、`characters` の hp を 1・gold を半減に更新して返す。
 
 ## アイテム・装備
 
@@ -67,7 +81,7 @@
 | メソッド | エンドポイント | 説明 |
 |---------|--------------|------|
 | `GET` | `/api/shop` | 商品一覧 |
-| `POST` | `/api/shop/buy` | 購入 |
+| `POST` | `/api/characters/{id}/shop/buy` | 購入（キャラクターの所持金・インベントリを更新） |
 
 ## マスタ系
 
@@ -86,3 +100,8 @@
 | `PUT` | リソース全体の置き換え（ステータス配分・装備一括） |
 | `PATCH` | リソースの部分更新（キャラ名変更） |
 | `DELETE` | リソース削除 |
+
+## enumの表記ルール
+
+- APIレスポンス・DB保存値ともに **lower_case** に統一する
+- 例：`win` / `lose` / `escaped` / `in_progress`
