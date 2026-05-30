@@ -1,11 +1,10 @@
 package com.yusay.rpg.api.application;
 
 import com.yusay.rpg.api.domain.entity.Job;
+import com.yusay.rpg.api.domain.exception.JobNotFoundException;
 import com.yusay.rpg.api.domain.repository.JobRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.MissingResourceException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,8 +45,8 @@ class JobApplicationServiceTest {
     }
 
     @Test
-    @DisplayName("存在しないIDの場合、MissingResourceExceptionをスローする")
-    void givenNonExistentId_whenLookup_thenThrowMissingResourceException() {
+    @DisplayName("存在しないIDの場合、JobNotFoundExceptionをスローする")
+    void givenNonExistentId_whenLookup_thenThrowJobNotFoundException() {
         // Given
         JobRepository jobRepository = mock(JobRepository.class);
         JobApplicationService jobApplicationService = new JobApplicationService(jobRepository);
@@ -56,7 +55,7 @@ class JobApplicationServiceTest {
 
         // When / Then
         assertThatThrownBy(() -> jobApplicationService.lookup(nonExistentId))
-                .isInstanceOf(MissingResourceException.class)
+                .isInstanceOf(JobNotFoundException.class)
                 .hasMessageContaining("Job not found");
     }
 }
