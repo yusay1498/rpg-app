@@ -183,7 +183,6 @@ CREATE TABLE IF NOT EXISTS battle_sessions (
 -- インデックス
 -- ============================================================
 
-CREATE INDEX IF NOT EXISTS idx_job_skills_job_id ON job_skills(job_id);
 CREATE INDEX IF NOT EXISTS idx_job_skills_skill_id ON job_skills(skill_id);
 CREATE INDEX IF NOT EXISTS idx_rooms_dungeon_id ON rooms(dungeon_id);
 CREATE INDEX IF NOT EXISTS idx_enemies_dungeon_id ON enemies(dungeon_id);
