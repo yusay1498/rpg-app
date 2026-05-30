@@ -15,6 +15,11 @@ public class JobRestController {
         this.jobApplicationService = jobApplicationService;
     }
 
+    @GetMapping
+    public ResponseEntity<Iterable<Job>> get() {
+        return ResponseEntity.ok(jobApplicationService.list());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Job> getById(@PathVariable String id) {
         return ResponseEntity.ok(jobApplicationService.lookup(id));
