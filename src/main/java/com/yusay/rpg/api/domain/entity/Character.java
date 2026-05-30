@@ -18,7 +18,8 @@ public class Character {
     private int mp; private int maxMp;
     private int attack; private int defense;
     private int gold;
-    private String status; // alive/dead
+    @Enumerated(EnumType.STRING)
+    private CharacterStatus status;
 
     public String getId() {
         return id;
@@ -124,11 +125,11 @@ public class Character {
         this.gold = gold;
     }
 
-    public String getStatus() {
+    public CharacterStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(CharacterStatus status) {
         this.status = status;
     }
 }

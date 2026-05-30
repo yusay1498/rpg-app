@@ -2,6 +2,7 @@ package com.yusay.rpg.api.infrastructure;
 
 import com.yusay.rpg.api.config.TestcontainersConfiguration;
 import com.yusay.rpg.api.domain.entity.Character;
+import com.yusay.rpg.api.domain.entity.CharacterStatus;
 import com.yusay.rpg.api.domain.repository.CharacterRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class JpaCharacterRepositoryTest {
             INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
             VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
             INSERT INTO characters (id, name, job_id, level, exp, stat_points, hp, max_hp, mp, max_mp, attack, defense, gold, status)
-            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 0, 30, 30, 5, 5, 20, 20, 0, 'alive');
+            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE');
     """)
     void givenCharacter_whenFindById_thenReturnCharacter() {
         // When
@@ -61,7 +62,7 @@ class JpaCharacterRepositoryTest {
             assertThat(character.getAttack()).isEqualTo(20);
             assertThat(character.getDefense()).isEqualTo(20);
             assertThat(character.getGold()).isEqualTo(0);
-            assertThat(character.getStatus()).isEqualTo("alive");
+            assertThat(character.getStatus()).isEqualTo(CharacterStatus.ALIVE);
         });
     }
 }
