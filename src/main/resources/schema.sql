@@ -38,7 +38,9 @@ CREATE TABLE IF NOT EXISTS jobs (
     base_hp     INT          NOT NULL,
     base_mp     INT          NOT NULL,
     base_attack INT          NOT NULL,
-    base_defense INT         NOT NULL
+    base_defense INT         NOT NULL,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS skills (

@@ -2,7 +2,12 @@ package com.yusay.rpg.api.domain.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "jobs")
@@ -15,6 +20,12 @@ public class Job {
     private int baseMp;
     private int baseAttack;
     private int baseDefense;
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     public String getId() {
         return id;
@@ -70,5 +81,13 @@ public class Job {
 
     public void setBaseDefense(int baseDefense) {
         this.baseDefense = baseDefense;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }
