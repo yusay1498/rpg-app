@@ -36,21 +36,18 @@ public class CharacterApplicationService {
         return characterRepository.save(character);
     }
 
-    public Character rename(Character character) {
-        if (character == null) {
-            throw new IllegalArgumentException("character must not be null");
-        }
-        if (character.getId() == null || character.getId().isBlank()) {
+    public Character rename(String id, String name) {
+        if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("id must not be null or blank when renaming a character");
         }
-        if (character.getName() == null || character.getName().isBlank()) {
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("name must not be null or blank when renaming a character");
         }
 
-        Character updatedCharacter = characterRepository.findById(character.getId())
-                .orElseThrow(() -> new CharacterNotFoundException(character.getId()));
+        Character updatedCharacter = characterRepository.findById(id)
+                .orElseThrow(() -> new CharacterNotFoundException(id));
 
-        updatedCharacter.setName(character.getName());
+        updatedCharacter.setName(name);
 
         return characterRepository.save(updatedCharacter);
     }
