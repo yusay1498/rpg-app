@@ -6,6 +6,8 @@ import com.yusay.rpg.api.domain.repository.JobRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class JobApplicationService {
@@ -14,6 +16,10 @@ public class JobApplicationService {
 
     public JobApplicationService(JobRepository jobRepository) {
         this.jobRepository = jobRepository;
+    }
+
+    List<Job> list() {
+        return jobRepository.findAll();
     }
 
     public Job lookup(String id) {

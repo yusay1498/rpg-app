@@ -6,12 +6,63 @@ import com.yusay.rpg.api.domain.repository.JobRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class JobApplicationServiceTest {
+
+    @Test
+    @DisplayName("職業が複数存在する場合、全職業のリストを返す")
+    void givenJobs_whenList_thenReturnAllJobs() {
+        // Given
+        JobRepository jobRepository = mock(JobRepository.class);
+        JobApplicationService jobApplicationService = new JobApplicationService(jobRepository);
+        Job warrior = new Job();
+        warrior.setId("550e8400-e29b-41d4-a716-446655440001");
+        warrior.setName("warrior");
+        warrior.setDescription("戦士");
+        warrior.setBaseHp(30);
+        warrior.setBaseMp(5);
+        warrior.setBaseAttack(20);
+        warrior.setBaseDefense(20);
+        Job mage = new Job();
+        mage.setId("550e8400-e29b-41d4-a716-446655440002");
+        mage.setName("mage");
+        mage.setDescription("魔法使い");
+        mage.setBaseHp(15);
+        mage.setBaseMp(30);
+        mage.setBaseAttack(25);
+        mage.setBaseDefense(10);
+        when(jobRepository.findAll()).thenReturn(List.of(warrior, mage));
+
+        // When
+        List<Job> result = jobApplicationService.list();
+
+        // Then
+        assertThat(result).hasSize(2);
+        assertThat(result).anySatisfy(job -> {
+            assertThat(job.getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
+            assertThat(job.getName()).isEqualTo("warrior");
+            assertThat(job.getDescription()).isEqualTo("戦士");
+            assertThat(job.getBaseHp()).isEqualTo(30);
+            assertThat(job.getBaseMp()).isEqualTo(5);
+            assertThat(job.getBaseAttack()).isEqualTo(20);
+            assertThat(job.getBaseDefense()).isEqualTo(20);
+        });
+        assertThat(result).anySatisfy(job -> {
+            assertThat(job.getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440002");
+            assertThat(job.getName()).isEqualTo("mage");
+            assertThat(job.getDescription()).isEqualTo("魔法使い");
+            assertThat(job.getBaseHp()).isEqualTo(15);
+            assertThat(job.getBaseMp()).isEqualTo(30);
+            assertThat(job.getBaseAttack()).isEqualTo(25);
+            assertThat(job.getBaseDefense()).isEqualTo(10);
+        });
+    }
 
     @Test
     @DisplayName("存在するIDの場合、該当の職業を返す")
