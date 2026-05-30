@@ -1,6 +1,10 @@
 package com.yusay.rpg.api.domain.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "characters")
@@ -26,6 +30,12 @@ public class Character {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 10)
     private CharacterStatus status = CharacterStatus.ALIVE;
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     public String getId() {
         return id;
@@ -137,5 +147,13 @@ public class Character {
 
     public void setStatus(CharacterStatus status) {
         this.status = status;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }
