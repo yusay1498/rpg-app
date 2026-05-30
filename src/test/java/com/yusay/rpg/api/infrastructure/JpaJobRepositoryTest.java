@@ -44,12 +44,14 @@ class JpaJobRepositoryTest {
         Optional<Job> result = jpaJobRepository.findById("550e8400-e29b-41d4-a716-446655440001");
 
         // Then
-        assertThat(result).isPresent();
-        assertThat(result.get().getName()).isEqualTo("warrior");
-        assertThat(result.get().getDescription()).isEqualTo("戦士");
-        assertThat(result.get().getBaseHp()).isEqualTo(30);
-        assertThat(result.get().getBaseMp()).isEqualTo(5);
-        assertThat(result.get().getBaseAttack()).isEqualTo(20);
-        assertThat(result.get().getBaseDefense()).isEqualTo(20);
+        assertThat(result).hasValueSatisfying(job -> {
+            assertThat(job.getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
+            assertThat(job.getName()).isEqualTo("warrior");
+            assertThat(job.getDescription()).isEqualTo("戦士");
+            assertThat(job.getBaseHp()).isEqualTo(30);
+            assertThat(job.getBaseMp()).isEqualTo(5);
+            assertThat(job.getBaseAttack()).isEqualTo(20);
+            assertThat(job.getBaseDefense()).isEqualTo(20);
+        });
     }
 }
