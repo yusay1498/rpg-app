@@ -6,6 +6,7 @@ import com.yusay.rpg.api.domain.repository.CharacterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -24,7 +25,7 @@ public class CharacterApplicationService {
     }
 
     public Character create(Character character) {
-        java.util.Objects.requireNonNull(character, "character must not be null");
+        Objects.requireNonNull(character, "character must not be null");
         if (character.getId() != null && !character.getId().isBlank()) {
             throw new IllegalArgumentException("id must be null or blank when creating a character");
         }

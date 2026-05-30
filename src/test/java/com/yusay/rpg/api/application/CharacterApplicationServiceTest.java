@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class CharacterApplicationServiceTest {
@@ -102,12 +103,20 @@ class CharacterApplicationServiceTest {
         character.setDefense(20);
         character.setGold(0);
         character.setStatus(CharacterStatus.ALIVE);
-        when(characterRepository.save(any(Character.class))).thenReturn(character);
+        when(characterRepository.save(any(Character.class))).thenAnswer(invocation -> {
+            // save 呼び出し時点で既に ID が採番済みであることを検証
+            Character arg = invocation.getArgument(0);
+            assertThat(arg.getId())
+                    .as("save 呼び出し前に UUID が採番されていること")
+                    .matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
+            return arg;
+        });
 
         // When
         Character result = characterApplicationService.create(character);
 
         // Then
+        verify(characterRepository).save(any(Character.class));
         assertThat(result.getId()).matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
         assertThat(result.getName()).isEqualTo("Taro");
         assertThat(result.getJob().getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
