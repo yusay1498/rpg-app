@@ -2,6 +2,7 @@ package com.yusay.rpg.api.infrastructure;
 
 import com.yusay.rpg.api.config.TestcontainersConfiguration;
 import com.yusay.rpg.api.domain.entity.Job;
+import com.yusay.rpg.api.domain.repository.JobRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ class JpaJobRepositoryTest {
     TestEntityManager testEntityManager;
 
     @Autowired
-    JpaJobRepository jpaJobRepository;
+    JobRepository jobRepository;
 
     @Test
     @DisplayName("指定のIDで対象の職業を取得する")
@@ -41,7 +42,7 @@ class JpaJobRepositoryTest {
         // Given
 
         // When
-        Optional<Job> result = jpaJobRepository.findById("550e8400-e29b-41d4-a716-446655440001");
+        Optional<Job> result = jobRepository.findById("550e8400-e29b-41d4-a716-446655440001");
 
         // Then
         assertThat(result).hasValueSatisfying(job -> {
