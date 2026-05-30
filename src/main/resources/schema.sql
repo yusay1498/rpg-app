@@ -1,4 +1,33 @@
 -- ============================================================
+-- 区分マスタ
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS skill_types (
+    code VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO skill_types (code) VALUES ('attack'), ('heal'), ('buff') ON CONFLICT DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS item_types (
+    code VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO item_types (code) VALUES ('weapon'), ('armor'), ('helmet'), ('shield'), ('accessory'), ('consumable') ON CONFLICT DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS effect_types (
+    code VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO effect_types (code) VALUES ('heal'), ('attack_up') ON CONFLICT DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS slot_types (
+    code VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO slot_types (code) VALUES ('weapon'), ('armor'), ('helmet'), ('shield'), ('accessory') ON CONFLICT DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS room_types (
+    code VARCHAR(20) PRIMARY KEY
+);
+INSERT INTO room_types (code) VALUES ('normal'), ('boss'), ('treasure'), ('rest') ON CONFLICT DO NOTHING;
+
+-- ============================================================
 -- マスタ系テーブル
 -- ============================================================
 
@@ -18,7 +47,7 @@ CREATE TABLE IF NOT EXISTS skills (
     description TEXT,
     mp_cost     INT          NOT NULL DEFAULT 0,
     power       INT          NOT NULL DEFAULT 0,
-    skill_type  VARCHAR(20)  NOT NULL CHECK (skill_type IN ('attack', 'heal', 'buff'))
+    skill_type  VARCHAR(20)  NOT NULL REFERENCES skill_types(code)
 );
 
 CREATE TABLE IF NOT EXISTS job_skills (
@@ -33,11 +62,11 @@ CREATE TABLE IF NOT EXISTS items (
     id           VARCHAR(36)  PRIMARY KEY,
     name         VARCHAR(100) NOT NULL,
     description  TEXT,
-    item_type    VARCHAR(20)  NOT NULL CHECK (item_type IN ('weapon', 'armor', 'helmet', 'shield', 'accessory', 'consumable')),
-    effect_type  VARCHAR(20)           CHECK (effect_type IN ('heal', 'attack_up')),
+    item_type    VARCHAR(20)  NOT NULL REFERENCES item_types(code),
+    effect_type  VARCHAR(20)           REFERENCES effect_types(code),
     effect_value INT,
     price        INT          NOT NULL DEFAULT 0,
-    slot         VARCHAR(20)           CHECK (slot IN ('weapon', 'armor', 'helmet', 'shield', 'accessory')),
+    slot         VARCHAR(20)           REFERENCES slot_types(code),
     CHECK (
         (effect_type IS NULL AND effect_value IS NULL)
         OR (effect_type IS NOT NULL AND effect_value IS NOT NULL)
@@ -56,7 +85,7 @@ CREATE TABLE IF NOT EXISTS rooms (
     id          VARCHAR(36) PRIMARY KEY,
     dungeon_id  VARCHAR(36) NOT NULL REFERENCES dungeons(id) ON DELETE CASCADE,
     floor       INT         NOT NULL,
-    room_type   VARCHAR(20) NOT NULL CHECK (room_type IN ('normal', 'boss', 'treasure', 'rest')),
+    room_type   VARCHAR(20) NOT NULL REFERENCES room_types(code),
     is_boss     BOOLEAN     NOT NULL DEFAULT FALSE,
     description TEXT
 );
@@ -123,7 +152,7 @@ CREATE TABLE IF NOT EXISTS inventories (
 CREATE TABLE IF NOT EXISTS equipments (
     id           VARCHAR(36) PRIMARY KEY,
     character_id VARCHAR(36) NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
-    slot         VARCHAR(20) NOT NULL CHECK (slot IN ('weapon', 'armor', 'helmet', 'shield', 'accessory')),
+    slot         VARCHAR(20) NOT NULL REFERENCES slot_types(code),
     item_id      VARCHAR(36) NOT NULL REFERENCES items(id) ON DELETE RESTRICT,
     UNIQUE (character_id, slot)
 );

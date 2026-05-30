@@ -4,8 +4,25 @@
 
 - PK / FK はすべて `VARCHAR(36)`（UUID形式）
   - 例外：`level_exp_thresholds.level` は意味のある整数値のため `INT PK` とする
+  - 例外：区分マスタは `VARCHAR(20) PK`（コード値そのもの）
 - UUIDはアプリケーション側で `UUID.randomUUID().toString()` により生成
 - タイムスタンプは `TIMESTAMP` 型
+- 拡張が想定される固定値セットは区分マスタテーブル + FK で管理する
+- 状態遷移のように値が固定的なものは CHECK 制約で管理する
+
+---
+
+## 区分マスタ
+
+| テーブル | 値 | 用途 |
+|---------|----|----- |
+| skill_types | attack / heal / buff | スキル種別 |
+| item_types | weapon / armor / helmet / shield / accessory / consumable | アイテム種別 |
+| effect_types | heal / attack_up | 効果種別 |
+| slot_types | weapon / armor / helmet / shield / accessory | 装備部位 |
+| room_types | normal / boss / treasure / rest | 部屋種別 |
+
+> 値の追加は各区分マスタへの `INSERT` のみで完了する。DDL変更不要。
 
 ---
 
@@ -32,7 +49,7 @@
 | description | TEXT | 説明 |
 | mp_cost | INT | 消費MP |
 | power | INT | ダメージ倍率等 |
-| skill_type | VARCHAR | attack / heal / buff ※CHECK制約 |
+| skill_type | VARCHAR FK | skill_types.code |
 
 ### job_skills（職業×スキル）
 
@@ -52,11 +69,11 @@
 | id | VARCHAR(36) PK | UUID |
 | name | VARCHAR | アイテム名 |
 | description | TEXT | 説明 |
-| item_type | VARCHAR | weapon / armor / helmet / shield / accessory / consumable ※CHECK制約 |
-| effect_type | VARCHAR | heal / attack_up 等 ※CHECK制約 |
+| item_type | VARCHAR FK | item_types.code |
+| effect_type | VARCHAR FK NULL | effect_types.code |
 | effect_value | INT | 効果量 |
 | price | INT | 購入価格 |
-| slot | VARCHAR | 装備部位（装備品のみ）※CHECK制約 |
+| slot | VARCHAR FK NULL | slot_types.code（装備品のみ） |
 
 ※ `effect_type` と `effect_value` は両方NULLまたは両方NOT NULLとするCHECK制約あり
 
@@ -77,7 +94,7 @@
 | id | VARCHAR(36) PK | UUID |
 | dungeon_id | VARCHAR(36) FK | dungeons.id（ON DELETE CASCADE） |
 | floor | INT | 部屋番号 |
-| room_type | VARCHAR | normal / boss / treasure / rest ※CHECK制約 |
+| room_type | VARCHAR FK | room_types.code |
 | is_boss | BOOLEAN | ボス部屋フラグ（デフォルト false） |
 | description | TEXT | 説明 |
 
@@ -160,7 +177,7 @@
 |-------|----|------|
 | id | VARCHAR(36) PK | UUID |
 | character_id | VARCHAR(36) FK | characters.id（ON DELETE CASCADE） |
-| slot | VARCHAR | weapon / armor / helmet / shield / accessory ※CHECK制約 |
+| slot | VARCHAR FK | slot_types.code |
 | item_id | VARCHAR(36) FK | items.id（ON DELETE RESTRICT） |
 
 ※ `(character_id, slot)` にユニーク制約
@@ -196,6 +213,10 @@
 ## テーブル関係図
 
 ```
+[区分マスタ]
+skill_types, item_types, effect_types, slot_types, room_types
+
+[業務テーブル]
 jobs ──< job_skills >── skills
  │
  └──< characters
