@@ -6,10 +6,12 @@ import jakarta.persistence.*;
 @Table(name = "characters")
 public class Character {
     @Id
+    @Column(length = 36)
     private String id;
+    @Column(nullable = false, length = 100)
     private String name;
-    @ManyToOne
-    @JoinColumn(name = "job_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id", nullable = false)
     private Job job;
     private int level;
     private int exp;
