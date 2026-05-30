@@ -13,7 +13,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,34 +98,6 @@ class JpaJobRepositoryTest {
             assertThat(job.getBaseMp()).isEqualTo(5);
             assertThat(job.getBaseAttack()).isEqualTo(20);
             assertThat(job.getBaseDefense()).isEqualTo(20);
-            assertThat(job.getCreatedAt()).isNotNull();
-            assertThat(job.getUpdatedAt()).isNotNull();
         });
-    }
-
-    @Test
-    @DisplayName("職業を更新するとupdatedAtが更新される")
-    @Sql(statements = """
-            INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense, created_at, updated_at)
-            VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20,
-                    TIMESTAMP '2000-01-01 00:00:00', TIMESTAMP '2000-01-01 00:00:00');
-    """)
-    void givenExistingJob_whenUpdate_thenRefreshUpdatedAt() {
-        // Given
-        Job job = jobRepository.findById("550e8400-e29b-41d4-a716-446655440001").orElseThrow();
-        LocalDateTime originalCreatedAt = job.getCreatedAt();
-
-        // When
-        job.setDescription("剣士");
-        testEntityManager.flush();
-        testEntityManager.clear();
-
-        // Then
-        assertThat(jobRepository.findById("550e8400-e29b-41d4-a716-446655440001"))
-                .hasValueSatisfying(updatedJob -> {
-                    assertThat(updatedJob.getDescription()).isEqualTo("剣士");
-                    assertThat(updatedJob.getCreatedAt()).isEqualTo(originalCreatedAt);
-                    assertThat(updatedJob.getUpdatedAt()).isAfter(LocalDateTime.of(2000, 1, 1, 0, 0));
-                });
     }
 }

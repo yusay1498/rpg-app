@@ -62,9 +62,7 @@ class JobRestControllerTest {
                         "baseHp": 30,
                         "baseMp": 5,
                         "baseAttack": 20,
-                        "baseDefense": 20,
-                        "createdAt": null,
-                        "updatedAt": null
+                        "baseDefense": 20
                     },
                     {
                         "id": "550e8400-e29b-41d4-a716-446655440002",
@@ -73,9 +71,7 @@ class JobRestControllerTest {
                         "baseHp": 15,
                         "baseMp": 30,
                         "baseAttack": 25,
-                        "baseDefense": 10,
-                        "createdAt": null,
-                        "updatedAt": null
+                        "baseDefense": 10
                     }
                 ]
                 """;
@@ -114,9 +110,7 @@ class JobRestControllerTest {
                     "baseHp": 25,
                     "baseMp": 20,
                     "baseAttack": 15,
-                    "baseDefense": 15,
-                    "createdAt": null,
-                    "updatedAt": null
+                    "baseDefense": 15
                 }
                 """;
 
