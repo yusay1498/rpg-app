@@ -40,6 +40,12 @@ public class CharacterApplicationService {
         if (character == null) {
             throw new IllegalArgumentException("character must not be null");
         }
+        if (character.getId() == null || character.getId().isBlank()) {
+            throw new IllegalArgumentException("id must not be null or blank when renaming a character");
+        }
+        if (character.getName() == null || character.getName().isBlank()) {
+            throw new IllegalArgumentException("name must not be null or blank when renaming a character");
+        }
 
         Character updatedCharacter = characterRepository.findById(character.getId())
                 .orElseThrow(() -> new CharacterNotFoundException(character.getId()));
