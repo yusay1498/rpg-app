@@ -295,4 +295,44 @@ class CharacterRestControllerTest {
         // Then
         assertThat(actual).hasStatus(400);
     }
+
+    @Test
+    @DisplayName("リネームに成功した場合、204を返す")
+    void givenCharacter_whenPatchName_thenReturnStatus204() {
+        // Given
+        String id = "660e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.rename(id, "Jiro"))
+                .thenReturn(new Character());
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .patch()
+                .uri("/characters/{id}", id)
+                .contentType(MediaType.TEXT_PLAIN)
+                .content("Jiro")
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(204);
+    }
+
+    @Test
+    @DisplayName("存在しないIDの場合、404を返す")
+    void givenNonExistentId_whenPatchName_thenReturnStatus404() {
+        // Given
+        String nonExistentId = "non-existent-id";
+        Mockito.when(characterApplicationService.rename(Mockito.eq(nonExistentId), Mockito.anyString()))
+                .thenThrow(new CharacterNotFoundException(nonExistentId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .patch()
+                .uri("/characters/{id}", nonExistentId)
+                .contentType(MediaType.TEXT_PLAIN)
+                .content("Jiro")
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(404);
+    }
 }

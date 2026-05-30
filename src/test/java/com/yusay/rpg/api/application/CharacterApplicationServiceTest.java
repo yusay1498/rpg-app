@@ -150,7 +150,7 @@ class CharacterApplicationServiceTest {
         when(characterRepository.save(any(Character.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        Character result = characterApplicationService.rename(input);
+        Character result = characterApplicationService.rename("660e8400-e29b-41d4-a716-446655440001", "Jiro");
 
         // Then
         verify(characterRepository).save(any(Character.class));
@@ -170,7 +170,7 @@ class CharacterApplicationServiceTest {
         when(characterRepository.findById("non-existent-id")).thenReturn(Optional.empty());
 
         // When / Then
-        assertThatThrownBy(() -> characterApplicationService.rename(input))
+        assertThatThrownBy(() -> characterApplicationService.rename("non-existent-id", "Jiro"))
                 .isInstanceOf(CharacterNotFoundException.class);
     }
 
