@@ -38,7 +38,11 @@ CREATE TABLE IF NOT EXISTS jobs (
     base_hp     INT          NOT NULL,
     base_mp     INT          NOT NULL,
     base_attack INT          NOT NULL,
-    base_defense INT         NOT NULL
+    base_defense INT         NOT NULL,
+    hp_per_point INT         NOT NULL DEFAULT 1,
+    mp_per_point INT         NOT NULL DEFAULT 1,
+    attack_per_point INT     NOT NULL DEFAULT 1,
+    defense_per_point INT    NOT NULL DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS skills (
