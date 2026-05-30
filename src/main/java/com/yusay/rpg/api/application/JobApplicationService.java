@@ -18,7 +18,7 @@ public class JobApplicationService {
         this.jobRepository = jobRepository;
     }
 
-    List<Job> list() {
+    public List<Job> list() {
         return jobRepository.findAll();
     }
 
