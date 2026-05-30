@@ -26,6 +26,7 @@ services:
       postgres -c 'max_connections=2000'
     volumes:
       - "./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql"
+      - "postgres-data:/var/lib/postgresql/data"
     healthcheck:
       test: pg_isready -h 127.0.0.1 -U postgres -d rpg
       interval: 5s
@@ -45,3 +46,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+volumes:
+  postgres-data:
