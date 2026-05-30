@@ -37,7 +37,7 @@ class JpaJobRepositoryTest {
             INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
             VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
     """)
-    void givenEvent_whenFindById_thenReturnJob (){
+    void givenJob_whenFindById_thenReturnJob (){
         // Given
 
         // When
