@@ -23,8 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JpaJobRepositoryTest {
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create");
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
         registry.add("spring.jpa.show-sql", () -> true);
+        registry.add("spring.sql.init.mode", () -> "always");
     }
 
     @Autowired
