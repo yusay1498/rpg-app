@@ -2,6 +2,7 @@ package com.yusay.rpg.api.presentation;
 
 import com.yusay.rpg.api.application.JobApplicationService;
 import com.yusay.rpg.api.domain.entity.Job;
+import com.yusay.rpg.api.domain.exception.JobNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -59,5 +60,23 @@ class JobRestControllerTest {
                 .hasStatusOk()
                 .bodyJson()
                 .isStrictlyEqualTo(correctResponse);
+    }
+
+    @Test
+    @DisplayName("存在しないIDの場合、404を返す")
+    void givenNonExistentId_whenGetById_thenReturnStatus404() {
+        // Given
+        String nonExistentId = "non-existent-id";
+        Mockito.when(jobApplicationService.lookup(nonExistentId))
+                .thenThrow(new JobNotFoundException(nonExistentId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .get()
+                .uri("/jobs/{id}", nonExistentId)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(404);
     }
 }

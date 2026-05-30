@@ -1,7 +1,6 @@
-package com.example.event.api.presentation;
+package com.yusay.rpg.api.presentation;
 
-import java.util.MissingResourceException;
-
+import com.yusay.rpg.api.domain.exception.MissingEntityException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +12,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MissingResourceException.class)
-    public ResponseEntity<ProblemDetail> handleMissingResourceException(MissingResourceException e) {
+    @ExceptionHandler(MissingEntityException.class)
+    public ResponseEntity<ProblemDetail> handleMissingEntity(MissingEntityException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.NOT_FOUND,
                 e.getMessage()
         );
-
         return ResponseEntity.of(problemDetail).build();
     }
 
@@ -56,7 +54,6 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 e.getMessage()
         );
-
         return ResponseEntity.of(problemDetail).build();
     }
 }
