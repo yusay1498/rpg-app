@@ -1,5 +1,5 @@
 services:
-  event-reservation:
+  rpg-api:
     build:
       context: .
       args:
