@@ -24,17 +24,7 @@ public class CharacterApplicationService {
     }
 
     public Character create(Character character) {
-        Character createdCharacter = new Character();
         character.setId(UUID.randomUUID().toString());
-        createdCharacter.setName(character.getName());
-        createdCharacter.setJob(character.getJob());
-        createdCharacter.setLevel(character.getLevel());
-        createdCharacter.setExp(character.getExp());
-        createdCharacter.setStatPoints(character.getStatPoints());
-        createdCharacter.setHp(character.getHp());
-        createdCharacter.setMaxHp(character.getMaxHp());
-        createdCharacter.setMp(character.getMp());
-        createdCharacter.setMaxMp(character.getMaxMp());
 
         return characterRepository.save(character);
     }
