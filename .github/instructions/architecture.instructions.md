@@ -21,7 +21,6 @@ Javaバックエンドコードは以下の4層構成を採用する：
 - `domain` は他のいかなる層にも依存してはならない（純粋なビジネスロジック）
 - 依存方向: `presentation → application → domain ← infrastructure`
 - Repository のインターフェースは `domain` に定義し、実装は `infrastructure` に置く（依存性逆転）
-- `presentation` が `domain` を直接参照してはならない（必ず `application` 経由）
 - 層を跨ぐ逆方向の依存は絶対に許容しない
 - 各層で必要な入出力型はその層内で定義する（層を跨ぐ共通DTOクラスは作らない）
 
