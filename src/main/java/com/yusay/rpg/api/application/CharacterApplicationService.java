@@ -6,6 +6,9 @@ import com.yusay.rpg.api.domain.repository.CharacterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+import java.util.UUID;
+
 @Service
 @Transactional
 public class CharacterApplicationService {
@@ -19,5 +22,15 @@ public class CharacterApplicationService {
     public Character lookup(String id) {
         return characterRepository.findById(id)
                 .orElseThrow(() -> new CharacterNotFoundException(id));
+    }
+
+    public Character create(Character character) {
+        Objects.requireNonNull(character, "character must not be null");
+        if (character.getId() != null && !character.getId().isBlank()) {
+            throw new IllegalArgumentException("id must be null or blank when creating a character");
+        }
+
+        character.setId(UUID.randomUUID().toString());
+        return characterRepository.save(character);
     }
 }
