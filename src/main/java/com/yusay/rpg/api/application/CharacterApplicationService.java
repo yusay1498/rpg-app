@@ -48,13 +48,12 @@ public class CharacterApplicationService {
         Character updatedCharacter = characterRepository.findById(character.getId())
                 .orElseThrow(() -> new CharacterNotFoundException(character.getId()));
 
-        updatedCharacter.setStatPoints(updatedCharacter.getStatPoints() + 1);
         updatedCharacter.setExp(updatedCharacter.getExp() + 10);
         updatedCharacter.setLevel(updatedCharacter.getLevel() + 1);
-        updatedCharacter.setHp((int) (updatedCharacter.getMaxHp() + 5 * character.getJob().getHpPerPoint() * randomMultiplier()));
-        updatedCharacter.setMp((int) (updatedCharacter.getMaxMp() + 3 * character.getJob().getMpPerPoint() * randomMultiplier()));
-        updatedCharacter.setAttack((int) (updatedCharacter.getAttack() + 3 * character.getJob().getAttackPerPoint() * randomMultiplier()));
-        updatedCharacter.setDefense((int) (updatedCharacter.getDefense() + 3 * character.getJob().getDefensePerPoint() * randomMultiplier()));
+        updatedCharacter.setHp((int) (updatedCharacter.getMaxHp() + 5 * character.getJob().getHpPerLevel() * randomMultiplier()));
+        updatedCharacter.setMp((int) (updatedCharacter.getMaxMp() + 3 * character.getJob().getMpPerLevel() * randomMultiplier()));
+        updatedCharacter.setAttack((int) (updatedCharacter.getAttack() + 3 * character.getJob().getAttackPerLevel() * randomMultiplier()));
+        updatedCharacter.setDefense((int) (updatedCharacter.getDefense() + 3 * character.getJob().getDefensePerLevel() * randomMultiplier()));
 
         return characterRepository.save(updatedCharacter);
     }

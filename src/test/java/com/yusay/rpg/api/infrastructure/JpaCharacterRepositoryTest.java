@@ -47,8 +47,8 @@ class JpaCharacterRepositoryTest {
     @Sql(statements = """
             INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
             VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
-            INSERT INTO characters (id, name, job_id, level, exp, stat_points, hp, max_hp, mp, max_mp, attack, defense, gold, status)
-            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE');
+            INSERT INTO characters (id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status)
+            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE');
     """)
     void givenCharacter_whenFindById_thenReturnCharacter() {
         // When
@@ -62,7 +62,6 @@ class JpaCharacterRepositoryTest {
             assertThat(character.getJob().getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
             assertThat(character.getLevel()).isEqualTo(1);
             assertThat(character.getExp()).isEqualTo(0);
-            assertThat(character.getStatPoints()).isEqualTo(0);
             assertThat(character.getHp()).isEqualTo(30);
             assertThat(character.getMaxHp()).isEqualTo(30);
             assertThat(character.getMp()).isEqualTo(5);
@@ -81,9 +80,9 @@ class JpaCharacterRepositoryTest {
     @Sql(statements = """
             INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
             VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
-            INSERT INTO characters (id, name, job_id, level, exp, stat_points, hp, max_hp, mp, max_mp, attack, defense, gold, status, created_at, updated_at)
+            INSERT INTO characters (id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status, created_at, updated_at)
             VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001',
-                    1, 0, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE',
+                    1, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE',
                     TIMESTAMP '2000-01-01 00:00:00', TIMESTAMP '2000-01-01 00:00:00');
     """)
     void givenExistingCharacter_whenUpdate_thenRefreshUpdatedAt() {
@@ -120,7 +119,6 @@ class JpaCharacterRepositoryTest {
         character.setJob(job);
         character.setLevel(1);
         character.setExp(0);
-        character.setStatPoints(0);
         character.setHp(25);
         character.setMaxHp(25);
         character.setMp(10);
@@ -140,7 +138,6 @@ class JpaCharacterRepositoryTest {
         assertThat(saved.getJob().getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
         assertThat(saved.getLevel()).isEqualTo(1);
         assertThat(saved.getExp()).isEqualTo(0);
-        assertThat(saved.getStatPoints()).isEqualTo(0);
         assertThat(saved.getHp()).isEqualTo(25);
         assertThat(saved.getMaxHp()).isEqualTo(25);
         assertThat(saved.getMp()).isEqualTo(10);
@@ -164,7 +161,6 @@ class JpaCharacterRepositoryTest {
         assertThat(row.get("job_id")).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
         assertThat(row.get("level")).isEqualTo(1);
         assertThat(row.get("exp")).isEqualTo(0);
-        assertThat(row.get("stat_points")).isEqualTo(0);
         assertThat(row.get("hp")).isEqualTo(25);
         assertThat(row.get("max_hp")).isEqualTo(25);
         assertThat(row.get("mp")).isEqualTo(10);
@@ -182,9 +178,9 @@ class JpaCharacterRepositoryTest {
     @Sql(statements = """
             INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
             VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
-            INSERT INTO characters (id, name, job_id, level, exp, stat_points, hp, max_hp, mp, max_mp, attack, defense, gold, status, created_at, updated_at)
+            INSERT INTO characters (id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status, created_at, updated_at)
             VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001',
-                    1, 0, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE',
+                    1, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE',
                     TIMESTAMP '2000-01-01 00:00:00', TIMESTAMP '2000-01-01 00:00:00');
     """)
     void givenExistingCharacter_whenSave_thenUpdateFieldsAndRefreshUpdatedAt() {
