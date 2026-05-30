@@ -15,10 +15,10 @@ public class Job {
     private int baseMp;
     private int baseAttack;
     private int baseDefense;
-    private int hpPerPoint;
-    private int mpPerPoint;
-    private int attackPerPoint;
-    private int defensePerPoint;
+    private int hpPerLevel;
+    private int mpPerLevel;
+    private int attackPerLevel;
+    private int defensePerLevel;
 
     public String getId() {
         return id;
@@ -76,35 +76,35 @@ public class Job {
         this.baseDefense = baseDefense;
     }
 
-    public int getHpPerPoint() {
-        return hpPerPoint;
+    public int getHpPerLevel() {
+        return hpPerLevel;
     }
 
-    public void setHpPerPoint(int hpPerPoint) {
-        this.hpPerPoint = hpPerPoint;
+    public void setHpPerLevel(int hpPerLevel) {
+        this.hpPerLevel = hpPerLevel;
     }
 
-    public int getMpPerPoint() {
-        return mpPerPoint;
+    public int getMpPerLevel() {
+        return mpPerLevel;
     }
 
-    public void setMpPerPoint(int mpPerPoint) {
-        this.mpPerPoint = mpPerPoint;
+    public void setMpPerLevel(int mpPerLevel) {
+        this.mpPerLevel = mpPerLevel;
     }
 
-    public int getAttackPerPoint() {
-        return attackPerPoint;
+    public int getAttackPerLevel() {
+        return attackPerLevel;
     }
 
-    public void setAttackPerPoint(int attackPerPoint) {
-        this.attackPerPoint = attackPerPoint;
+    public void setAttackPerLevel(int attackPerLevel) {
+        this.attackPerLevel = attackPerLevel;
     }
 
-    public int getDefensePerPoint() {
-        return defensePerPoint;
+    public int getDefensePerLevel() {
+        return defensePerLevel;
     }
 
-    public void setDefensePerPoint(int defensePerPoint) {
-        this.defensePerPoint = defensePerPoint;
+    public void setDefensePerLevel(int defensePerLevel) {
+        this.defensePerLevel = defensePerLevel;
     }
 }

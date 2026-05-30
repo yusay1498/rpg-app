@@ -6,7 +6,6 @@ import com.yusay.rpg.api.domain.repository.CharacterRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -25,12 +24,34 @@ public class CharacterApplicationService {
     }
 
     public Character create(Character character) {
-        Objects.requireNonNull(character, "character must not be null");
+        if (character == null) {
+            throw new IllegalArgumentException("character must not be null");
+        }
+
         if (character.getId() != null && !character.getId().isBlank()) {
             throw new IllegalArgumentException("id must be null or blank when creating a character");
         }
 
         character.setId(UUID.randomUUID().toString());
         return characterRepository.save(character);
+    }
+
+    public Character rename(Character character) {
+        if (character == null) {
+            throw new IllegalArgumentException("character must not be null");
+        }
+        if (character.getId() == null || character.getId().isBlank()) {
+            throw new IllegalArgumentException("id must not be null or blank when renaming a character");
+        }
+        if (character.getName() == null || character.getName().isBlank()) {
+            throw new IllegalArgumentException("name must not be null or blank when renaming a character");
+        }
+
+        Character updatedCharacter = characterRepository.findById(character.getId())
+                .orElseThrow(() -> new CharacterNotFoundException(character.getId()));
+
+        updatedCharacter.setName(character.getName());
+
+        return characterRepository.save(updatedCharacter);
     }
 }
