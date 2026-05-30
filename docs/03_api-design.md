@@ -8,7 +8,7 @@
 | `GET` | `/api/characters/{id}` | キャラ情報取得 |
 | `GET` | `/api/characters/{id}/status` | ステータス詳細 |
 | `PATCH` | `/api/characters/{id}` | キャラ名変更（部分更新） |
-| `PUT` | `/api/characters/{id}/stats` | ステータスポイント配分（全体更新） |
+| `PUT` | `/api/characters/{id}/level-up` | レベルアップ反映（全体更新） |
 | `DELETE` | `/api/characters/{id}` | キャラクター削除 |
 
 ## ダンジョン探索
@@ -97,7 +97,7 @@
 |---------|------|
 | `GET` | リソース取得（副作用なし） |
 | `POST` | リソース作成・アクション実行 |
-| `PUT` | リソース全体の置き換え（ステータス配分・装備一括） |
+| `PUT` | リソース全体の置き換え（レベルアップ反映・装備一括） |
 | `PATCH` | リソースの部分更新（キャラ名変更） |
 | `DELETE` | リソース削除 |
 
