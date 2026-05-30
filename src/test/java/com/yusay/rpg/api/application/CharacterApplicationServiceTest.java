@@ -132,4 +132,71 @@ class CharacterApplicationServiceTest {
         assertThat(result.getGold()).isEqualTo(0);
         assertThat(result.getStatus()).isEqualTo(CharacterStatus.ALIVE);
     }
+
+    @Test
+    @DisplayName("ステータスポイントを割り振ると、レベル・経験値・各ステータスが更新されて保存されたキャラクターを返す")
+    void givenCharacter_whenAllocateStatPoints_thenReturnUpdatedCharacter() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(characterRepository);
+        Job warrior = new Job();
+        warrior.setId("550e8400-e29b-41d4-a716-446655440001");
+        warrior.setHpPerPoint(3);
+        warrior.setMpPerPoint(2);
+        warrior.setAttackPerPoint(3);
+        warrior.setDefensePerPoint(3);
+        Character character = new Character();
+        character.setId("660e8400-e29b-41d4-a716-446655440001");
+        character.setName("Taro");
+        character.setJob(warrior);
+        character.setLevel(1);
+        character.setExp(0);
+        character.setStatPoints(0);
+        character.setHp(30);
+        character.setMaxHp(30);
+        character.setMp(5);
+        character.setMaxMp(5);
+        character.setAttack(20);
+        character.setDefense(20);
+        character.setGold(0);
+        character.setStatus(CharacterStatus.ALIVE);
+        when(characterRepository.findById("660e8400-e29b-41d4-a716-446655440001"))
+                .thenReturn(Optional.of(character));
+        when(characterRepository.save(any(Character.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        Character result = characterApplicationService.allocateStatPoints(character);
+
+        // Then
+        verify(characterRepository).save(any(Character.class));
+        assertThat(result.getStatPoints()).isEqualTo(1);
+        assertThat(result.getExp()).isEqualTo(10);
+        assertThat(result.getLevel()).isEqualTo(2);
+        // hp: (int)(maxHp + 5 * hpPerPoint * [0.1-1.0]) = (int)(30 + 5*3*[0.1-1.0]) → [31, 45]
+        assertThat(result.getHp()).isBetween(31, 45);
+        // mp: (int)(maxMp + 3 * mpPerPoint * [0.1-1.0]) = (int)(5 + 3*2*[0.1-1.0]) → [5, 11]
+        assertThat(result.getMp()).isBetween(5, 11);
+        // attack: (int)(attack + 3 * attackPerPoint * [0.1-1.0]) = (int)(20 + 3*3*[0.1-1.0]) → [20, 29]
+        assertThat(result.getAttack()).isBetween(20, 29);
+        // defense: (int)(defense + 3 * defensePerPoint * [0.1-1.0]) = (int)(20 + 3*3*[0.1-1.0]) → [20, 29]
+        assertThat(result.getDefense()).isBetween(20, 29);
+    }
+
+    @Test
+    @DisplayName("存在しないIDの場合、CharacterNotFoundExceptionをスローする")
+    void givenNonExistentId_whenAllocateStatPoints_thenThrowCharacterNotFoundException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(characterRepository);
+        Job warrior = new Job();
+        warrior.setId("550e8400-e29b-41d4-a716-446655440001");
+        Character character = new Character();
+        character.setId("non-existent-id");
+        character.setJob(warrior);
+        when(characterRepository.findById("non-existent-id")).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> characterApplicationService.allocateStatPoints(character))
+                .isInstanceOf(CharacterNotFoundException.class);
+    }
 }
