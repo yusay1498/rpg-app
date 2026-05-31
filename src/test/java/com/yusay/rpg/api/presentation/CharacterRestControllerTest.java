@@ -339,4 +339,26 @@ class CharacterRestControllerTest {
         // Then
         assertThat(actual).hasStatus(404);
     }
+
+    @Test
+    @DisplayName("空白の名前を指定した場合、400を返す")
+    void givenBlankName_whenPatchName_thenReturnStatus400() {
+        // Given
+        String id = "660e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.rename(Mockito.eq(id), Mockito.eq("")))
+                .thenThrow(new IllegalArgumentException("name must not be blank"));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .patch()
+                .uri("/characters/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "name": "" }
+                        """)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
+    }
 }
