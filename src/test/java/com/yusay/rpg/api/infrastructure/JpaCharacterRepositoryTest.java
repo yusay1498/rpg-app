@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -41,7 +42,7 @@ class JpaCharacterRepositoryTest {
     CharacterRepository characterRepository;
 
     @Autowired
-    org.springframework.jdbc.core.simple.JdbcClient jdbcClient;
+    JdbcClient jdbcClient;
 
     @Test
     @DisplayName("指定のIDで対象のキャラクターを取得する")
@@ -153,7 +154,7 @@ class JpaCharacterRepositoryTest {
         // Then: DB永続化の検証
         testEntityManager.clear();
         Map<String, Object> row = jdbcClient
-                .sql("SELECT * FROM characters WHERE id = :id")
+                .sql("SELECT id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status, created_at, updated_at FROM characters WHERE id = :id")
                 .param("id", "660e8400-e29b-41d4-a716-446655440002")
                 .query()
                 .singleRow();
@@ -211,7 +212,7 @@ class JpaCharacterRepositoryTest {
         // Then: DB永続化の検証
         testEntityManager.clear();
         Map<String, Object> row = jdbcClient
-                .sql("SELECT * FROM characters WHERE id = :id")
+                .sql("SELECT level, exp, hp, max_hp, created_at, updated_at FROM characters WHERE id = :id")
                 .param("id", "660e8400-e29b-41d4-a716-446655440001")
                 .query()
                 .singleRow();
