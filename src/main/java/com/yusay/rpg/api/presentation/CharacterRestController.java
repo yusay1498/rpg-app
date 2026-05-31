@@ -3,7 +3,6 @@ package com.yusay.rpg.api.presentation;
 import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.application.CharacterApplicationService;
 import com.yusay.rpg.api.domain.entity.CharacterJob;
-import com.yusay.rpg.api.domain.entity.Job;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
