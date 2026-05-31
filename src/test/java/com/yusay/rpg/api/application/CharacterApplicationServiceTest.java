@@ -422,4 +422,32 @@ class CharacterApplicationServiceTest {
                 .isInstanceOf(IllegalStateException.class);
         verify(characterJobRepository, never()).save(any());
     }
+
+    @Test
+    @DisplayName("既に保有しているジョブへの転職はIllegalStateExceptionをスローしsaveを呼び出さない")
+    void givenCharacterAlreadyHasJob_whenChangeJob_thenThrowIllegalStateException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        JobRepository jobRepository = mock(JobRepository.class);
+        CharacterJobRepository characterJobRepository = mock(CharacterJobRepository.class);
+        JobRequirementRepository jobRequirementRepository = mock(JobRequirementRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, jobRepository, characterJobRepository, jobRequirementRepository
+        );
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String jobId       = "550e8400-e29b-41d4-a716-446655440001";
+
+        CharacterJob existingJob = new CharacterJob();
+        existingJob.setId(new CharacterJobId(characterId, jobId));
+
+        when(characterRepository.findById(characterId)).thenReturn(Optional.of(new Character()));
+        when(jobRepository.findById(jobId)).thenReturn(Optional.of(new Job()));
+        when(characterJobRepository.findById(new CharacterJobId(characterId, jobId)))
+                .thenReturn(Optional.of(existingJob));
+
+        // When / Then
+        assertThatThrownBy(() -> service.changeJob(characterId, jobId))
+                .isInstanceOf(IllegalStateException.class);
+        verify(characterJobRepository, never()).save(any());
+    }
 }

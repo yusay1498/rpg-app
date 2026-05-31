@@ -84,10 +84,23 @@ public class CharacterApplicationService {
     }
 
     public CharacterJob changeJob(String characterId, String jobId) {
+        if (characterId == null || characterId.isBlank()) {
+            throw new IllegalArgumentException("characterId must not be null or blank when changing job");
+        }
+        if (jobId == null || jobId.isBlank()) {
+            throw new IllegalArgumentException("jobId must not be null or blank when changing job");
+        }
+
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new CharacterNotFoundException(characterId));
         Job newJob = jobRepository.findById(jobId)
                 .orElseThrow(() -> new JobNotFoundException(jobId));
+
+        if (characterJobRepository.findById(new CharacterJobId(characterId, jobId)).isPresent()) {
+            throw new IllegalStateException(
+                    "Character %s already has job %s".formatted(characterId, jobId)
+            );
+        }
 
         List<Job> requiredJobs = jobRequirementRepository.findRequiredJobs(jobId);
 
