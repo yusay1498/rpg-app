@@ -1,5 +1,6 @@
 package com.yusay.rpg.api.domain.entity;
 
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -19,8 +20,9 @@ public class Job {
     private int mpPerLevel;
     private int attackPerLevel;
     private int defensePerLevel;
-    private String rank;
-    private int masterLevel;
+    @Convert(converter = JobRankConverter.class)
+    private JobRank rank = JobRank.BEGINNER;
+    private int masterLevel = 10;
 
     public String getId() {
         return id;
@@ -110,11 +112,11 @@ public class Job {
         this.defensePerLevel = defensePerLevel;
     }
 
-    public String getRank() {
+    public JobRank getRank() {
         return rank;
     }
 
-    public void setRank(String rank) {
+    public void setRank(JobRank rank) {
         this.rank = rank;
     }
 

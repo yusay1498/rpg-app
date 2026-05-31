@@ -2,6 +2,7 @@ package com.yusay.rpg.api.infrastructure;
 
 import com.yusay.rpg.api.config.TestcontainersConfiguration;
 import com.yusay.rpg.api.domain.entity.Job;
+import com.yusay.rpg.api.domain.entity.JobRank;
 import com.yusay.rpg.api.domain.repository.JobRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,7 +61,7 @@ class JpaJobRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
-            assertThat(job.getRank()).isEqualTo("beginner");
+            assertThat(job.getRank()).isEqualTo(JobRank.BEGINNER);
             assertThat(job.getMasterLevel()).isEqualTo(10);
         });
         assertThat(result).anySatisfy(job -> {
@@ -75,7 +76,7 @@ class JpaJobRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
-            assertThat(job.getRank()).isEqualTo("beginner");
+            assertThat(job.getRank()).isEqualTo(JobRank.BEGINNER);
             assertThat(job.getMasterLevel()).isEqualTo(10);
         });
         assertThat(result).anySatisfy(job -> {
@@ -90,7 +91,7 @@ class JpaJobRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
-            assertThat(job.getRank()).isEqualTo("beginner");
+            assertThat(job.getRank()).isEqualTo(JobRank.BEGINNER);
             assertThat(job.getMasterLevel()).isEqualTo(10);
         });
     }
@@ -120,7 +121,7 @@ class JpaJobRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
-            assertThat(job.getRank()).isEqualTo("beginner");
+            assertThat(job.getRank()).isEqualTo(JobRank.BEGINNER);
             assertThat(job.getMasterLevel()).isEqualTo(10);
         });
     }

@@ -54,6 +54,7 @@
 | required_job_id | VARCHAR(36) FK | jobs.id（ON DELETE RESTRICT）前提職業 |
 
 ※ `(job_id, required_job_id)` が PRIMARY KEY
+※ `CHECK (job_id <> required_job_id)` — 自己参照（自分自身を前提職業に設定）を禁止する制約
 
 ### skills（スキル・魔法）
 
