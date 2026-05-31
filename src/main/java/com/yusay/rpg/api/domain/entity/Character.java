@@ -30,7 +30,7 @@ public class Character {
     private int attack;
     private int defense;
     private int gold;
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = CharacterStatusConverter.class)
     @Column(nullable = false, length = 10)
     @NotNull
     private CharacterStatus status = CharacterStatus.ALIVE;
