@@ -56,8 +56,12 @@ public class CharacterRestController {
     }
 
     @GetMapping("/{id}/jobs")
-    public ResponseEntity<List<CharacterJob>> getJobs(@PathVariable String id) {
-        return ResponseEntity.ok(characterApplicationService.listJobs(id));
+    public ResponseEntity<List<CharacterJobResponse>> getJobs(@PathVariable String id) {
+        return ResponseEntity.ok(
+                characterApplicationService.listJobs(id).stream()
+                        .map(CharacterJobResponse::from)
+                        .toList()
+        );
     }
 
     @PostMapping("/{id}/job/change")
