@@ -43,6 +43,17 @@
 | mp_per_level | INT | レベルアップ1回あたりのMP増加量 |
 | attack_per_level | INT | レベルアップ1回あたりの攻撃力増加量 |
 | defense_per_level | INT | レベルアップ1回あたりの防御力増加量 |
+| rank | VARCHAR(20) | 職業ランク（beginner / intermediate / advanced / master） |
+| master_level | INT | この職業をマスターするのに必要なレベル |
+
+### job_requirements（転職条件）
+
+| カラム | 型 | 説明 |
+|--------|-----|------|
+| job_id | VARCHAR(36) FK | jobs.id（ON DELETE CASCADE） |
+| required_job_id | VARCHAR(36) FK | jobs.id（ON DELETE RESTRICT）前提職業 |
+
+※ `(job_id, required_job_id)` が PRIMARY KEY
 
 ### skills（スキル・魔法）
 
@@ -152,6 +163,17 @@
 | created_at | TIMESTAMP | 作成日時 |
 | updated_at | TIMESTAMP | 更新日時 |
 
+### character_jobs（転職履歴）
+
+| カラム | 型 | 説明 |
+|--------|-----|------|
+| character_id | VARCHAR(36) FK | characters.id（ON DELETE CASCADE） |
+| job_id | VARCHAR(36) FK | jobs.id（ON DELETE RESTRICT） |
+| mastered | BOOLEAN | マスター済みフラグ（デフォルト false） |
+| max_level | INT | その職業で到達した最大レベル（デフォルト 1） |
+
+※ `(character_id, job_id)` が PRIMARY KEY
+
 ### character_skills（習得済みスキル）
 
 | カラム | 型 | 説明 |
@@ -220,10 +242,13 @@
 skill_types, item_types, effect_types, slot_types, room_types
 
 [業務テーブル]
-jobs ──< job_skills >── skills
+jobs ──< job_requirements >── jobs（自己参照）
+ │
+ ├──< job_skills >── skills
  │
  └──< characters
           │
+          ├──< character_jobs >── jobs  ※(character_id, job_id) PRIMARY KEY
           ├──< character_skills >── skills  ※(character_id, skill_id) ユニーク
           ├──< inventories >── items  ※(character_id, item_id) ユニーク
           ├──< equipments >── items   ※(character_id, slot) ユニーク
