@@ -139,7 +139,7 @@ CREATE TABLE IF NOT EXISTS characters (
     attack      INT          NOT NULL,
     defense     INT          NOT NULL,
     gold        INT          NOT NULL DEFAULT 0,
-    status      VARCHAR(10)  NOT NULL DEFAULT 'ALIVE' CHECK (status IN ('ALIVE', 'DEAD')),
+    status      VARCHAR(10)  NOT NULL DEFAULT 'alive' CHECK (status IN ('alive', 'dead')),
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

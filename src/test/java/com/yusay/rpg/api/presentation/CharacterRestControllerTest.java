@@ -104,7 +104,7 @@ class CharacterRestControllerTest {
                     "attack": 20,
                     "defense": 20,
                     "gold": 0,
-                    "status": "ALIVE"
+                    "status": "alive"
                 }
                 """;
         assertThat(actual)
@@ -172,7 +172,7 @@ class CharacterRestControllerTest {
                             "attack": 15,
                             "defense": 15,
                             "gold": 0,
-                            "status": "ALIVE"
+                            "status": "alive"
                         }
                         """)
                 .exchange();
@@ -210,7 +210,7 @@ class CharacterRestControllerTest {
                             "attack": 15,
                             "defense": 15,
                             "gold": 0,
-                            "status": "ALIVE"
+                            "status": "alive"
                         }
                         """)
                 .exchange();
@@ -270,7 +270,7 @@ class CharacterRestControllerTest {
                             "attack": 15,
                             "defense": 15,
                             "gold": 0,
-                            "status": "ALIVE"
+                            "status": "alive"
                         }
                         """)
                 .exchange();
@@ -299,7 +299,7 @@ class CharacterRestControllerTest {
                             "attack": 15,
                             "defense": 15,
                             "gold": 0,
-                            "status": "ALIVE"
+                            "status": "alive"
                         }
                         """)
                 .exchange();
