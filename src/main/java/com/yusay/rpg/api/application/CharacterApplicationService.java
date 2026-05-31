@@ -57,10 +57,8 @@ public class CharacterApplicationService {
             throw new IllegalArgumentException("id must not be null or blank when deleting a character");
         }
 
-        if (characterRepository.findById(id).isPresent()) {
-            characterRepository.deleteById(id);
-        } else {
-            throw new CharacterNotFoundException(id);
-        }
+        characterRepository.findById(id)
+                .orElseThrow(() -> new CharacterNotFoundException(id));
+        characterRepository.deleteById(id);
     }
 }
