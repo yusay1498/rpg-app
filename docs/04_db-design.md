@@ -96,6 +96,7 @@
 | slot | VARCHAR FK NULL | slot_types.code（装備品のみ） |
 
 ※ `effect_type` と `effect_value` は両方NULLまたは両方NOT NULLとするCHECK制約あり
+※ `is_sellable` と `sell_price` の整合性: `CHECK (is_sellable = FALSE OR sell_price IS NOT NULL)` — 売却可能なアイテムは必ず `sell_price` を設定する
 ※ 売却専用アイテムは `price = 0`、`sell_price` に売却価格を設定する
 
 ### dungeons（ダンジョン）
@@ -263,6 +264,8 @@
 | position | INT | 表示順・targetIndex |
 | is_defeated | BOOLEAN | 撃破済みフラグ（デフォルト false） |
 
+※ `(battle_session_id, position)` にユニーク制約
+
 ### room_treasures（宝箱報酬）
 
 | カラム | 型 | 説明 |
@@ -279,7 +282,8 @@
 |-------|----|------|
 | id | VARCHAR(36) PK | UUID |
 | battle_session_id | VARCHAR(36) FK | battle_sessions.id（ON DELETE CASCADE） |
-| character_or_enemy | VARCHAR(20) | 効果対象（character / enemy） |
+| target_type | VARCHAR(20) | 効果対象種別（character / battle_enemy） |
+| target_id | VARCHAR(36) | 対象のID（character.id または battle_enemies.id） |
 | effect_type | VARCHAR(20) FK | effect_types.code |
 | value | INT | 効果量 |
 | remaining_turns | INT | 残りターン数 |
