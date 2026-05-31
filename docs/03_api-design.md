@@ -20,6 +20,11 @@
 | `POST` | `/api/characters/{id}/explore/move` | 次の部屋へ移動（戦闘自動開始） |
 | `POST` | `/api/characters/{id}/explore/escape` | ダンジョン脱出 |
 
+### 探索移動レスポンス追加項目
+
+- rest部屋到達時は `event: "rest"` と回復量を返す
+- treasure部屋到達時は `event: "treasure"` と獲得報酬を返す
+
 ## 戦闘
 
 | メソッド | エンドポイント | 説明 |
@@ -27,21 +32,49 @@
 | `GET` | `/api/characters/{id}/battle/current` | 戦闘状況取得 |
 | `POST` | `/api/characters/{id}/battle/action` | アクション実行（attack / skill / item / run） |
 
+### 戦闘アクションリクエスト例
+
+```json
+{
+  "action": "skill",
+  "skillId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "targetIndex": 0
+}
+```
+
+> `targetIndex` は複数敵戦闘で対象を指定するための項目。`attack` / `skill` / `item` で使用する。
+
 ### 戦闘アクションレスポンス例（勝利）
 
 ```json
 {
   "battleResult": "win",
+  "turn": 3,
+  "battleLog": [
+    {
+      "turn": 1,
+      "actor": "character",
+      "action": "skill",
+      "targetIndex": 0,
+      "result": "52 damage"
+    }
+  ],
+  "enemies": [
+    { "index": 0, "name": "スライム", "currentHp": 0, "maxHp": 20, "isDefeated": true },
+    { "index": 1, "name": "コウモリ", "currentHp": 0, "maxHp": 15, "isDefeated": true }
+  ],
   "expGained": 120,
   "levelUp": {
     "occurred": true,
     "newLevel": 5,
     "statsGained": {
       "hp": 10,
+      "mp": 4,
       "attack": 3,
-      "defense": 2
+      "defense": 2,
+      "speed": 1
     },
-    "skillsLearned": ["ファイアボール"]
+    "skillPointsGained": 1
   }
 }
 ```
@@ -74,6 +107,12 @@
 | メソッド | エンドポイント | 説明 |
 |---------|--------------|------|
 | `GET` | `/api/characters/{id}/skills` | 習得済みスキル一覧 |
+| `POST` | `/api/characters/{id}/skills/{skillId}` | スキルポイントを消費してスキル習得 |
+
+### スキル習得レスポンス仕様
+
+- レベル条件未達、スキルポイント不足、習得済みの場合は 400 系エラーを返す
+- 成功時は `201 Created` を返し、`/api/characters/{id}/skills` を `Location` ヘッダに設定する
 
 ## ショップ
 
@@ -81,6 +120,16 @@
 |---------|--------------|------|
 | `GET` | `/api/shop` | 商品一覧 |
 | `POST` | `/api/characters/{id}/shop/buy` | 購入（キャラクターの所持金・インベントリを更新） |
+| `POST` | `/api/characters/{id}/shop/sell` | 売却（売却価格に応じて所持金・インベントリを更新） |
+
+### 売却リクエスト例
+
+```json
+{
+  "itemId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "quantity": 1
+}
+```
 
 ## マスタ系
 
@@ -88,6 +137,7 @@
 |---------|--------------|------|
 | `GET` | `/api/items` | アイテムマスタ一覧 |
 | `GET` | `/api/enemies` | 敵マスタ一覧 |
+| `GET` | `/api/jobs/{id}` | 職業個別取得 |
 
 ## 転職
 
