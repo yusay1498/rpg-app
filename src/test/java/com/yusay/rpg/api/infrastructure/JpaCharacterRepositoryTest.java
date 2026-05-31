@@ -221,4 +221,26 @@ class JpaCharacterRepositoryTest {
         assertThat(((Timestamp) row.get("created_at")).toLocalDateTime()).isEqualTo(originalCreatedAt);
         assertThat(((Timestamp) row.get("updated_at")).toLocalDateTime()).isAfter(LocalDateTime.of(2000, 1, 1, 0, 0));
     }
+
+    @Test
+    @DisplayName("指定のIDのキャラクターを削除するとDBから消える")
+    @Sql(statements = """
+            INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
+            VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
+            INSERT INTO characters (id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status)
+            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE');
+    """)
+    void givenExistingCharacter_whenDeleteById_thenRemovedFromDb() {
+        // When
+        characterRepository.deleteById("660e8400-e29b-41d4-a716-446655440001");
+        testEntityManager.flush();
+
+        // Then
+        int count = jdbcClient
+                .sql("SELECT COUNT(*) FROM characters WHERE id = :id")
+                .param("id", "660e8400-e29b-41d4-a716-446655440001")
+                .query(Integer.class)
+                .single();
+        assertThat(count).isZero();
+    }
 }

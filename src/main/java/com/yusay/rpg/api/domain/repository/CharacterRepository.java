@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface CharacterRepository {
     Optional<Character> findById(String id);
     Character save(Character character);
+    void deleteById(String id);
 }
