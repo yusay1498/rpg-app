@@ -86,9 +86,55 @@
 
 | メソッド | エンドポイント | 説明 |
 |---------|--------------|------|
-| `GET` | `/api/jobs` | 職業一覧 |
 | `GET` | `/api/items` | アイテムマスタ一覧 |
 | `GET` | `/api/enemies` | 敵マスタ一覧 |
+
+## 転職
+
+| メソッド | エンドポイント | 説明 |
+|---------|--------------|------|
+| `GET` | `/api/jobs` | 職業一覧（ランク・転職条件含む） |
+| `GET` | `/api/characters/{id}/jobs` | キャラクターの転職・習熟状況一覧 |
+| `POST` | `/api/characters/{id}/job/change` | 転職（前提条件チェック・レベルリセット） |
+
+### 転職リクエスト例
+
+POST /api/characters/{id}/job/change
+
+```json
+{
+  "jobId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+}
+```
+
+### 転職レスポンス例（成功）
+
+```json
+{
+  "characterId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "newJob": {
+    "id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "name": "魔剣士",
+    "rank": "intermediate"
+  },
+  "level": 1
+}
+```
+
+### 転職レスポンス例（失敗：前提条件未達）
+
+```json
+{
+  "error": "JOB_REQUIREMENT_NOT_MET",
+  "message": "転職条件を満たしていません",
+  "requiredJobs": [
+    { "id": "...", "name": "戦士", "mastered": true },
+    { "id": "...", "name": "魔法使い", "mastered": false }
+  ]
+}
+```
+
+> 転職時は `characters.level` を 1 にリセットし、`character_jobs` に転職履歴を記録する。前提職業がすべて `mastered = true` でない場合は 400 エラーを返す。
 
 ## HTTPメソッドの使い分け
 
