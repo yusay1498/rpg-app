@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/characters")
@@ -54,6 +55,11 @@ public class CharacterRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}/jobs")
+    public ResponseEntity<List<CharacterJob>> getJobs(@PathVariable String id) {
+        return ResponseEntity.ok(characterApplicationService.listJobs(id));
+    }
+
     @PostMapping("/{id}/job/change")
     public ResponseEntity<Void> postChangeJob(
             @PathVariable String id,
@@ -63,13 +69,10 @@ public class CharacterRestController {
                 .changeJob(id, request.getJob() != null ? request.getJob().getId() : null);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path("/characters/{characterId}/jobs/{jobId}")
-                .buildAndExpand(
-                        newCharacterJob.getId().getCharacterId(),
-                        newCharacterJob.getId().getJobId()
-                )
-                .toUri();
+                .fromCurrentRequestUri()
+                .build()
+                .toUri()
+                .resolve("../jobs");
 
         return ResponseEntity.created(location).build();
     }

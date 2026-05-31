@@ -434,7 +434,7 @@ class CharacterRestControllerTest {
         assertThat(actual)
                 .hasStatus(201)
                 .headers()
-                .hasValue("Location", "http://localhost/characters/660e8400-e29b-41d4-a716-446655440001/jobs/550e8400-e29b-41d4-a716-446655440002");
+                .hasValue("Location", "http://localhost/characters/660e8400-e29b-41d4-a716-446655440001/jobs");
     }
 
     @Test

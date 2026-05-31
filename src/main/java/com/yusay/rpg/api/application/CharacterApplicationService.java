@@ -85,6 +85,16 @@ public class CharacterApplicationService {
         characterRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
+    public List<CharacterJob> listJobs(String characterId) {
+        if (characterId == null || characterId.isBlank()) {
+            throw new IllegalArgumentException("characterId must not be null or blank when listing jobs");
+        }
+        characterRepository.findById(characterId)
+                .orElseThrow(() -> new CharacterNotFoundException(characterId));
+        return characterJobRepository.findByIdCharacterId(characterId);
+    }
+
     public CharacterJob changeJob(String characterId, String jobId) {
         if (characterId == null || characterId.isBlank()) {
             throw new IllegalArgumentException("characterId must not be null or blank when changing job");
@@ -116,6 +126,10 @@ public class CharacterApplicationService {
         if (!meetsRequirements) {
             throw new JobChangeRequirementNotMetException(characterId, jobId);
         }
+
+        character.setJob(newJob);
+        character.setLevel(1);
+        characterRepository.save(character);
 
         CharacterJob characterJob = new CharacterJob();
         characterJob.setId(new CharacterJobId(characterId, jobId));

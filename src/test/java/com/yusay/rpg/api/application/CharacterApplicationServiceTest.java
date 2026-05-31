@@ -312,12 +312,16 @@ class CharacterApplicationServiceTest {
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(newJob));
         when(jobRequirementRepository.findRequiredJobs(jobId)).thenReturn(List.of(warrior));
         when(characterJobRepository.findByIdCharacterId(characterId)).thenReturn(List.of(masteredJob));
+        when(characterJobRepository.findById(new CharacterJobId(characterId, jobId))).thenReturn(Optional.empty());
         when(characterJobRepository.save(any(CharacterJob.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
         CharacterJob result = service.changeJob(characterId, jobId);
 
         // Then
+        verify(characterRepository).save(character);
+        assertThat(character.getJob()).isEqualTo(newJob);
+        assertThat(character.getLevel()).isEqualTo(1);
         verify(characterJobRepository).save(any(CharacterJob.class));
         assertThat(result.getId().getCharacterId()).isEqualTo(characterId);
         assertThat(result.getId().getJobId()).isEqualTo(jobId);
@@ -348,12 +352,16 @@ class CharacterApplicationServiceTest {
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(newJob));
         when(jobRequirementRepository.findRequiredJobs(jobId)).thenReturn(List.of());
         when(characterJobRepository.findByIdCharacterId(characterId)).thenReturn(List.of());
+        when(characterJobRepository.findById(new CharacterJobId(characterId, jobId))).thenReturn(Optional.empty());
         when(characterJobRepository.save(any(CharacterJob.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
         CharacterJob result = service.changeJob(characterId, jobId);
 
         // Then
+        verify(characterRepository).save(character);
+        assertThat(character.getJob()).isEqualTo(newJob);
+        assertThat(character.getLevel()).isEqualTo(1);
         verify(characterJobRepository).save(any(CharacterJob.class));
         assertThat(result.getId().getCharacterId()).isEqualTo(characterId);
         assertThat(result.getId().getJobId()).isEqualTo(jobId);
@@ -423,6 +431,7 @@ class CharacterApplicationServiceTest {
         assertThatThrownBy(() -> service.changeJob(characterId, jobId))
                 .isInstanceOf(JobChangeRequirementNotMetException.class);
         verify(characterJobRepository, never()).save(any());
+        verify(characterRepository, never()).save(any());
     }
 
     @Test
@@ -451,5 +460,6 @@ class CharacterApplicationServiceTest {
         assertThatThrownBy(() -> service.changeJob(characterId, jobId))
                 .isInstanceOf(JobAlreadyOwnedException.class);
         verify(characterJobRepository, never()).save(any());
+        verify(characterRepository, never()).save(any());
     }
 }
