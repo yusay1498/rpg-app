@@ -308,8 +308,10 @@ class CharacterRestControllerTest {
         MvcTestResult actual = mockMvcTester
                 .patch()
                 .uri("/characters/{id}", id)
-                .contentType(MediaType.TEXT_PLAIN)
-                .content("Jiro")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "name": "Jiro" }
+                        """)
                 .exchange();
 
         // Then
@@ -328,8 +330,10 @@ class CharacterRestControllerTest {
         MvcTestResult actual = mockMvcTester
                 .patch()
                 .uri("/characters/{id}", nonExistentId)
-                .contentType(MediaType.TEXT_PLAIN)
-                .content("Jiro")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "name": "Jiro" }
+                        """)
                 .exchange();
 
         // Then
