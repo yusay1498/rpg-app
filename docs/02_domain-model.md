@@ -7,6 +7,7 @@
 | エンティティ | 説明 |
 |------------|------|
 | `Job` | 職業（戦士・魔法使い・僧侶・盗賊） |
+| `JobRequirement` | 転職条件（職業に就くための前提職業） |
 | `Skill` | スキル・魔法マスタ |
 | `JobSkill` | 職業ごとの習得スキル（レベル条件付き） |
 | `Item` | アイテムマスタ（武器・防具・消耗品） |
@@ -20,6 +21,7 @@
 | エンティティ | 説明 |
 |------------|------|
 | `Character` | キャラクター本体 |
+| `CharacterJob` | 転職・習熟状況（経験した職業とマスター状況） |
 | `CharacterSkill` | 習得済みスキル |
 | `Inventory` | 所持アイテム（Character × Item） |
 | `Equipment` | 装備中アイテム（部位ごと） |
@@ -29,10 +31,13 @@
 ## エンティティ関係図
 
 ```
-Job ──< JobSkill >── Skill
+Job ──< JobRequirement >── Job（自己参照）
  │
- └──< Character ──< CharacterSkill
+ ├──< JobSkill >── Skill
+ │
+ └──< Character ──< CharacterJob >── Job  ※(character_id, job_id) PRIMARY KEY
           │
+          ├──< CharacterSkill >── Skill
           ├──< Inventory >── Item
           ├──< Equipment >── Item
           ├── ExploreSession ── Room ──< Dungeon
