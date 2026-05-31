@@ -64,11 +64,10 @@ CREATE TABLE IF NOT EXISTS skills (
 );
 
 CREATE TABLE IF NOT EXISTS job_skills (
-    id              VARCHAR(36) PRIMARY KEY,
     job_id          VARCHAR(36) NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
     skill_id        VARCHAR(36) NOT NULL REFERENCES skills(id) ON DELETE CASCADE,
     required_level  INT         NOT NULL DEFAULT 1,
-    UNIQUE (job_id, skill_id)
+    PRIMARY KEY (job_id, skill_id)
 );
 
 CREATE TABLE IF NOT EXISTS items (
@@ -154,11 +153,10 @@ CREATE TABLE IF NOT EXISTS character_jobs (
 );
 
 CREATE TABLE IF NOT EXISTS character_skills (
-    id           VARCHAR(36) PRIMARY KEY,
     character_id VARCHAR(36) NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
     skill_id     VARCHAR(36) NOT NULL REFERENCES skills(id) ON DELETE RESTRICT,
     learned_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (character_id, skill_id)
+    PRIMARY KEY (character_id, skill_id)
 );
 
 CREATE TABLE IF NOT EXISTS inventories (
