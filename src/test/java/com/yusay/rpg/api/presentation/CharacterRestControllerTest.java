@@ -366,4 +366,39 @@ class CharacterRestControllerTest {
         // Then
         assertThat(actual).hasStatus(400);
     }
+
+    @Test
+    @DisplayName("削除に成功した場合、204を返す")
+    void givenExistingId_whenDelete_thenReturnStatus204() {
+        // Given
+        String id = "660e8400-e29b-41d4-a716-446655440001";
+        Mockito.doNothing().when(characterApplicationService).delete(id);
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .delete()
+                .uri("/characters/{id}", id)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(204);
+    }
+
+    @Test
+    @DisplayName("存在しないIDの場合、404を返す")
+    void givenNonExistentId_whenDelete_thenReturnStatus404() {
+        // Given
+        String nonExistentId = "non-existent-id";
+        Mockito.doThrow(new CharacterNotFoundException(nonExistentId))
+                .when(characterApplicationService).delete(nonExistentId);
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .delete()
+                .uri("/characters/{id}", nonExistentId)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(404);
+    }
 }
