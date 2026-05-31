@@ -7,6 +7,8 @@ import java.util.Objects;
 
 @Embeddable
 public class CharacterJobId implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Column(name = "character_id", length = 36)
     private String characterId;
     @Column(name = "job_id", length = 36)
