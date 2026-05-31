@@ -2,8 +2,6 @@ name: "Copilot Setup Steps"
 
 on:
     workflow_dispatch:
-    push:
-    pull_request:
 
 jobs:
     # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
