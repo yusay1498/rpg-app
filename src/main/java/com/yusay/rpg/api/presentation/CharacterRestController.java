@@ -46,4 +46,10 @@ public class CharacterRestController {
         characterApplicationService.rename(id, request.name());
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        characterApplicationService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
