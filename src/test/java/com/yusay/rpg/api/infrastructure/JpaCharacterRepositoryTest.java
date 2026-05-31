@@ -50,7 +50,7 @@ class JpaCharacterRepositoryTest {
             INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
             VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
             INSERT INTO characters (id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status)
-            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE');
+            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 30, 30, 5, 5, 20, 20, 0, 'alive');
     """)
     void givenCharacter_whenFindById_thenReturnCharacter() {
         // When
@@ -84,7 +84,7 @@ class JpaCharacterRepositoryTest {
             VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
             INSERT INTO characters (id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status, created_at, updated_at)
             VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001',
-                    1, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE',
+                    1, 0, 30, 30, 5, 5, 20, 20, 0, 'alive',
                     TIMESTAMP '2000-01-01 00:00:00', TIMESTAMP '2000-01-01 00:00:00');
     """)
     void givenExistingCharacter_whenUpdate_thenRefreshUpdatedAt() {
@@ -170,7 +170,7 @@ class JpaCharacterRepositoryTest {
         assertThat(row.get("attack")).isEqualTo(15);
         assertThat(row.get("defense")).isEqualTo(15);
         assertThat(row.get("gold")).isEqualTo(0);
-        assertThat(row.get("status")).isEqualTo("ALIVE");
+        assertThat(row.get("status")).isEqualTo("alive");
         assertThat(row.get("created_at")).isNotNull();
         assertThat(row.get("updated_at")).isNotNull();
     }
@@ -182,7 +182,7 @@ class JpaCharacterRepositoryTest {
             VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
             INSERT INTO characters (id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status, created_at, updated_at)
             VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001',
-                    1, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE',
+                    1, 0, 30, 30, 5, 5, 20, 20, 0, 'alive',
                     TIMESTAMP '2000-01-01 00:00:00', TIMESTAMP '2000-01-01 00:00:00');
     """)
     void givenExistingCharacter_whenSave_thenUpdateFieldsAndRefreshUpdatedAt() {
@@ -230,7 +230,7 @@ class JpaCharacterRepositoryTest {
             INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
             VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
             INSERT INTO characters (id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status)
-            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 30, 30, 5, 5, 20, 20, 0, 'ALIVE');
+            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 30, 30, 5, 5, 20, 20, 0, 'alive');
     """)
     void givenExistingCharacter_whenDeleteById_thenRemovedFromDb() {
         // When

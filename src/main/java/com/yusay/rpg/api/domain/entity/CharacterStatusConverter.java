@@ -8,11 +8,11 @@ public class CharacterStatusConverter implements AttributeConverter<CharacterSta
 
     @Override
     public String convertToDatabaseColumn(CharacterStatus status) {
-        return status == null ? null : status.name().toLowerCase();
+        return status == null ? null : status.toJsonValue();
     }
 
     @Override
     public CharacterStatus convertToEntityAttribute(String dbData) {
-        return dbData == null ? null : CharacterStatus.valueOf(dbData.toUpperCase());
+        return dbData == null ? null : CharacterStatus.fromValue(dbData);
     }
 }
