@@ -27,6 +27,7 @@ class JpaJobRepositoryTest {
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
         registry.add("spring.jpa.show-sql", () -> true);
         registry.add("spring.sql.init.mode", () -> "always");
+        registry.add("spring.sql.init.data-locations", () -> "");
     }
 
     @Autowired
