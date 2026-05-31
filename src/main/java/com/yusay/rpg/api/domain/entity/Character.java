@@ -29,6 +29,8 @@ public class Character {
     private int maxMp;
     private int attack;
     private int defense;
+    private int speed;
+    private int skillPoints;
     private int gold;
     @Convert(converter = CharacterStatusConverter.class)
     @Column(nullable = false, length = 10)
@@ -127,6 +129,22 @@ public class Character {
 
     public void setDefense(int defense) {
         this.defense = defense;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public int getSkillPoints() {
+        return skillPoints;
+    }
+
+    public void setSkillPoints(int skillPoints) {
+        this.skillPoints = skillPoints;
     }
 
     public int getGold() {

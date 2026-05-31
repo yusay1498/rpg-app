@@ -16,10 +16,12 @@ public class Job {
     private int baseMp;
     private int baseAttack;
     private int baseDefense;
+    private int baseSpeed;
     private int hpPerLevel;
     private int mpPerLevel;
     private int attackPerLevel;
     private int defensePerLevel;
+    private int speedPerLevel;
     @Convert(converter = JobRankConverter.class)
     private JobRank rank = JobRank.BEGINNER;
     private int masterLevel = 10;
@@ -80,6 +82,14 @@ public class Job {
         this.baseDefense = baseDefense;
     }
 
+    public int getBaseSpeed() {
+        return baseSpeed;
+    }
+
+    public void setBaseSpeed(int baseSpeed) {
+        this.baseSpeed = baseSpeed;
+    }
+
     public int getHpPerLevel() {
         return hpPerLevel;
     }
@@ -110,6 +120,14 @@ public class Job {
 
     public void setDefensePerLevel(int defensePerLevel) {
         this.defensePerLevel = defensePerLevel;
+    }
+
+    public int getSpeedPerLevel() {
+        return speedPerLevel;
+    }
+
+    public void setSpeedPerLevel(int speedPerLevel) {
+        this.speedPerLevel = speedPerLevel;
     }
 
     public JobRank getRank() {

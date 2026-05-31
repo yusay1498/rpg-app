@@ -11,6 +11,7 @@ import com.yusay.rpg.api.domain.entity.JobSkill;
 import com.yusay.rpg.api.domain.entity.JobSkillId;
 import com.yusay.rpg.api.domain.entity.Skill;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
+import com.yusay.rpg.api.domain.exception.InsufficientSkillPointsException;
 import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
 import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.JobNotFoundException;
@@ -632,6 +633,7 @@ class CharacterApplicationServiceTest {
         character.setId(characterId);
         character.setJob(job);
         character.setLevel(5);
+        character.setSkillPoints(3);
 
         Skill skill = new Skill();
         skill.setId(skillId);
@@ -639,6 +641,7 @@ class CharacterApplicationServiceTest {
         JobSkill jobSkill = new JobSkill();
         jobSkill.setId(new JobSkillId(jobId, skillId));
         jobSkill.setRequiredLevel(3);
+        jobSkill.setCost(2);
 
         when(characterRepository.findById(characterId)).thenReturn(Optional.of(character));
         when(skillRepository.findById(skillId)).thenReturn(Optional.of(skill));
@@ -654,6 +657,8 @@ class CharacterApplicationServiceTest {
         assertThat(result.getId().getSkillId()).isEqualTo(skillId);
         assertThat(result.getCharacter()).isEqualTo(character);
         assertThat(result.getSkill()).isEqualTo(skill);
+        assertThat(character.getSkillPoints()).isEqualTo(1);
+        verify(characterRepository).save(character);
         verify(characterSkillRepository).save(any(CharacterSkill.class));
     }
 
@@ -783,6 +788,47 @@ class CharacterApplicationServiceTest {
         // When / Then
         assertThatThrownBy(() -> service.learnSkill(characterId, skillId))
                 .isInstanceOf(SkillLearnRequirementNotMetException.class);
+    }
+
+    @Test
+    @DisplayName("スキルポイントが不足している場合、InsufficientSkillPointsExceptionをスローする")
+    void givenInsufficientSkillPoints_whenLearnSkill_thenThrowInsufficientSkillPointsException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        SkillRepository skillRepository = mock(SkillRepository.class);
+        JobSkillRepository jobSkillRepository = mock(JobSkillRepository.class);
+        CharacterSkillRepository characterSkillRepository = mock(CharacterSkillRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                skillRepository, jobSkillRepository, characterSkillRepository
+        );
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String skillId     = "skill-001";
+        String jobId       = "550e8400-e29b-41d4-a716-446655440001";
+
+        Job job = new Job();
+        job.setId(jobId);
+        Character character = new Character();
+        character.setId(characterId);
+        character.setJob(job);
+        character.setLevel(5);
+        character.setSkillPoints(1);
+
+        JobSkill jobSkill = new JobSkill();
+        jobSkill.setId(new JobSkillId(jobId, skillId));
+        jobSkill.setRequiredLevel(3);
+        jobSkill.setCost(3);
+
+        when(characterRepository.findById(characterId)).thenReturn(Optional.of(character));
+        when(skillRepository.findById(skillId)).thenReturn(Optional.of(new Skill()));
+        when(characterSkillRepository.findById(new CharacterSkillId(characterId, skillId))).thenReturn(Optional.empty());
+        when(jobSkillRepository.findById(new JobSkillId(jobId, skillId))).thenReturn(Optional.of(jobSkill));
+
+        // When / Then
+        assertThatThrownBy(() -> service.learnSkill(characterId, skillId))
+                .isInstanceOf(InsufficientSkillPointsException.class);
+        verify(characterRepository, never()).save(any());
+        verify(characterSkillRepository, never()).save(any());
     }
 
     @ParameterizedTest

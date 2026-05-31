@@ -21,6 +21,8 @@ public class JobSkill {
 
     private int requiredLevel;
 
+    private int cost;
+
     public JobSkillId getId() {
         return id;
     }
@@ -51,5 +53,13 @@ public class JobSkill {
 
     public void setRequiredLevel(int requiredLevel) {
         this.requiredLevel = requiredLevel;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
     }
 }

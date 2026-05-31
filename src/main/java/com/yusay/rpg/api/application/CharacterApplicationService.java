@@ -3,6 +3,7 @@ package com.yusay.rpg.api.application;
 import com.yusay.rpg.api.domain.entity.*;
 import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
+import com.yusay.rpg.api.domain.exception.InsufficientSkillPointsException;
 import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
 import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.JobNotFoundException;
@@ -179,6 +180,13 @@ public class CharacterApplicationService {
         if (character.getLevel() < jobSkill.getRequiredLevel()) {
             throw new SkillLearnRequirementNotMetException(characterId, skillId);
         }
+
+        if (character.getSkillPoints() < jobSkill.getCost()) {
+            throw new InsufficientSkillPointsException(characterId, skillId);
+        }
+
+        character.setSkillPoints(character.getSkillPoints() - jobSkill.getCost());
+        characterRepository.save(character);
 
         CharacterSkill characterSkill = new CharacterSkill();
         characterSkill.setId(new CharacterSkillId(characterId, skillId));

@@ -1,5 +1,6 @@
 package com.yusay.rpg.api.presentation;
 
+import com.yusay.rpg.api.domain.exception.InsufficientSkillPointsException;
 import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
 import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.MissingEntityException;
@@ -95,6 +96,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SkillLearnRequirementNotMetException.class)
     public ResponseEntity<ProblemDetail> handleSkillLearnRequirementNotMet(SkillLearnRequirementNotMetException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler(InsufficientSkillPointsException.class)
+    public ResponseEntity<ProblemDetail> handleInsufficientSkillPoints(InsufficientSkillPointsException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
                 e.getMessage()
