@@ -2,6 +2,8 @@ package com.yusay.rpg.api.presentation;
 
 import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.application.CharacterApplicationService;
+import com.yusay.rpg.api.domain.entity.CharacterJob;
+import com.yusay.rpg.api.domain.entity.Job;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,5 +53,22 @@ public class CharacterRestController {
     public ResponseEntity<Void> delete(@PathVariable String id) {
         characterApplicationService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/job/change")
+    public ResponseEntity<Void> postChangeJob(
+            @PathVariable String id,
+            @RequestBody @Valid CharacterJob request
+    ) {
+        CharacterJob newCharacterJob = characterApplicationService
+                .changeJob(id, request.getJob().getId());
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(newCharacterJob.getId())
+                .toUri();
+
+        return ResponseEntity.ok().location(location).build();
     }
 }
