@@ -5,6 +5,8 @@ import com.yusay.rpg.api.domain.entity.CharacterJob;
 import com.yusay.rpg.api.domain.entity.CharacterJobId;
 import com.yusay.rpg.api.domain.entity.Job;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
+import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
+import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.JobNotFoundException;
 import com.yusay.rpg.api.domain.repository.CharacterJobRepository;
 import com.yusay.rpg.api.domain.repository.CharacterRepository;
@@ -97,9 +99,7 @@ public class CharacterApplicationService {
                 .orElseThrow(() -> new JobNotFoundException(jobId));
 
         if (characterJobRepository.findById(new CharacterJobId(characterId, jobId)).isPresent()) {
-            throw new IllegalStateException(
-                    "Character %s already has job %s".formatted(characterId, jobId)
-            );
+            throw new JobAlreadyOwnedException(characterId, jobId);
         }
 
         List<Job> requiredJobs = jobRequirementRepository.findRequiredJobs(jobId);
@@ -114,9 +114,7 @@ public class CharacterApplicationService {
                 .allMatch(masteredJobIds::contains);
 
         if (!meetsRequirements) {
-            throw new IllegalStateException(
-                    "Character %s does not meet the requirements to change to job %s".formatted(characterId, jobId)
-            );
+            throw new JobChangeRequirementNotMetException(characterId, jobId);
         }
 
         CharacterJob characterJob = new CharacterJob();

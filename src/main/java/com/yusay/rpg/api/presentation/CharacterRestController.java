@@ -64,11 +64,14 @@ public class CharacterRestController {
                 .changeJob(id, request.getJob().getId());
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(newCharacterJob.getId())
+                .fromCurrentContextPath()
+                .path("/characters/{characterId}/jobs/{jobId}")
+                .buildAndExpand(
+                        newCharacterJob.getId().getCharacterId(),
+                        newCharacterJob.getId().getJobId()
+                )
                 .toUri();
 
-        return ResponseEntity.ok().location(location).build();
+        return ResponseEntity.created(location).build();
     }
 }

@@ -1,5 +1,7 @@
 package com.yusay.rpg.api.presentation;
 
+import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
+import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.MissingEntityException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleIllegalArgument(IllegalArgumentException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
+                e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler(JobChangeRequirementNotMetException.class)
+    public ResponseEntity<ProblemDetail> handleJobChangeRequirementNotMet(JobChangeRequirementNotMetException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler(JobAlreadyOwnedException.class)
+    public ResponseEntity<ProblemDetail> handleJobAlreadyOwned(JobAlreadyOwnedException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
                 e.getMessage()
         );
         return ResponseEntity.of(problemDetail).build();

@@ -6,6 +6,8 @@ import com.yusay.rpg.api.domain.entity.CharacterJobId;
 import com.yusay.rpg.api.domain.entity.CharacterStatus;
 import com.yusay.rpg.api.domain.entity.Job;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
+import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
+import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.JobNotFoundException;
 import com.yusay.rpg.api.domain.repository.CharacterJobRepository;
 import com.yusay.rpg.api.domain.repository.CharacterRepository;
@@ -419,13 +421,13 @@ class CharacterApplicationServiceTest {
 
         // When / Then
         assertThatThrownBy(() -> service.changeJob(characterId, jobId))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(JobChangeRequirementNotMetException.class);
         verify(characterJobRepository, never()).save(any());
     }
 
     @Test
-    @DisplayName("既に保有しているジョブへの転職はIllegalStateExceptionをスローしsaveを呼び出さない")
-    void givenCharacterAlreadyHasJob_whenChangeJob_thenThrowIllegalStateException() {
+    @DisplayName("既に保有しているジョブへの転職はJobAlreadyOwnedExceptionをスローしsaveを呼び出さない")
+    void givenCharacterAlreadyHasJob_whenChangeJob_thenThrowJobAlreadyOwnedException() {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         JobRepository jobRepository = mock(JobRepository.class);
@@ -447,7 +449,7 @@ class CharacterApplicationServiceTest {
 
         // When / Then
         assertThatThrownBy(() -> service.changeJob(characterId, jobId))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(JobAlreadyOwnedException.class);
         verify(characterJobRepository, never()).save(any());
     }
 }
