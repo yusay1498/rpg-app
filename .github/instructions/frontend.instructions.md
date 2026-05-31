@@ -1,5 +1,5 @@
 ---
-applyTo: "src/**/*.tsx,src/**/*.css,src/**/*.scss"
+applyTo: "**/*.tsx,**/*.css,**/*.scss"
 ---
 
 # フロントエンド固有のレビュー観点
