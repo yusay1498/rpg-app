@@ -16,6 +16,8 @@ public record CharacterResponse(
         int maxMp,
         int attack,
         int defense,
+        int speed,
+        int skillPoints,
         int gold,
         CharacterStatus status) {
 
@@ -32,6 +34,8 @@ public record CharacterResponse(
                 character.getMaxMp(),
                 character.getAttack(),
                 character.getDefense(),
+                character.getSpeed(),
+                character.getSkillPoints(),
                 character.getGold(),
                 character.getStatus()
         );

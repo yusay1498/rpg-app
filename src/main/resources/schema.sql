@@ -39,10 +39,12 @@ CREATE TABLE IF NOT EXISTS jobs (
     base_mp     INT          NOT NULL,
     base_attack INT          NOT NULL,
     base_defense INT         NOT NULL,
+    base_speed  INT          NOT NULL DEFAULT 5,
     hp_per_level INT         NOT NULL DEFAULT 1,
     mp_per_level INT         NOT NULL DEFAULT 1,
     attack_per_level INT     NOT NULL DEFAULT 1,
     defense_per_level INT    NOT NULL DEFAULT 1,
+    speed_per_level INT      NOT NULL DEFAULT 1,
     rank         VARCHAR(20) NOT NULL DEFAULT 'beginner' CHECK (rank IN ('beginner', 'intermediate', 'advanced', 'master')),
     master_level INT         NOT NULL DEFAULT 10
 );
@@ -67,6 +69,7 @@ CREATE TABLE IF NOT EXISTS job_skills (
     job_id          VARCHAR(36) NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
     skill_id        VARCHAR(36) NOT NULL REFERENCES skills(id) ON DELETE CASCADE,
     required_level  INT         NOT NULL DEFAULT 1,
+    cost            INT         NOT NULL DEFAULT 1,
     PRIMARY KEY (job_id, skill_id)
 );
 
@@ -78,11 +81,14 @@ CREATE TABLE IF NOT EXISTS items (
     effect_type  VARCHAR(20)           REFERENCES effect_types(code),
     effect_value INT,
     price        INT          NOT NULL DEFAULT 0,
+    sell_price   INT          DEFAULT 0,
+    is_sellable  BOOLEAN      NOT NULL DEFAULT TRUE,
     slot         VARCHAR(20)           REFERENCES slot_types(code),
     CHECK (
         (effect_type IS NULL AND effect_value IS NULL)
         OR (effect_type IS NOT NULL AND effect_value IS NOT NULL)
-    )
+    ),
+    CHECK (is_sellable = FALSE OR sell_price IS NOT NULL)
 );
 
 CREATE TABLE IF NOT EXISTS dungeons (
@@ -109,6 +115,7 @@ CREATE TABLE IF NOT EXISTS enemies (
     hp           INT          NOT NULL,
     attack       INT          NOT NULL,
     defense      INT          NOT NULL,
+    speed        INT          NOT NULL DEFAULT 5,
     exp          INT          NOT NULL DEFAULT 0,
     gold         INT          NOT NULL DEFAULT 0,
     drop_item_id VARCHAR(36)  REFERENCES items(id) ON DELETE SET NULL,
@@ -138,6 +145,8 @@ CREATE TABLE IF NOT EXISTS characters (
     max_mp      INT          NOT NULL,
     attack      INT          NOT NULL,
     defense     INT          NOT NULL,
+    speed       INT          NOT NULL DEFAULT 5,
+    skill_points INT         NOT NULL DEFAULT 0,
     gold        INT          NOT NULL DEFAULT 0,
     status      VARCHAR(10)  NOT NULL DEFAULT 'alive' CHECK (status IN ('alive', 'dead')),
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -189,12 +198,52 @@ CREATE TABLE IF NOT EXISTS battle_sessions (
     id                 VARCHAR(36) PRIMARY KEY,
     character_id       VARCHAR(36) NOT NULL UNIQUE REFERENCES characters(id) ON DELETE CASCADE,
     explore_session_id VARCHAR(36) NOT NULL REFERENCES explore_sessions(id) ON DELETE CASCADE,
-    enemy_id           VARCHAR(36) NOT NULL REFERENCES enemies(id) ON DELETE RESTRICT,
-    enemy_current_hp   INT         NOT NULL,
     turn               INT         NOT NULL DEFAULT 1,
     status             VARCHAR(20) NOT NULL DEFAULT 'in_progress' CHECK (status IN ('in_progress', 'win', 'lose', 'escaped')),
     created_at         TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at         TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS battle_enemies (
+    id                 VARCHAR(36) PRIMARY KEY,
+    battle_session_id  VARCHAR(36) NOT NULL REFERENCES battle_sessions(id) ON DELETE CASCADE,
+    enemy_id           VARCHAR(36) NOT NULL REFERENCES enemies(id) ON DELETE RESTRICT,
+    current_hp         INT         NOT NULL,
+    position           INT         NOT NULL,
+    is_defeated        BOOLEAN     NOT NULL DEFAULT FALSE,
+    UNIQUE (battle_session_id, position)
+);
+
+CREATE TABLE IF NOT EXISTS visited_rooms (
+    id                  VARCHAR(36) PRIMARY KEY,
+    explore_session_id  VARCHAR(36) NOT NULL REFERENCES explore_sessions(id) ON DELETE CASCADE,
+    room_id             VARCHAR(36) NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+    UNIQUE (explore_session_id, room_id)
+);
+
+CREATE TABLE IF NOT EXISTS room_treasures (
+    id        VARCHAR(36) PRIMARY KEY,
+    room_id   VARCHAR(36) NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+    item_id   VARCHAR(36) REFERENCES items(id) ON DELETE SET NULL,
+    gold      INT         NOT NULL DEFAULT 0,
+    drop_rate DECIMAL(5,2) NOT NULL DEFAULT 1.00
+);
+
+CREATE TABLE IF NOT EXISTS battle_effects (
+    id                VARCHAR(36)  PRIMARY KEY,
+    battle_session_id VARCHAR(36)  NOT NULL REFERENCES battle_sessions(id) ON DELETE CASCADE,
+    target_type       VARCHAR(20)  NOT NULL,
+    target_id         VARCHAR(36)  NOT NULL,
+    effect_type       VARCHAR(20)  NOT NULL REFERENCES effect_types(code),
+    value             INT          NOT NULL,
+    remaining_turns   INT          NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS enemy_skills (
+    enemy_id VARCHAR(36)  NOT NULL REFERENCES enemies(id) ON DELETE CASCADE,
+    skill_id VARCHAR(36)  NOT NULL REFERENCES skills(id) ON DELETE CASCADE,
+    use_rate DECIMAL(5,2) NOT NULL,
+    PRIMARY KEY (enemy_id, skill_id)
 );
 
 -- ============================================================
@@ -214,4 +263,11 @@ CREATE INDEX IF NOT EXISTS idx_equipments_item_id ON equipments(item_id);
 CREATE INDEX IF NOT EXISTS idx_explore_sessions_dungeon_id ON explore_sessions(dungeon_id);
 CREATE INDEX IF NOT EXISTS idx_explore_sessions_current_room_id ON explore_sessions(current_room_id);
 CREATE INDEX IF NOT EXISTS idx_battle_sessions_explore_session_id ON battle_sessions(explore_session_id);
-CREATE INDEX IF NOT EXISTS idx_battle_sessions_enemy_id ON battle_sessions(enemy_id);
+CREATE INDEX IF NOT EXISTS idx_battle_enemies_battle_session_id ON battle_enemies(battle_session_id);
+CREATE INDEX IF NOT EXISTS idx_battle_enemies_enemy_id ON battle_enemies(enemy_id);
+CREATE INDEX IF NOT EXISTS idx_visited_rooms_explore_session_id ON visited_rooms(explore_session_id);
+CREATE INDEX IF NOT EXISTS idx_visited_rooms_room_id ON visited_rooms(room_id);
+CREATE INDEX IF NOT EXISTS idx_room_treasures_room_id ON room_treasures(room_id);
+CREATE INDEX IF NOT EXISTS idx_room_treasures_item_id ON room_treasures(item_id);
+CREATE INDEX IF NOT EXISTS idx_battle_effects_battle_session_id ON battle_effects(battle_session_id);
+CREATE INDEX IF NOT EXISTS idx_enemy_skills_skill_id ON enemy_skills(skill_id);

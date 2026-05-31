@@ -58,6 +58,8 @@ class CharacterRestControllerTest {
         warrior.setMpPerLevel(1);
         warrior.setAttackPerLevel(1);
         warrior.setDefensePerLevel(1);
+        warrior.setBaseSpeed(5);
+        warrior.setSpeedPerLevel(1);
         warrior.setRank(JobRank.BEGINNER);
         warrior.setMasterLevel(10);
         Character character = new Character();
@@ -72,6 +74,8 @@ class CharacterRestControllerTest {
         character.setMaxMp(5);
         character.setAttack(20);
         character.setDefense(20);
+        character.setSpeed(5);
+        character.setSkillPoints(0);
         character.setGold(0);
         character.setStatus(CharacterStatus.ALIVE);
         Mockito.when(characterApplicationService.lookup("660e8400-e29b-41d4-a716-446655440001"))
@@ -96,10 +100,12 @@ class CharacterRestControllerTest {
                         "baseMp": 5,
                         "baseAttack": 20,
                         "baseDefense": 20,
+                        "baseSpeed": 5,
                         "hpPerLevel": 1,
                         "mpPerLevel": 1,
                         "attackPerLevel": 1,
                         "defensePerLevel": 1,
+                        "speedPerLevel": 1,
                         "rank": "beginner",
                         "masterLevel": 10
                     },
@@ -111,6 +117,8 @@ class CharacterRestControllerTest {
                     "maxMp": 5,
                     "attack": 20,
                     "defense": 20,
+                    "speed": 5,
+                    "skillPoints": 0,
                     "gold": 0,
                     "status": "alive"
                 }
