@@ -19,6 +19,8 @@ public class Job {
     private int mpPerLevel;
     private int attackPerLevel;
     private int defensePerLevel;
+    private String rank;
+    private int masterLevel;
 
     public String getId() {
         return id;
@@ -106,5 +108,21 @@ public class Job {
 
     public void setDefensePerLevel(int defensePerLevel) {
         this.defensePerLevel = defensePerLevel;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
+    public int getMasterLevel() {
+        return masterLevel;
+    }
+
+    public void setMasterLevel(int masterLevel) {
+        this.masterLevel = masterLevel;
     }
 }

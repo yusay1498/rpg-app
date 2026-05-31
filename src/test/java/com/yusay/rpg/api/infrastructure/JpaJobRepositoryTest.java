@@ -60,6 +60,8 @@ class JpaJobRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
+            assertThat(job.getRank()).isEqualTo("beginner");
+            assertThat(job.getMasterLevel()).isEqualTo(10);
         });
         assertThat(result).anySatisfy(job -> {
             assertThat(job.getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440002");
@@ -73,6 +75,8 @@ class JpaJobRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
+            assertThat(job.getRank()).isEqualTo("beginner");
+            assertThat(job.getMasterLevel()).isEqualTo(10);
         });
         assertThat(result).anySatisfy(job -> {
             assertThat(job.getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440003");
@@ -86,6 +90,8 @@ class JpaJobRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
+            assertThat(job.getRank()).isEqualTo("beginner");
+            assertThat(job.getMasterLevel()).isEqualTo(10);
         });
     }
 
@@ -114,6 +120,8 @@ class JpaJobRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
+            assertThat(job.getRank()).isEqualTo("beginner");
+            assertThat(job.getMasterLevel()).isEqualTo(10);
         });
     }
 }
