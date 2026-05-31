@@ -42,7 +42,16 @@ CREATE TABLE IF NOT EXISTS jobs (
     hp_per_level INT         NOT NULL DEFAULT 1,
     mp_per_level INT         NOT NULL DEFAULT 1,
     attack_per_level INT     NOT NULL DEFAULT 1,
-    defense_per_level INT    NOT NULL DEFAULT 1
+    defense_per_level INT    NOT NULL DEFAULT 1,
+    rank         VARCHAR(20) NOT NULL DEFAULT 'beginner' CHECK (rank IN ('beginner', 'intermediate', 'advanced', 'master')),
+    master_level INT         NOT NULL DEFAULT 10
+);
+
+CREATE TABLE IF NOT EXISTS job_requirements (
+    job_id          VARCHAR(36) NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+    required_job_id VARCHAR(36) NOT NULL REFERENCES jobs(id) ON DELETE RESTRICT,
+    PRIMARY KEY (job_id, required_job_id),
+    CHECK (job_id <> required_job_id)
 );
 
 CREATE TABLE IF NOT EXISTS skills (
@@ -136,6 +145,14 @@ CREATE TABLE IF NOT EXISTS characters (
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS character_jobs (
+    character_id VARCHAR(36) NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
+    job_id       VARCHAR(36) NOT NULL REFERENCES jobs(id) ON DELETE RESTRICT,
+    mastered     BOOLEAN     NOT NULL DEFAULT FALSE,
+    max_level    INT         NOT NULL DEFAULT 1,
+    PRIMARY KEY (character_id, job_id)
+);
+
 CREATE TABLE IF NOT EXISTS character_skills (
     id           VARCHAR(36) PRIMARY KEY,
     character_id VARCHAR(36) NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
@@ -187,6 +204,8 @@ CREATE TABLE IF NOT EXISTS battle_sessions (
 -- ============================================================
 
 CREATE INDEX IF NOT EXISTS idx_job_skills_skill_id ON job_skills(skill_id);
+CREATE INDEX IF NOT EXISTS idx_job_requirements_required_job_id ON job_requirements(required_job_id);
+CREATE INDEX IF NOT EXISTS idx_character_jobs_job_id ON character_jobs(job_id);
 CREATE INDEX IF NOT EXISTS idx_rooms_dungeon_id ON rooms(dungeon_id);
 CREATE INDEX IF NOT EXISTS idx_enemies_dungeon_id ON enemies(dungeon_id);
 CREATE INDEX IF NOT EXISTS idx_enemies_drop_item_id ON enemies(drop_item_id);

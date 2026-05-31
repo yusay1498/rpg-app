@@ -4,6 +4,7 @@ import com.yusay.rpg.api.application.CharacterApplicationService;
 import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.domain.entity.CharacterStatus;
 import com.yusay.rpg.api.domain.entity.Job;
+import com.yusay.rpg.api.domain.entity.JobRank;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,8 @@ class CharacterRestControllerTest {
         warrior.setMpPerLevel(1);
         warrior.setAttackPerLevel(1);
         warrior.setDefensePerLevel(1);
+        warrior.setRank(JobRank.BEGINNER);
+        warrior.setMasterLevel(10);
         Character character = new Character();
         character.setId("660e8400-e29b-41d4-a716-446655440001");
         character.setName("Taro");
@@ -81,7 +84,9 @@ class CharacterRestControllerTest {
                         "hpPerLevel": 1,
                         "mpPerLevel": 1,
                         "attackPerLevel": 1,
-                        "defensePerLevel": 1
+                        "defensePerLevel": 1,
+                        "rank": "beginner",
+                        "masterLevel": 10
                     },
                     "level": 1,
                     "exp": 0,
