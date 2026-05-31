@@ -3,16 +3,28 @@ package com.yusay.rpg.api.application;
 import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.domain.entity.CharacterJob;
 import com.yusay.rpg.api.domain.entity.CharacterJobId;
+import com.yusay.rpg.api.domain.entity.CharacterSkill;
+import com.yusay.rpg.api.domain.entity.CharacterSkillId;
 import com.yusay.rpg.api.domain.entity.CharacterStatus;
 import com.yusay.rpg.api.domain.entity.Job;
+import com.yusay.rpg.api.domain.entity.JobSkill;
+import com.yusay.rpg.api.domain.entity.JobSkillId;
+import com.yusay.rpg.api.domain.entity.Skill;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
 import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
 import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.JobNotFoundException;
+import com.yusay.rpg.api.domain.exception.SkillAlreadyLearnedException;
+import com.yusay.rpg.api.domain.exception.SkillLearnRequirementNotMetException;
+import com.yusay.rpg.api.domain.exception.SkillNotFoundException;
+import com.yusay.rpg.api.domain.exception.SkillNotAvailableException;
 import com.yusay.rpg.api.domain.repository.CharacterJobRepository;
 import com.yusay.rpg.api.domain.repository.CharacterRepository;
+import com.yusay.rpg.api.domain.repository.CharacterSkillRepository;
 import com.yusay.rpg.api.domain.repository.JobRepository;
 import com.yusay.rpg.api.domain.repository.JobRequirementRepository;
+import com.yusay.rpg.api.domain.repository.JobSkillRepository;
+import com.yusay.rpg.api.domain.repository.SkillRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +50,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         Job warrior = new Job();
         warrior.setId("550e8400-e29b-41d4-a716-446655440001");
@@ -85,7 +98,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         String nonExistentId = "non-existent-id";
         when(characterRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -102,7 +116,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         Job warrior = new Job();
         warrior.setId("550e8400-e29b-41d4-a716-446655440001");
@@ -154,7 +169,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         Job warrior = new Job();
         warrior.setId("550e8400-e29b-41d4-a716-446655440001");
@@ -185,7 +201,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         Character input = new Character();
         input.setId("non-existent-id");
@@ -205,7 +222,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
 
         // When / Then
@@ -221,7 +239,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
 
         // When / Then
@@ -235,7 +254,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         String id = "660e8400-e29b-41d4-a716-446655440001";
         when(characterRepository.findById(id)).thenReturn(Optional.of(new Character()));
@@ -253,7 +273,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         String nonExistentId = "non-existent-id";
         when(characterRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -272,7 +293,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
 
         // When / Then
@@ -288,7 +310,8 @@ class CharacterApplicationServiceTest {
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterJobRepository characterJobRepository = mock(CharacterJobRepository.class);
         CharacterApplicationService service = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), characterJobRepository, mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), characterJobRepository, mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         when(characterRepository.findById(characterId)).thenReturn(Optional.of(new Character()));
@@ -312,7 +335,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService service = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         when(characterRepository.findById("non-existent-id")).thenReturn(Optional.empty());
 
@@ -328,7 +352,8 @@ class CharacterApplicationServiceTest {
     void givenBlankCharacterId_whenListJobs_thenThrowIllegalArgumentException(String characterId) {
         // Given
         CharacterApplicationService service = new CharacterApplicationService(
-                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
 
         // When / Then
@@ -345,7 +370,8 @@ class CharacterApplicationServiceTest {
         CharacterJobRepository characterJobRepository = mock(CharacterJobRepository.class);
         JobRequirementRepository jobRequirementRepository = mock(JobRequirementRepository.class);
         CharacterApplicationService service = new CharacterApplicationService(
-                characterRepository, jobRepository, characterJobRepository, jobRequirementRepository
+                characterRepository, jobRepository, characterJobRepository, jobRequirementRepository,
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String jobId       = "550e8400-e29b-41d4-a716-446655440002";
@@ -393,7 +419,8 @@ class CharacterApplicationServiceTest {
         CharacterJobRepository characterJobRepository = mock(CharacterJobRepository.class);
         JobRequirementRepository jobRequirementRepository = mock(JobRequirementRepository.class);
         CharacterApplicationService service = new CharacterApplicationService(
-                characterRepository, jobRepository, characterJobRepository, jobRequirementRepository
+                characterRepository, jobRepository, characterJobRepository, jobRequirementRepository,
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String jobId       = "550e8400-e29b-41d4-a716-446655440001";
@@ -428,7 +455,8 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService service = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         when(characterRepository.findById("non-existent-id")).thenReturn(Optional.empty());
 
@@ -444,7 +472,8 @@ class CharacterApplicationServiceTest {
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         JobRepository jobRepository = mock(JobRepository.class);
         CharacterApplicationService service = new CharacterApplicationService(
-                characterRepository, jobRepository, mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+                characterRepository, jobRepository, mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         when(characterRepository.findById(characterId)).thenReturn(Optional.of(new Character()));
@@ -464,7 +493,8 @@ class CharacterApplicationServiceTest {
         CharacterJobRepository characterJobRepository = mock(CharacterJobRepository.class);
         JobRequirementRepository jobRequirementRepository = mock(JobRequirementRepository.class);
         CharacterApplicationService service = new CharacterApplicationService(
-                characterRepository, jobRepository, characterJobRepository, jobRequirementRepository
+                characterRepository, jobRepository, characterJobRepository, jobRequirementRepository,
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String jobId       = "550e8400-e29b-41d4-a716-446655440002";
@@ -498,7 +528,8 @@ class CharacterApplicationServiceTest {
         CharacterJobRepository characterJobRepository = mock(CharacterJobRepository.class);
         JobRequirementRepository jobRequirementRepository = mock(JobRequirementRepository.class);
         CharacterApplicationService service = new CharacterApplicationService(
-                characterRepository, jobRepository, characterJobRepository, jobRequirementRepository
+                characterRepository, jobRepository, characterJobRepository, jobRequirementRepository,
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String jobId       = "550e8400-e29b-41d4-a716-446655440001";
@@ -516,5 +547,273 @@ class CharacterApplicationServiceTest {
                 .isInstanceOf(JobAlreadyOwnedException.class);
         verify(characterJobRepository, never()).save(any());
         verify(characterRepository, never()).save(any());
+    }
+
+    // ========== listSkills ==========
+
+    @Test
+    @DisplayName("キャラクターのスキル一覧を返す")
+    void givenCharacterWithSkills_whenListSkills_thenReturnSkills() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterSkillRepository characterSkillRepository = mock(CharacterSkillRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), characterSkillRepository
+        );
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        when(characterRepository.findById(characterId)).thenReturn(Optional.of(new Character()));
+        CharacterSkill cs1 = new CharacterSkill();
+        cs1.setId(new CharacterSkillId(characterId, "skill-1"));
+        CharacterSkill cs2 = new CharacterSkill();
+        cs2.setId(new CharacterSkillId(characterId, "skill-2"));
+        when(characterSkillRepository.findByIdCharacterId(characterId)).thenReturn(List.of(cs1, cs2));
+
+        // When
+        List<CharacterSkill> result = service.listSkills(characterId);
+
+        // Then
+        assertThat(result).containsExactly(cs1, cs2);
+    }
+
+    @Test
+    @DisplayName("存在しないキャラクターIDの場合、CharacterNotFoundExceptionをスローする")
+    void givenNonExistentCharacterId_whenListSkills_thenThrowCharacterNotFoundException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
+        );
+        when(characterRepository.findById("non-existent-id")).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> service.listSkills("non-existent-id"))
+                .isInstanceOf(CharacterNotFoundException.class);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" "})
+    @DisplayName("characterIdがnull/空文字/空白の場合、IllegalArgumentExceptionをスローする")
+    void givenBlankCharacterId_whenListSkills_thenThrowIllegalArgumentException(String characterId) {
+        // Given
+        CharacterApplicationService service = new CharacterApplicationService(
+                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
+        );
+
+        // When / Then
+        assertThatThrownBy(() -> service.listSkills(characterId))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    // ========== learnSkill ==========
+
+    @Test
+    @DisplayName("正常にスキルを習得してCharacterSkillを返す")
+    void givenValidRequest_whenLearnSkill_thenReturnCharacterSkill() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        SkillRepository skillRepository = mock(SkillRepository.class);
+        JobSkillRepository jobSkillRepository = mock(JobSkillRepository.class);
+        CharacterSkillRepository characterSkillRepository = mock(CharacterSkillRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                skillRepository, jobSkillRepository, characterSkillRepository
+        );
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String skillId     = "skill-001";
+        String jobId       = "550e8400-e29b-41d4-a716-446655440001";
+
+        Job job = new Job();
+        job.setId(jobId);
+        Character character = new Character();
+        character.setId(characterId);
+        character.setJob(job);
+        character.setLevel(5);
+
+        Skill skill = new Skill();
+        skill.setId(skillId);
+
+        JobSkill jobSkill = new JobSkill();
+        jobSkill.setId(new JobSkillId(jobId, skillId));
+        jobSkill.setRequiredLevel(3);
+
+        when(characterRepository.findById(characterId)).thenReturn(Optional.of(character));
+        when(skillRepository.findById(skillId)).thenReturn(Optional.of(skill));
+        when(characterSkillRepository.findById(new CharacterSkillId(characterId, skillId))).thenReturn(Optional.empty());
+        when(jobSkillRepository.findById(new JobSkillId(jobId, skillId))).thenReturn(Optional.of(jobSkill));
+        when(characterSkillRepository.save(any(CharacterSkill.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        CharacterSkill result = service.learnSkill(characterId, skillId);
+
+        // Then
+        assertThat(result.getId().getCharacterId()).isEqualTo(characterId);
+        assertThat(result.getId().getSkillId()).isEqualTo(skillId);
+        assertThat(result.getCharacter()).isEqualTo(character);
+        assertThat(result.getSkill()).isEqualTo(skill);
+        verify(characterSkillRepository).save(any(CharacterSkill.class));
+    }
+
+    @Test
+    @DisplayName("存在しないキャラクターIDの場合、CharacterNotFoundExceptionをスローする")
+    void givenNonExistentCharacter_whenLearnSkill_thenThrowCharacterNotFoundException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
+        );
+        when(characterRepository.findById("non-existent-id")).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> service.learnSkill("non-existent-id", "skill-001"))
+                .isInstanceOf(CharacterNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("存在しないスキルIDの場合、SkillNotFoundExceptionをスローする")
+    void givenNonExistentSkill_whenLearnSkill_thenThrowSkillNotFoundException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        SkillRepository skillRepository = mock(SkillRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                skillRepository, mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
+        );
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        when(characterRepository.findById(characterId)).thenReturn(Optional.of(new Character()));
+        when(skillRepository.findById("non-existent-skill")).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> service.learnSkill(characterId, "non-existent-skill"))
+                .isInstanceOf(SkillNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("既に習得済みのスキルの場合、SkillAlreadyLearnedExceptionをスローする")
+    void givenAlreadyLearnedSkill_whenLearnSkill_thenThrowSkillAlreadyLearnedException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        SkillRepository skillRepository = mock(SkillRepository.class);
+        CharacterSkillRepository characterSkillRepository = mock(CharacterSkillRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                skillRepository, mock(JobSkillRepository.class), characterSkillRepository
+        );
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String skillId     = "skill-001";
+        when(characterRepository.findById(characterId)).thenReturn(Optional.of(new Character()));
+        when(skillRepository.findById(skillId)).thenReturn(Optional.of(new Skill()));
+        when(characterSkillRepository.findById(new CharacterSkillId(characterId, skillId)))
+                .thenReturn(Optional.of(new CharacterSkill()));
+
+        // When / Then
+        assertThatThrownBy(() -> service.learnSkill(characterId, skillId))
+                .isInstanceOf(SkillAlreadyLearnedException.class);
+    }
+
+    @Test
+    @DisplayName("現在の職業で習得できないスキルの場合、SkillNotAvailableExceptionをスローする")
+    void givenSkillNotAvailableForJob_whenLearnSkill_thenThrowSkillNotAvailableException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        SkillRepository skillRepository = mock(SkillRepository.class);
+        JobSkillRepository jobSkillRepository = mock(JobSkillRepository.class);
+        CharacterSkillRepository characterSkillRepository = mock(CharacterSkillRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                skillRepository, jobSkillRepository, characterSkillRepository
+        );
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String skillId     = "skill-001";
+        String jobId       = "550e8400-e29b-41d4-a716-446655440001";
+
+        Job job = new Job();
+        job.setId(jobId);
+        Character character = new Character();
+        character.setId(characterId);
+        character.setJob(job);
+        character.setLevel(5);
+
+        when(characterRepository.findById(characterId)).thenReturn(Optional.of(character));
+        when(skillRepository.findById(skillId)).thenReturn(Optional.of(new Skill()));
+        when(characterSkillRepository.findById(new CharacterSkillId(characterId, skillId))).thenReturn(Optional.empty());
+        when(jobSkillRepository.findById(new JobSkillId(jobId, skillId))).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> service.learnSkill(characterId, skillId))
+                .isInstanceOf(SkillNotAvailableException.class);
+    }
+
+    @Test
+    @DisplayName("キャラクターのレベルが不足している場合、SkillLearnRequirementNotMetExceptionをスローする")
+    void givenLevelTooLow_whenLearnSkill_thenThrowSkillLearnRequirementNotMetException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        SkillRepository skillRepository = mock(SkillRepository.class);
+        JobSkillRepository jobSkillRepository = mock(JobSkillRepository.class);
+        CharacterSkillRepository characterSkillRepository = mock(CharacterSkillRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                skillRepository, jobSkillRepository, characterSkillRepository
+        );
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String skillId     = "skill-001";
+        String jobId       = "550e8400-e29b-41d4-a716-446655440001";
+
+        Job job = new Job();
+        job.setId(jobId);
+        Character character = new Character();
+        character.setId(characterId);
+        character.setJob(job);
+        character.setLevel(1);
+
+        JobSkill jobSkill = new JobSkill();
+        jobSkill.setId(new JobSkillId(jobId, skillId));
+        jobSkill.setRequiredLevel(5);
+
+        when(characterRepository.findById(characterId)).thenReturn(Optional.of(character));
+        when(skillRepository.findById(skillId)).thenReturn(Optional.of(new Skill()));
+        when(characterSkillRepository.findById(new CharacterSkillId(characterId, skillId))).thenReturn(Optional.empty());
+        when(jobSkillRepository.findById(new JobSkillId(jobId, skillId))).thenReturn(Optional.of(jobSkill));
+
+        // When / Then
+        assertThatThrownBy(() -> service.learnSkill(characterId, skillId))
+                .isInstanceOf(SkillLearnRequirementNotMetException.class);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" "})
+    @DisplayName("characterIdがnull/空文字/空白の場合、IllegalArgumentExceptionをスローする")
+    void givenBlankCharacterId_whenLearnSkill_thenThrowIllegalArgumentException(String characterId) {
+        // Given
+        CharacterApplicationService service = new CharacterApplicationService(
+                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
+        );
+
+        // When / Then
+        assertThatThrownBy(() -> service.learnSkill(characterId, "skill-001"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" "})
+    @DisplayName("skillIdがnull/空文字/空白の場合、IllegalArgumentExceptionをスローする")
+    void givenBlankSkillId_whenLearnSkill_thenThrowIllegalArgumentException(String skillId) {
+        // Given
+        CharacterApplicationService service = new CharacterApplicationService(
+                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
+        );
+
+        // When / Then
+        assertThatThrownBy(() -> service.learnSkill("660e8400-e29b-41d4-a716-446655440001", skillId))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
