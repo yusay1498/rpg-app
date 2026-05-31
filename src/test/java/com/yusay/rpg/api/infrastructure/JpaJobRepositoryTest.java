@@ -24,9 +24,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JpaJobRepositoryTest {
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
         registry.add("spring.jpa.show-sql", () -> true);
-        registry.add("spring.sql.init.mode", () -> "always");
+        registry.add("spring.sql.init.mode", () -> "never");
     }
 
     @Autowired
@@ -48,7 +48,7 @@ class JpaJobRepositoryTest {
         List<Job> result = jobRepository.findAll();
 
         // Then
-        assertThat(result).hasSizeGreaterThanOrEqualTo(3);
+        assertThat(result).hasSize(3);
         assertThat(result).anySatisfy(job -> {
             assertThat(job.getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
             assertThat(job.getName()).isEqualTo("warrior");
