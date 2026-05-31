@@ -7,6 +7,9 @@ import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
 import com.yusay.rpg.api.domain.repository.CharacterRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Optional;
 
@@ -150,7 +153,7 @@ class CharacterApplicationServiceTest {
         when(characterRepository.save(any(Character.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
-        Character result = characterApplicationService.rename(input);
+        Character result = characterApplicationService.rename("660e8400-e29b-41d4-a716-446655440001", "Jiro");
 
         // Then
         verify(characterRepository).save(any(Character.class));
@@ -170,8 +173,35 @@ class CharacterApplicationServiceTest {
         when(characterRepository.findById("non-existent-id")).thenReturn(Optional.empty());
 
         // When / Then
-        assertThatThrownBy(() -> characterApplicationService.rename(input))
+        assertThatThrownBy(() -> characterApplicationService.rename("non-existent-id", "Jiro"))
                 .isInstanceOf(CharacterNotFoundException.class);
     }
 
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" "})
+    @DisplayName("idがnull/空文字/空白の場合、IllegalArgumentExceptionをスローする")
+    void givenBlankId_whenRename_thenThrowIllegalArgumentException(String id) {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(characterRepository);
+
+        // When / Then
+        assertThatThrownBy(() -> characterApplicationService.rename(id, "Jiro"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" "})
+    @DisplayName("nameがnull/空文字/空白の場合、IllegalArgumentExceptionをスローする")
+    void givenBlankName_whenRename_thenThrowIllegalArgumentException(String name) {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(characterRepository);
+
+        // When / Then
+        assertThatThrownBy(() -> characterApplicationService.rename("660e8400-e29b-41d4-a716-446655440001", name))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
