@@ -1,21 +1,42 @@
 package com.yusay.rpg.api.application;
 
 import com.yusay.rpg.api.domain.entity.Character;
+import com.yusay.rpg.api.domain.entity.CharacterJob;
+import com.yusay.rpg.api.domain.entity.CharacterJobId;
+import com.yusay.rpg.api.domain.entity.Job;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
+import com.yusay.rpg.api.domain.exception.JobNotFoundException;
+import com.yusay.rpg.api.domain.repository.CharacterJobRepository;
 import com.yusay.rpg.api.domain.repository.CharacterRepository;
+import com.yusay.rpg.api.domain.repository.JobRepository;
+import com.yusay.rpg.api.domain.repository.JobRequirementRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class CharacterApplicationService {
 
     private final CharacterRepository characterRepository;
+    private final JobRepository jobRepository;
+    private final CharacterJobRepository characterJobRepository;
+    private final JobRequirementRepository jobRequirementRepository;
 
-    public CharacterApplicationService(CharacterRepository characterRepository) {
+    public CharacterApplicationService(
+            CharacterRepository characterRepository,
+            JobRepository jobRepository,
+            CharacterJobRepository characterJobRepository,
+            JobRequirementRepository jobRequirementRepository
+    ) {
         this.characterRepository = characterRepository;
+        this.jobRepository = jobRepository;
+        this.characterJobRepository = characterJobRepository;
+        this.jobRequirementRepository = jobRequirementRepository;
     }
 
     public Character lookup(String id) {
@@ -60,5 +81,48 @@ public class CharacterApplicationService {
         characterRepository.findById(id)
                 .orElseThrow(() -> new CharacterNotFoundException(id));
         characterRepository.deleteById(id);
+    }
+
+    public CharacterJob changeJob(String characterId, String jobId) {
+        if (characterId == null || characterId.isBlank()) {
+            throw new IllegalArgumentException("characterId must not be null or blank when changing job");
+        }
+        if (jobId == null || jobId.isBlank()) {
+            throw new IllegalArgumentException("jobId must not be null or blank when changing job");
+        }
+
+        Character character = characterRepository.findById(characterId)
+                .orElseThrow(() -> new CharacterNotFoundException(characterId));
+        Job newJob = jobRepository.findById(jobId)
+                .orElseThrow(() -> new JobNotFoundException(jobId));
+
+        if (characterJobRepository.findById(new CharacterJobId(characterId, jobId)).isPresent()) {
+            throw new IllegalStateException(
+                    "Character %s already has job %s".formatted(characterId, jobId)
+            );
+        }
+
+        List<Job> requiredJobs = jobRequirementRepository.findRequiredJobs(jobId);
+
+        Set<String> masteredJobIds = characterJobRepository.findByIdCharacterId(characterId).stream()
+                .filter(CharacterJob::isMastered)
+                .map(characterJob -> characterJob.getId().getJobId())
+                .collect(Collectors.toSet());
+
+        boolean meetsRequirements = requiredJobs.stream()
+                .map(Job::getId)
+                .allMatch(masteredJobIds::contains);
+
+        if (!meetsRequirements) {
+            throw new IllegalStateException(
+                    "Character %s does not meet the requirements to change to job %s".formatted(characterId, jobId)
+            );
+        }
+
+        CharacterJob characterJob = new CharacterJob();
+        characterJob.setId(new CharacterJobId(characterId, jobId));
+        characterJob.setCharacter(character);
+        characterJob.setJob(newJob);
+        return characterJobRepository.save(characterJob);
     }
 }
