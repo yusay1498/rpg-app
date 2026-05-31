@@ -29,7 +29,9 @@ public class JdbcJobRequirementRepository implements JobRequirementRepository {
                         job.hp_per_level,
                         job.mp_per_level,
                         job.attack_per_level,
-                        job.defense_per_level
+                        job.defense_per_level,
+                        UPPER(job.rank) AS rank,
+                        job.master_level
                     FROM
                         jobs job
                     WHERE

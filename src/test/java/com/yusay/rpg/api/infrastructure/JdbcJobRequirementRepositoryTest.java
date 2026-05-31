@@ -2,6 +2,7 @@ package com.yusay.rpg.api.infrastructure;
 
 import com.yusay.rpg.api.config.TestcontainersConfiguration;
 import com.yusay.rpg.api.domain.entity.Job;
+import com.yusay.rpg.api.domain.entity.JobRank;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,10 @@ class JdbcJobRequirementRepositoryTest {
     @Test
     @DisplayName("前提職業が2件存在する職業の前提職業一覧を返す")
     @Sql(statements = """
-            INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
-            VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior',  '戦士',    30, 5,  20, 20),
-                   ('550e8400-e29b-41d4-a716-446655440002', 'mage',     '魔法使い', 15, 30, 10, 10),
-                   ('550e8400-e29b-41d4-a716-446655440003', 'hero',     '勇者',    60, 40, 50, 40);
+            INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense, rank, master_level)
+            VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior',  '戦士',    30, 5,  20, 20, 'beginner',  10),
+                   ('550e8400-e29b-41d4-a716-446655440002', 'mage',     '魔法使い', 15, 30, 10, 10, 'advanced', 20),
+                   ('550e8400-e29b-41d4-a716-446655440003', 'hero',     '勇者',    60, 40, 50, 40, 'master',   30);
             INSERT INTO job_requirements (job_id, required_job_id)
             VALUES ('550e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440001'),
                    ('550e8400-e29b-41d4-a716-446655440003', '550e8400-e29b-41d4-a716-446655440002');
@@ -61,6 +62,8 @@ class JdbcJobRequirementRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
+            assertThat(job.getRank()).isEqualTo(JobRank.BEGINNER);
+            assertThat(job.getMasterLevel()).isEqualTo(10);
         });
         assertThat(result).anySatisfy(job -> {
             assertThat(job.getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440002");
@@ -74,6 +77,8 @@ class JdbcJobRequirementRepositoryTest {
             assertThat(job.getMpPerLevel()).isEqualTo(1);
             assertThat(job.getAttackPerLevel()).isEqualTo(1);
             assertThat(job.getDefensePerLevel()).isEqualTo(1);
+            assertThat(job.getRank()).isEqualTo(JobRank.ADVANCED);
+            assertThat(job.getMasterLevel()).isEqualTo(20);
         });
     }
 
