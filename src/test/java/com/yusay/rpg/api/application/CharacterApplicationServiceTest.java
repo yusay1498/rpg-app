@@ -112,43 +112,46 @@ class CharacterApplicationServiceTest {
     }
 
     @Test
-    @DisplayName("キャラクターを作成するとUUIDが採番されて保存されたキャラクターを返す")
+    @DisplayName("キャラクターを作成するとUUIDが採番されて職業の初期ステータスが反映されたキャラクターを返す")
     void givenCharacter_whenCreate_thenReturnSavedCharacterWithId() {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
+        JobRepository jobRepository = mock(JobRepository.class);
+        CharacterJobRepository characterJobRepository = mock(CharacterJobRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                characterRepository, jobRepository, characterJobRepository, mock(JobRequirementRepository.class),
                 mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
         );
         Job warrior = new Job();
         warrior.setId("550e8400-e29b-41d4-a716-446655440001");
+        warrior.setName("Warrior");
+        warrior.setBaseHp(30);
+        warrior.setBaseMp(5);
+        warrior.setBaseAttack(20);
+        warrior.setBaseDefense(20);
+        warrior.setBaseSpeed(10);
+        when(jobRepository.findById("550e8400-e29b-41d4-a716-446655440001"))
+                .thenReturn(Optional.of(warrior));
         Character character = new Character();
         character.setName("Taro");
-        character.setJob(warrior);
-        character.setLevel(1);
-        character.setExp(0);
-        character.setHp(30);
-        character.setMaxHp(30);
-        character.setMp(5);
-        character.setMaxMp(5);
-        character.setAttack(20);
-        character.setDefense(20);
-        character.setGold(0);
-        character.setStatus(CharacterStatus.ALIVE);
+        Job jobRef = new Job();
+        jobRef.setId("550e8400-e29b-41d4-a716-446655440001");
+        character.setJob(jobRef);
         when(characterRepository.save(any(Character.class))).thenAnswer(invocation -> {
-            // save 呼び出し時点で既に ID が採番済みであることを検証
             Character arg = invocation.getArgument(0);
             assertThat(arg.getId())
                     .as("save 呼び出し前に UUID が採番されていること")
                     .matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
             return arg;
         });
+        when(characterJobRepository.save(any(CharacterJob.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
         Character result = characterApplicationService.create(character);
 
         // Then
         verify(characterRepository).save(any(Character.class));
+        verify(characterJobRepository).save(any(CharacterJob.class));
         assertThat(result.getId()).matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
         assertThat(result.getName()).isEqualTo("Taro");
         assertThat(result.getJob().getId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
@@ -160,8 +163,73 @@ class CharacterApplicationServiceTest {
         assertThat(result.getMaxMp()).isEqualTo(5);
         assertThat(result.getAttack()).isEqualTo(20);
         assertThat(result.getDefense()).isEqualTo(20);
+        assertThat(result.getSpeed()).isEqualTo(10);
+        assertThat(result.getSkillPoints()).isEqualTo(0);
         assertThat(result.getGold()).isEqualTo(0);
         assertThat(result.getStatus()).isEqualTo(CharacterStatus.ALIVE);
+    }
+
+    @Test
+    @DisplayName("存在しないjobIdを指定した場合、JobNotFoundExceptionをスローする")
+    void givenNonExistentJobId_whenCreate_thenThrowJobNotFoundException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        JobRepository jobRepository = mock(JobRepository.class);
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(
+                characterRepository, jobRepository, mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
+        );
+        Job jobRef = new Job();
+        jobRef.setId("non-existent-job-id");
+        Character character = new Character();
+        character.setName("Taro");
+        character.setJob(jobRef);
+        when(jobRepository.findById("non-existent-job-id")).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> characterApplicationService.create(character))
+                .isInstanceOf(JobNotFoundException.class);
+        verify(characterRepository, never()).save(any(Character.class));
+    }
+
+    @Test
+    @DisplayName("jobがnullの場合、IllegalArgumentExceptionをスローする")
+    void givenNullJob_whenCreate_thenThrowIllegalArgumentException() {
+        // Given
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(
+                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
+        );
+        Character character = new Character();
+        character.setName("Taro");
+        character.setJob(null);
+
+        // When / Then
+        assertThatThrownBy(() -> characterApplicationService.create(character))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("job must not be null");
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" "})
+    @DisplayName("jobのidがnullまたは空の場合、IllegalArgumentExceptionをスローする")
+    void givenBlankJobId_whenCreate_thenThrowIllegalArgumentException(String jobId) {
+        // Given
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(
+                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class),
+                mock(SkillRepository.class), mock(JobSkillRepository.class), mock(CharacterSkillRepository.class)
+        );
+        Job jobRef = new Job();
+        jobRef.setId(jobId);
+        Character character = new Character();
+        character.setName("Taro");
+        character.setJob(jobRef);
+
+        // When / Then
+        assertThatThrownBy(() -> characterApplicationService.create(character))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("job id must not be null or blank");
     }
 
     @Test
