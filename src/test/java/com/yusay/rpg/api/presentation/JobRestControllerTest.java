@@ -37,10 +37,12 @@ class JobRestControllerTest {
         warrior.setBaseMp(5);
         warrior.setBaseAttack(20);
         warrior.setBaseDefense(20);
+        warrior.setBaseSpeed(5);
         warrior.setHpPerLevel(1);
         warrior.setMpPerLevel(1);
         warrior.setAttackPerLevel(1);
         warrior.setDefensePerLevel(1);
+        warrior.setSpeedPerLevel(1);
         warrior.setRank(JobRank.BEGINNER);
         warrior.setMasterLevel(10);
         Job mage = new Job();
@@ -51,10 +53,12 @@ class JobRestControllerTest {
         mage.setBaseMp(30);
         mage.setBaseAttack(25);
         mage.setBaseDefense(10);
+        mage.setBaseSpeed(5);
         mage.setHpPerLevel(1);
         mage.setMpPerLevel(1);
         mage.setAttackPerLevel(1);
         mage.setDefensePerLevel(1);
+        mage.setSpeedPerLevel(1);
         mage.setRank(JobRank.BEGINNER);
         mage.setMasterLevel(10);
         Mockito.when(jobApplicationService.list()).thenReturn(List.of(warrior, mage));
@@ -76,10 +80,12 @@ class JobRestControllerTest {
                         "baseMp": 5,
                         "baseAttack": 20,
                         "baseDefense": 20,
+                        "baseSpeed": 5,
                         "hpPerLevel": 1,
                         "mpPerLevel": 1,
                         "attackPerLevel": 1,
                         "defensePerLevel": 1,
+                        "speedPerLevel": 1,
                         "rank": "beginner",
                         "masterLevel": 10
                     },
@@ -91,10 +97,12 @@ class JobRestControllerTest {
                         "baseMp": 30,
                         "baseAttack": 25,
                         "baseDefense": 10,
+                        "baseSpeed": 5,
                         "hpPerLevel": 1,
                         "mpPerLevel": 1,
                         "attackPerLevel": 1,
                         "defensePerLevel": 1,
+                        "speedPerLevel": 1,
                         "rank": "beginner",
                         "masterLevel": 10
                     }
@@ -118,10 +126,12 @@ class JobRestControllerTest {
         testJob.setBaseMp(20);
         testJob.setBaseAttack(15);
         testJob.setBaseDefense(15);
+        testJob.setBaseSpeed(5);
         testJob.setHpPerLevel(1);
         testJob.setMpPerLevel(1);
         testJob.setAttackPerLevel(1);
         testJob.setDefensePerLevel(1);
+        testJob.setSpeedPerLevel(1);
         testJob.setRank(JobRank.BEGINNER);
         testJob.setMasterLevel(10);
 
@@ -142,10 +152,12 @@ class JobRestControllerTest {
                     "baseMp": 20,
                     "baseAttack": 15,
                     "baseDefense": 15,
+                    "baseSpeed": 5,
                     "hpPerLevel": 1,
                     "mpPerLevel": 1,
                     "attackPerLevel": 1,
                     "defensePerLevel": 1,
+                    "speedPerLevel": 1,
                     "rank": "beginner",
                     "masterLevel": 10
                 }

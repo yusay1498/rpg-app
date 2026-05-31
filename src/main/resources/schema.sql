@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS items (
     effect_type  VARCHAR(20)           REFERENCES effect_types(code),
     effect_value INT,
     price        INT          NOT NULL DEFAULT 0,
-    sell_price   INT,
+    sell_price   INT          DEFAULT 0,
     is_sellable  BOOLEAN      NOT NULL DEFAULT TRUE,
     slot         VARCHAR(20)           REFERENCES slot_types(code),
     CHECK (

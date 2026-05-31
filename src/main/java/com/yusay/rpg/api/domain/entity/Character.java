@@ -29,7 +29,7 @@ public class Character {
     private int maxMp;
     private int attack;
     private int defense;
-    private int speed;
+    private int speed = 5;
     private int skillPoints;
     private int gold;
     @Convert(converter = CharacterStatusConverter.class)
