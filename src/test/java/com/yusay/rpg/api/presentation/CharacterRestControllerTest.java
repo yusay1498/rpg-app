@@ -4,13 +4,20 @@ import com.yusay.rpg.api.application.CharacterApplicationService;
 import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.domain.entity.CharacterJob;
 import com.yusay.rpg.api.domain.entity.CharacterJobId;
+import com.yusay.rpg.api.domain.entity.CharacterSkill;
+import com.yusay.rpg.api.domain.entity.CharacterSkillId;
 import com.yusay.rpg.api.domain.entity.CharacterStatus;
 import com.yusay.rpg.api.domain.entity.Job;
 import com.yusay.rpg.api.domain.entity.JobRank;
+import com.yusay.rpg.api.domain.entity.Skill;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
 import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
 import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.JobNotFoundException;
+import com.yusay.rpg.api.domain.exception.SkillAlreadyLearnedException;
+import com.yusay.rpg.api.domain.exception.SkillLearnRequirementNotMetException;
+import com.yusay.rpg.api.domain.exception.SkillNotFoundException;
+import com.yusay.rpg.api.domain.exception.SkillNotAvailableException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,6 +28,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -623,5 +631,184 @@ class CharacterRestControllerTest {
         // Then
         assertThat(actual).hasStatus(400);
         Mockito.verify(characterApplicationService).changeJob(characterId, null);
+    }
+
+    // ========== GET /{id}/skills ==========
+
+    @Test
+    @DisplayName("習得済みスキル一覧と200を返す")
+    void givenCharacterWithSkills_whenGetSkills_thenReturnSkillListAndStatus200() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        Skill skill = new Skill();
+        skill.setId("aa0e8400-e29b-41d4-a716-446655440001");
+        skill.setName("ファイアボール");
+        CharacterSkillId csId = new CharacterSkillId(characterId, skill.getId());
+        LocalDateTime learnedAt = LocalDateTime.of(2026, 1, 1, 12, 0, 0);
+        CharacterSkill characterSkill = Mockito.mock(CharacterSkill.class);
+        Mockito.when(characterSkill.getId()).thenReturn(csId);
+        Mockito.when(characterSkill.getSkill()).thenReturn(skill);
+        Mockito.when(characterSkill.getLearnedAt()).thenReturn(learnedAt);
+        Mockito.when(characterApplicationService.listSkills(characterId))
+                .thenReturn(List.of(characterSkill));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .get()
+                .uri("/characters/{id}/skills", characterId)
+                .exchange();
+
+        // Then
+        Mockito.verify(characterApplicationService).listSkills(characterId);
+        assertThat(actual)
+                .hasStatusOk()
+                .bodyJson()
+                .isStrictlyEqualTo("""
+                        [
+                            {
+                                "skillId": "aa0e8400-e29b-41d4-a716-446655440001",
+                                "skillName": "ファイアボール",
+                                "learnedAt": "2026-01-01T12:00:00"
+                            }
+                        ]
+                        """);
+    }
+
+    @Test
+    @DisplayName("存在しないキャラクターIDの場合、404を返す")
+    void givenNonExistentCharacterId_whenGetSkills_thenReturnStatus404() {
+        // Given
+        String nonExistentId = "non-existent-id";
+        Mockito.when(characterApplicationService.listSkills(nonExistentId))
+                .thenThrow(new CharacterNotFoundException(nonExistentId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .get()
+                .uri("/characters/{id}/skills", nonExistentId)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(404);
+    }
+
+    // ========== POST /{id}/skills/{skillId} ==========
+
+    @Test
+    @DisplayName("スキル習得に成功した場合、201とLocationヘッダーを返す")
+    void givenValidRequest_whenLearnSkill_thenReturnStatus201WithLocation() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String skillId     = "aa0e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.learnSkill(characterId, skillId))
+                .thenReturn(Mockito.mock(CharacterSkill.class));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/skills/{skillId}", characterId, skillId)
+                .exchange();
+
+        // Then
+        Mockito.verify(characterApplicationService).learnSkill(characterId, skillId);
+        assertThat(actual)
+                .hasStatus(201)
+                .headers()
+                .hasValue("Location", "http://localhost/characters/660e8400-e29b-41d4-a716-446655440001/skills");
+    }
+
+    @Test
+    @DisplayName("存在しないキャラクターIDの場合、404を返す")
+    void givenNonExistentCharacterId_whenLearnSkill_thenReturnStatus404() {
+        // Given
+        String nonExistentId = "non-existent-id";
+        String skillId       = "aa0e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.learnSkill(nonExistentId, skillId))
+                .thenThrow(new CharacterNotFoundException(nonExistentId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/skills/{skillId}", nonExistentId, skillId)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(404);
+    }
+
+    @Test
+    @DisplayName("存在しないスキルIDの場合、404を返す")
+    void givenNonExistentSkillId_whenLearnSkill_thenReturnStatus404() {
+        // Given
+        String characterId       = "660e8400-e29b-41d4-a716-446655440001";
+        String nonExistentSkillId = "non-existent-skill-id";
+        Mockito.when(characterApplicationService.learnSkill(characterId, nonExistentSkillId))
+                .thenThrow(new SkillNotFoundException(nonExistentSkillId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/skills/{skillId}", characterId, nonExistentSkillId)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(404);
+    }
+
+    @Test
+    @DisplayName("既に習得済みのスキルの場合、409を返す")
+    void givenAlreadyLearnedSkill_whenLearnSkill_thenReturnStatus409() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String skillId     = "aa0e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.learnSkill(characterId, skillId))
+                .thenThrow(new SkillAlreadyLearnedException(characterId, skillId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/skills/{skillId}", characterId, skillId)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(409);
+    }
+
+    @Test
+    @DisplayName("現在の職業で習得できないスキルの場合、400を返す")
+    void givenSkillNotAvailableForJob_whenLearnSkill_thenReturnStatus400() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String skillId     = "aa0e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.learnSkill(characterId, skillId))
+                .thenThrow(new SkillNotAvailableException(characterId, skillId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/skills/{skillId}", characterId, skillId)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
+    }
+
+    @Test
+    @DisplayName("レベルが不足している場合、400を返す")
+    void givenLevelTooLow_whenLearnSkill_thenReturnStatus400() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String skillId     = "aa0e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.learnSkill(characterId, skillId))
+                .thenThrow(new SkillLearnRequirementNotMetException(characterId, skillId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/skills/{skillId}", characterId, skillId)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
     }
 }

@@ -80,4 +80,29 @@ public class CharacterRestController {
 
         return ResponseEntity.created(location).build();
     }
+
+    @GetMapping("/{id}/skills")
+    public ResponseEntity<List<CharacterSkillResponse>> getSkills(@PathVariable String id) {
+        return ResponseEntity.ok(
+                characterApplicationService.listSkills(id).stream()
+                        .map(CharacterSkillResponse::from)
+                        .toList()
+        );
+    }
+
+    @PostMapping("/{id}/skills/{skillId}")
+    public ResponseEntity<Void> learnSkill(
+            @PathVariable String id,
+            @PathVariable String skillId
+    ) {
+        characterApplicationService.learnSkill(id, skillId);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequestUri()
+                .build()
+                .toUri()
+                .resolve("../skills");
+
+        return ResponseEntity.created(location).build();
+    }
 }
