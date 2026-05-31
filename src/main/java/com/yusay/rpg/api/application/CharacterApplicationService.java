@@ -64,8 +64,44 @@ public class CharacterApplicationService {
             throw new IllegalArgumentException("id must be null or blank when creating a character");
         }
 
+        if (character.getJob() == null) {
+            throw new IllegalArgumentException("job must not be null when creating a character");
+        }
+
+        if (character.getJob().getId() == null || character.getJob().getId().isBlank()) {
+            throw new IllegalArgumentException("job id must not be null or blank when creating a character");
+        }
+
+        String jobId = character.getJob().getId();
+        Job job = jobRepository.findById(jobId)
+                .orElseThrow(() -> new JobNotFoundException(jobId));
+
         character.setId(UUID.randomUUID().toString());
-        return characterRepository.save(character);
+        character.setJob(job);
+        character.setLevel(1);
+        character.setExp(0);
+        character.setHp(job.getBaseHp());
+        character.setMaxHp(job.getBaseHp());
+        character.setMp(job.getBaseMp());
+        character.setMaxMp(job.getBaseMp());
+        character.setAttack(job.getBaseAttack());
+        character.setDefense(job.getBaseDefense());
+        character.setSpeed(job.getBaseSpeed());
+        character.setSkillPoints(0);
+        character.setGold(0);
+        character.setStatus(CharacterStatus.ALIVE);
+
+        Character savedCharacter = characterRepository.save(character);
+
+        CharacterJob characterJob = new CharacterJob();
+        characterJob.setId(new CharacterJobId(savedCharacter.getId(), job.getId()));
+        characterJob.setCharacter(savedCharacter);
+        characterJob.setJob(job);
+        characterJob.setMastered(false);
+        characterJob.setMaxLevel(1);
+        characterJobRepository.save(characterJob);
+
+        return savedCharacter;
     }
 
     public Character rename(String id, String name) {
