@@ -1,17 +1,16 @@
 package com.yusay.rpg.api.application;
 
+import com.yusay.rpg.api.domain.entity.*;
 import com.yusay.rpg.api.domain.entity.Character;
-import com.yusay.rpg.api.domain.entity.CharacterJob;
-import com.yusay.rpg.api.domain.entity.CharacterJobId;
-import com.yusay.rpg.api.domain.entity.Job;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
 import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
 import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.JobNotFoundException;
-import com.yusay.rpg.api.domain.repository.CharacterJobRepository;
-import com.yusay.rpg.api.domain.repository.CharacterRepository;
-import com.yusay.rpg.api.domain.repository.JobRepository;
-import com.yusay.rpg.api.domain.repository.JobRequirementRepository;
+import com.yusay.rpg.api.domain.exception.SkillAlreadyLearnedException;
+import com.yusay.rpg.api.domain.exception.SkillLearnRequirementNotMetException;
+import com.yusay.rpg.api.domain.exception.SkillNotFoundException;
+import com.yusay.rpg.api.domain.exception.SkillNotAvailableException;
+import com.yusay.rpg.api.domain.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,17 +27,26 @@ public class CharacterApplicationService {
     private final JobRepository jobRepository;
     private final CharacterJobRepository characterJobRepository;
     private final JobRequirementRepository jobRequirementRepository;
+    private final SkillRepository skillRepository;
+    private final JobSkillRepository jobSkillRepository;
+    private final CharacterSkillRepository characterSkillRepository;
 
     public CharacterApplicationService(
             CharacterRepository characterRepository,
             JobRepository jobRepository,
             CharacterJobRepository characterJobRepository,
-            JobRequirementRepository jobRequirementRepository
+            JobRequirementRepository jobRequirementRepository,
+            SkillRepository skillRepository,
+            JobSkillRepository jobSkillRepository,
+            CharacterSkillRepository characterSkillRepository
     ) {
         this.characterRepository = characterRepository;
         this.jobRepository = jobRepository;
         this.characterJobRepository = characterJobRepository;
         this.jobRequirementRepository = jobRequirementRepository;
+        this.skillRepository = skillRepository;
+        this.jobSkillRepository = jobSkillRepository;
+        this.characterSkillRepository = characterSkillRepository;
     }
 
     public Character lookup(String id) {
@@ -136,5 +144,46 @@ public class CharacterApplicationService {
         characterJob.setCharacter(character);
         characterJob.setJob(newJob);
         return characterJobRepository.save(characterJob);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CharacterSkill> listSkills(String characterId) {
+        if (characterId == null || characterId.isBlank()) {
+            throw new IllegalArgumentException("characterId must not be null or blank when listing skills");
+        }
+        characterRepository.findById(characterId)
+                .orElseThrow(() -> new CharacterNotFoundException(characterId));
+        return characterSkillRepository.findByIdCharacterId(characterId);
+    }
+
+    public CharacterSkill learnSkill(String characterId, String skillId) {
+        if (characterId == null || characterId.isBlank()) {
+            throw new IllegalArgumentException("characterId must not be null or blank when learning skill");
+        }
+        if (skillId == null || skillId.isBlank()) {
+            throw new IllegalArgumentException("skillId must not be null or blank when learning skill");
+        }
+
+        Character character = characterRepository.findById(characterId)
+                .orElseThrow(() -> new CharacterNotFoundException(characterId));
+        Skill skill = skillRepository.findById(skillId)
+                .orElseThrow(() -> new SkillNotFoundException(skillId));
+
+        if (characterSkillRepository.findById(new CharacterSkillId(characterId, skillId)).isPresent()) {
+            throw new SkillAlreadyLearnedException(characterId, skillId);
+        }
+
+        JobSkill jobSkill = jobSkillRepository.findById(new JobSkillId(character.getJob().getId(), skillId))
+                .orElseThrow(() -> new SkillNotAvailableException(characterId, skillId));
+
+        if (character.getLevel() < jobSkill.getRequiredLevel()) {
+            throw new SkillLearnRequirementNotMetException(characterId, skillId);
+        }
+
+        CharacterSkill characterSkill = new CharacterSkill();
+        characterSkill.setId(new CharacterSkillId(characterId, skillId));
+        characterSkill.setCharacter(character);
+        characterSkill.setSkill(skill);
+        return characterSkillRepository.save(characterSkill);
     }
 }

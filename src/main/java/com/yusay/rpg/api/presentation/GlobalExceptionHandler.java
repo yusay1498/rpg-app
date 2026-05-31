@@ -3,6 +3,9 @@ package com.yusay.rpg.api.presentation;
 import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
 import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.MissingEntityException;
+import com.yusay.rpg.api.domain.exception.SkillAlreadyLearnedException;
+import com.yusay.rpg.api.domain.exception.SkillLearnRequirementNotMetException;
+import com.yusay.rpg.api.domain.exception.SkillNotAvailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -67,6 +70,33 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleJobAlreadyOwned(JobAlreadyOwnedException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.CONFLICT,
+                e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler(SkillAlreadyLearnedException.class)
+    public ResponseEntity<ProblemDetail> handleSkillAlreadyLearned(SkillAlreadyLearnedException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler(SkillNotAvailableException.class)
+    public ResponseEntity<ProblemDetail> handleSkillNotAvailable(SkillNotAvailableException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler(SkillLearnRequirementNotMetException.class)
+    public ResponseEntity<ProblemDetail> handleSkillLearnRequirementNotMet(SkillLearnRequirementNotMetException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
                 e.getMessage()
         );
         return ResponseEntity.of(problemDetail).build();
