@@ -2,10 +2,15 @@ package com.yusay.rpg.api.presentation;
 
 import com.yusay.rpg.api.application.CharacterApplicationService;
 import com.yusay.rpg.api.domain.entity.Character;
+import com.yusay.rpg.api.domain.entity.CharacterJob;
+import com.yusay.rpg.api.domain.entity.CharacterJobId;
 import com.yusay.rpg.api.domain.entity.CharacterStatus;
 import com.yusay.rpg.api.domain.entity.Job;
 import com.yusay.rpg.api.domain.entity.JobRank;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
+import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
+import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
+import com.yusay.rpg.api.domain.exception.JobNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,6 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.assertj.MvcTestResult;
+
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -400,5 +407,221 @@ class CharacterRestControllerTest {
 
         // Then
         assertThat(actual).hasStatus(404);
+    }
+
+    @Test
+    @DisplayName("キャラクターが保有するジョブ一覧を返す")
+    void givenCharacterWithJobs_whenGetJobs_thenReturnJobListAndStatus200() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String jobId       = "550e8400-e29b-41d4-a716-446655440002";
+        Job newJob = new Job();
+        newJob.setId(jobId);
+        newJob.setName("mage");
+        CharacterJob characterJob = new CharacterJob();
+        characterJob.setId(new CharacterJobId(characterId, jobId));
+        characterJob.setJob(newJob);
+        characterJob.setMastered(true);
+        characterJob.setMaxLevel(10);
+        Mockito.when(characterApplicationService.listJobs(characterId)).thenReturn(List.of(characterJob));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .get()
+                .uri("/characters/{id}/jobs", characterId)
+                .exchange();
+
+        // Then
+        Mockito.verify(characterApplicationService).listJobs(characterId);
+        assertThat(actual)
+                .hasStatusOk()
+                .bodyJson()
+                .isStrictlyEqualTo("""
+                        [
+                            {
+                                "jobId": "550e8400-e29b-41d4-a716-446655440002",
+                                "jobName": "mage",
+                                "mastered": true,
+                                "maxLevel": 10
+                            }
+                        ]
+                        """);
+    }
+
+    @Test
+    @DisplayName("存在しないキャラクターIDの場合、404を返す")
+    void givenNonExistentCharacterId_whenGetJobs_thenReturnStatus404() {
+        // Given
+        String nonExistentId = "non-existent-id";
+        Mockito.when(characterApplicationService.listJobs(nonExistentId))
+                .thenThrow(new CharacterNotFoundException(nonExistentId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .get()
+                .uri("/characters/{id}/jobs", nonExistentId)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(404);
+    }
+
+    @Test
+    @DisplayName("転職に成功した場合、201とLocationヘッダーを返す")
+    void givenValidRequest_whenPostChangeJob_thenReturnStatus201WithLocation() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String jobId       = "550e8400-e29b-41d4-a716-446655440002";
+        CharacterJobId characterJobId = new CharacterJobId(characterId, jobId);
+        CharacterJob characterJob = new CharacterJob();
+        characterJob.setId(characterJobId);
+        Mockito.when(characterApplicationService.changeJob(characterId, jobId))
+                .thenReturn(characterJob);
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/job/change", characterId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "job": { "id": "550e8400-e29b-41d4-a716-446655440002" } }
+                        """)
+                .exchange();
+
+        // Then
+        Mockito.verify(characterApplicationService).changeJob(characterId, jobId);
+        assertThat(actual)
+                .hasStatus(201)
+                .headers()
+                .hasValue("Location", "http://localhost/characters/660e8400-e29b-41d4-a716-446655440001/jobs");
+    }
+
+    @Test
+    @DisplayName("存在しないキャラクターIDの場合、404を返す")
+    void givenNonExistentCharacterId_whenPostChangeJob_thenReturnStatus404() {
+        // Given
+        String nonExistentId = "non-existent-id";
+        Mockito.when(characterApplicationService.changeJob(Mockito.eq(nonExistentId), Mockito.anyString()))
+                .thenThrow(new CharacterNotFoundException(nonExistentId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/job/change", nonExistentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "job": { "id": "550e8400-e29b-41d4-a716-446655440002" } }
+                        """)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(404);
+    }
+
+    @Test
+    @DisplayName("存在しない職業IDの場合、404を返す")
+    void givenNonExistentJobId_whenPostChangeJob_thenReturnStatus404() {
+        // Given
+        String characterId  = "660e8400-e29b-41d4-a716-446655440001";
+        String nonExistentJobId = "non-existent-job-id";
+        Mockito.when(characterApplicationService.changeJob(characterId, nonExistentJobId))
+                .thenThrow(new JobNotFoundException(nonExistentJobId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/job/change", characterId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "job": { "id": "non-existent-job-id" } }
+                        """)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(404);
+    }
+
+    @Test
+    @DisplayName("転職条件を満たしていない場合、400を返す")
+    void givenRequirementsNotMet_whenPostChangeJob_thenReturnStatus400() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String jobId       = "550e8400-e29b-41d4-a716-446655440002";
+        Mockito.when(characterApplicationService.changeJob(characterId, jobId))
+                .thenThrow(new JobChangeRequirementNotMetException(characterId, jobId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/job/change", characterId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "job": { "id": "550e8400-e29b-41d4-a716-446655440002" } }
+                        """)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
+    }
+
+    @Test
+    @DisplayName("既に保有しているジョブへの転職の場合、409を返す")
+    void givenAlreadyHasJob_whenPostChangeJob_thenReturnStatus409() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        String jobId       = "550e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.changeJob(characterId, jobId))
+                .thenThrow(new JobAlreadyOwnedException(characterId, jobId));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/job/change", characterId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        { "job": { "id": "550e8400-e29b-41d4-a716-446655440001" } }
+                        """)
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(409);
+    }
+
+    @Test
+    @DisplayName("不正なJSONを送信した場合、400を返す")
+    void givenMalformedJson_whenPostChangeJob_thenReturnStatus400() {
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/job/change", "660e8400-e29b-41d4-a716-446655440001")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ invalid json }")
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
+        Mockito.verify(characterApplicationService, Mockito.never())
+                .changeJob(Mockito.any(), Mockito.any());
+    }
+
+    @Test
+    @DisplayName("jobフィールドがnullの場合、serviceのバリデーションを通じて400を返す")
+    void givenNullJob_whenPostChangeJob_thenReturnStatus400() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.changeJob(Mockito.eq(characterId), Mockito.isNull()))
+                .thenThrow(new IllegalArgumentException("jobId must not be null or blank when changing job"));
+
+        // When
+        MvcTestResult actual = mockMvcTester
+                .post()
+                .uri("/characters/{id}/job/change", characterId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+                .exchange();
+
+        // Then
+        assertThat(actual).hasStatus(400);
+        Mockito.verify(characterApplicationService).changeJob(characterId, null);
     }
 }

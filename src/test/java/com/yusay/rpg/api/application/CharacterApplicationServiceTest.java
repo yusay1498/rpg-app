@@ -6,6 +6,8 @@ import com.yusay.rpg.api.domain.entity.CharacterJobId;
 import com.yusay.rpg.api.domain.entity.CharacterStatus;
 import com.yusay.rpg.api.domain.entity.Job;
 import com.yusay.rpg.api.domain.exception.CharacterNotFoundException;
+import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
+import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.JobNotFoundException;
 import com.yusay.rpg.api.domain.repository.CharacterJobRepository;
 import com.yusay.rpg.api.domain.repository.CharacterRepository;
@@ -280,6 +282,61 @@ class CharacterApplicationServiceTest {
     }
 
     @Test
+    @DisplayName("キャラクターが保有するジョブ一覧を返す")
+    void givenCharacterWithJobs_whenListJobs_thenReturnCharacterJobs() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterJobRepository characterJobRepository = mock(CharacterJobRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), characterJobRepository, mock(JobRequirementRepository.class)
+        );
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        when(characterRepository.findById(characterId)).thenReturn(Optional.of(new Character()));
+        Job warrior = new Job();
+        warrior.setId("550e8400-e29b-41d4-a716-446655440001");
+        CharacterJob characterJob = new CharacterJob();
+        characterJob.setId(new CharacterJobId(characterId, warrior.getId()));
+        when(characterJobRepository.findByIdCharacterId(characterId)).thenReturn(List.of(characterJob));
+
+        // When
+        List<CharacterJob> result = service.listJobs(characterId);
+
+        // Then
+        verify(characterJobRepository).findByIdCharacterId(characterId);
+        assertThat(result).containsExactly(characterJob);
+    }
+
+    @Test
+    @DisplayName("存在しないキャラクターIDの場合、CharacterNotFoundExceptionをスローする")
+    void givenNonExistentCharacterId_whenListJobs_thenThrowCharacterNotFoundException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService service = new CharacterApplicationService(
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+        );
+        when(characterRepository.findById("non-existent-id")).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> service.listJobs("non-existent-id"))
+                .isInstanceOf(CharacterNotFoundException.class);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" "})
+    @DisplayName("characterIdがnull/空文字/空白の場合、IllegalArgumentExceptionをスローする")
+    void givenBlankCharacterId_whenListJobs_thenThrowIllegalArgumentException(String characterId) {
+        // Given
+        CharacterApplicationService service = new CharacterApplicationService(
+                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(JobRequirementRepository.class)
+        );
+
+        // When / Then
+        assertThatThrownBy(() -> service.listJobs(characterId))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("前提職業を全てマスターしている場合、転職してCharacterJobを返す")
     void givenCharacterWithAllRequirementsMastered_whenChangeJob_thenReturnCharacterJob() {
         // Given
@@ -310,12 +367,16 @@ class CharacterApplicationServiceTest {
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(newJob));
         when(jobRequirementRepository.findRequiredJobs(jobId)).thenReturn(List.of(warrior));
         when(characterJobRepository.findByIdCharacterId(characterId)).thenReturn(List.of(masteredJob));
+        when(characterJobRepository.findById(new CharacterJobId(characterId, jobId))).thenReturn(Optional.empty());
         when(characterJobRepository.save(any(CharacterJob.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
         CharacterJob result = service.changeJob(characterId, jobId);
 
         // Then
+        verify(characterRepository).save(character);
+        assertThat(character.getJob()).isEqualTo(newJob);
+        assertThat(character.getLevel()).isEqualTo(1);
         verify(characterJobRepository).save(any(CharacterJob.class));
         assertThat(result.getId().getCharacterId()).isEqualTo(characterId);
         assertThat(result.getId().getJobId()).isEqualTo(jobId);
@@ -346,12 +407,16 @@ class CharacterApplicationServiceTest {
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(newJob));
         when(jobRequirementRepository.findRequiredJobs(jobId)).thenReturn(List.of());
         when(characterJobRepository.findByIdCharacterId(characterId)).thenReturn(List.of());
+        when(characterJobRepository.findById(new CharacterJobId(characterId, jobId))).thenReturn(Optional.empty());
         when(characterJobRepository.save(any(CharacterJob.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
         CharacterJob result = service.changeJob(characterId, jobId);
 
         // Then
+        verify(characterRepository).save(character);
+        assertThat(character.getJob()).isEqualTo(newJob);
+        assertThat(character.getLevel()).isEqualTo(1);
         verify(characterJobRepository).save(any(CharacterJob.class));
         assertThat(result.getId().getCharacterId()).isEqualTo(characterId);
         assertThat(result.getId().getJobId()).isEqualTo(jobId);
@@ -419,13 +484,14 @@ class CharacterApplicationServiceTest {
 
         // When / Then
         assertThatThrownBy(() -> service.changeJob(characterId, jobId))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(JobChangeRequirementNotMetException.class);
         verify(characterJobRepository, never()).save(any());
+        verify(characterRepository, never()).save(any());
     }
 
     @Test
-    @DisplayName("既に保有しているジョブへの転職はIllegalStateExceptionをスローしsaveを呼び出さない")
-    void givenCharacterAlreadyHasJob_whenChangeJob_thenThrowIllegalStateException() {
+    @DisplayName("既に保有しているジョブへの転職はJobAlreadyOwnedExceptionをスローしsaveを呼び出さない")
+    void givenCharacterAlreadyHasJob_whenChangeJob_thenThrowJobAlreadyOwnedException() {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         JobRepository jobRepository = mock(JobRepository.class);
@@ -447,7 +513,8 @@ class CharacterApplicationServiceTest {
 
         // When / Then
         assertThatThrownBy(() -> service.changeJob(characterId, jobId))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(JobAlreadyOwnedException.class);
         verify(characterJobRepository, never()).save(any());
+        verify(characterRepository, never()).save(any());
     }
 }

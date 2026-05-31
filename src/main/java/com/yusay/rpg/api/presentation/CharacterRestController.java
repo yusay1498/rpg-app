@@ -2,12 +2,14 @@ package com.yusay.rpg.api.presentation;
 
 import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.application.CharacterApplicationService;
+import com.yusay.rpg.api.domain.entity.CharacterJob;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/characters")
@@ -51,5 +53,31 @@ public class CharacterRestController {
     public ResponseEntity<Void> delete(@PathVariable String id) {
         characterApplicationService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/jobs")
+    public ResponseEntity<List<CharacterJobResponse>> getJobs(@PathVariable String id) {
+        return ResponseEntity.ok(
+                characterApplicationService.listJobs(id).stream()
+                        .map(CharacterJobResponse::from)
+                        .toList()
+        );
+    }
+
+    @PostMapping("/{id}/job/change")
+    public ResponseEntity<Void> postChangeJob(
+            @PathVariable String id,
+            @RequestBody @Valid CharacterJob request
+    ) {
+        CharacterJob newCharacterJob = characterApplicationService
+                .changeJob(id, request.getJob() != null ? request.getJob().getId() : null);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequestUri()
+                .build()
+                .toUri()
+                .resolve("../jobs");
+
+        return ResponseEntity.created(location).build();
     }
 }
