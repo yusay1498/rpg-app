@@ -35,8 +35,6 @@ CREATE TABLE IF NOT EXISTS jobs (
     id          VARCHAR(36)  PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     description TEXT,
-    rank        VARCHAR(20)  NOT NULL DEFAULT 'beginner',
-    master_level INT         NOT NULL DEFAULT 10,
     base_hp     INT          NOT NULL,
     base_mp     INT          NOT NULL,
     base_attack INT          NOT NULL,
@@ -54,14 +52,6 @@ CREATE TABLE IF NOT EXISTS job_requirements (
     required_job_id VARCHAR(36) NOT NULL REFERENCES jobs(id) ON DELETE RESTRICT,
     PRIMARY KEY (job_id, required_job_id),
     CHECK (job_id <> required_job_id)
-);
-
-CREATE TABLE IF NOT EXISTS job_requirements (
-    id              VARCHAR(36)  PRIMARY KEY,
-    job_id          VARCHAR(36)  NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
-    required_job_id VARCHAR(36)  NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
-    required_level  INT          NOT NULL DEFAULT 1,
-    UNIQUE (job_id, required_job_id)
 );
 
 CREATE TABLE IF NOT EXISTS skills (
@@ -213,8 +203,6 @@ CREATE TABLE IF NOT EXISTS battle_sessions (
 -- インデックス
 -- ============================================================
 
-CREATE INDEX IF NOT EXISTS idx_job_requirements_job_id ON job_requirements(job_id);
-CREATE INDEX IF NOT EXISTS idx_job_requirements_required_job_id ON job_requirements(required_job_id);
 CREATE INDEX IF NOT EXISTS idx_job_skills_skill_id ON job_skills(skill_id);
 CREATE INDEX IF NOT EXISTS idx_job_requirements_required_job_id ON job_requirements(required_job_id);
 CREATE INDEX IF NOT EXISTS idx_character_jobs_job_id ON character_jobs(job_id);
@@ -222,7 +210,6 @@ CREATE INDEX IF NOT EXISTS idx_rooms_dungeon_id ON rooms(dungeon_id);
 CREATE INDEX IF NOT EXISTS idx_enemies_dungeon_id ON enemies(dungeon_id);
 CREATE INDEX IF NOT EXISTS idx_enemies_drop_item_id ON enemies(drop_item_id);
 CREATE INDEX IF NOT EXISTS idx_characters_job_id ON characters(job_id);
-CREATE INDEX IF NOT EXISTS idx_character_jobs_job_id ON character_jobs(job_id);
 CREATE INDEX IF NOT EXISTS idx_character_skills_skill_id ON character_skills(skill_id);
 CREATE INDEX IF NOT EXISTS idx_inventories_item_id ON inventories(item_id);
 CREATE INDEX IF NOT EXISTS idx_equipments_item_id ON equipments(item_id);
