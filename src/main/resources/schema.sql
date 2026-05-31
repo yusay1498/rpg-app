@@ -50,7 +50,8 @@ CREATE TABLE IF NOT EXISTS jobs (
 CREATE TABLE IF NOT EXISTS job_requirements (
     job_id          VARCHAR(36) NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
     required_job_id VARCHAR(36) NOT NULL REFERENCES jobs(id) ON DELETE RESTRICT,
-    PRIMARY KEY (job_id, required_job_id)
+    PRIMARY KEY (job_id, required_job_id),
+    CHECK (job_id <> required_job_id)
 );
 
 CREATE TABLE IF NOT EXISTS skills (

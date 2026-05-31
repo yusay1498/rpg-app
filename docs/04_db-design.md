@@ -163,7 +163,7 @@
 | created_at | TIMESTAMP | 作成日時 |
 | updated_at | TIMESTAMP | 更新日時 |
 
-### character_jobs（転職履歴）
+### character_jobs（転職・習熟状況）
 
 | カラム | 型 | 説明 |
 |--------|-----|------|
