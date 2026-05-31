@@ -51,4 +51,16 @@ public class CharacterApplicationService {
 
         return characterRepository.save(updatedCharacter);
     }
+
+    public void delete(String id) {
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("id must not be null or blank when deleting a character");
+        }
+
+        if (characterRepository.findById(id).isPresent()) {
+            characterRepository.deleteById(id);
+        } else {
+            throw new CharacterNotFoundException(id);
+        }
+    }
 }

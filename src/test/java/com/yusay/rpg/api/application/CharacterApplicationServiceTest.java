@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -203,5 +204,51 @@ class CharacterApplicationServiceTest {
         // When / Then
         assertThatThrownBy(() -> characterApplicationService.rename("660e8400-e29b-41d4-a716-446655440001", name))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("存在するIDの場合、deleteByIdを呼び出す")
+    void givenExistingId_whenDelete_thenCallDeleteById() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(characterRepository);
+        String id = "660e8400-e29b-41d4-a716-446655440001";
+        when(characterRepository.findById(id)).thenReturn(Optional.of(new Character()));
+
+        // When
+        characterApplicationService.delete(id);
+
+        // Then
+        verify(characterRepository).deleteById(id);
+    }
+
+    @Test
+    @DisplayName("存在しないIDの場合、CharacterNotFoundExceptionをスローしdeleteByIdを呼び出さない")
+    void givenNonExistentId_whenDelete_thenThrowCharacterNotFoundException() {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(characterRepository);
+        String nonExistentId = "non-existent-id";
+        when(characterRepository.findById(nonExistentId)).thenReturn(Optional.empty());
+
+        // When / Then
+        assertThatThrownBy(() -> characterApplicationService.delete(nonExistentId))
+                .isInstanceOf(CharacterNotFoundException.class);
+        verify(characterRepository, never()).deleteById(any());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" "})
+    @DisplayName("idがnull/空文字/空白の場合、IllegalArgumentExceptionをスローしdeleteByIdを呼び出さない")
+    void givenBlankId_whenDelete_thenThrowIllegalArgumentException(String id) {
+        // Given
+        CharacterRepository characterRepository = mock(CharacterRepository.class);
+        CharacterApplicationService characterApplicationService = new CharacterApplicationService(characterRepository);
+
+        // When / Then
+        assertThatThrownBy(() -> characterApplicationService.delete(id))
+                .isInstanceOf(IllegalArgumentException.class);
+        verify(characterRepository, never()).deleteById(any());
     }
 }
