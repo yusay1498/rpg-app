@@ -41,9 +41,9 @@ public class CharacterRestController {
     @PatchMapping("/{id}")
     public ResponseEntity<Void> patchName(
             @PathVariable String id,
-            @RequestBody Character character
+            @RequestBody RenameRequest request
     ) {
-        characterApplicationService.rename(id, character.getName());
+        characterApplicationService.rename(id, request.name());
         return ResponseEntity.noContent().build();
     }
 }
