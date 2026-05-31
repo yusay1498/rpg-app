@@ -546,19 +546,23 @@ class CharacterRestControllerTest {
     }
 
     @Test
-    @DisplayName("jobフィールドがnullの場合、serviceを呼び出さず500を返す")
-    void givenNullJob_whenPostChangeJob_thenReturnStatus500() {
+    @DisplayName("jobフィールドがnullの場合、serviceのバリデーションを通じて400を返す")
+    void givenNullJob_whenPostChangeJob_thenReturnStatus400() {
+        // Given
+        String characterId = "660e8400-e29b-41d4-a716-446655440001";
+        Mockito.when(characterApplicationService.changeJob(Mockito.eq(characterId), Mockito.isNull()))
+                .thenThrow(new IllegalArgumentException("jobId must not be null or blank when changing job"));
+
         // When
         MvcTestResult actual = mockMvcTester
                 .post()
-                .uri("/characters/{id}/job/change", "660e8400-e29b-41d4-a716-446655440001")
+                .uri("/characters/{id}/job/change", characterId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}")
                 .exchange();
 
         // Then
-        assertThat(actual).hasStatus(500);
-        Mockito.verify(characterApplicationService, Mockito.never())
-                .changeJob(Mockito.any(), Mockito.any());
+        assertThat(actual).hasStatus(400);
+        Mockito.verify(characterApplicationService).changeJob(characterId, null);
     }
 }

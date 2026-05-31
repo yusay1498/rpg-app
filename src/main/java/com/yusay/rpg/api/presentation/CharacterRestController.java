@@ -61,7 +61,7 @@ public class CharacterRestController {
             @RequestBody @Valid CharacterJob request
     ) {
         CharacterJob newCharacterJob = characterApplicationService
-                .changeJob(id, request.getJob().getId());
+                .changeJob(id, request.getJob() != null ? request.getJob().getId() : null);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
