@@ -1,370 +1,370 @@
 -- ============================================================
--- 職業マスタ（jobs テーブル）
+-- Job Master (jobs table)
 -- ============================================================
 
 -- ------------------------------------------------------------
--- 初級職（beginner）40種 - master_level: 10
+-- Beginner jobs (40 types) - master_level: 10
 -- ------------------------------------------------------------
 
 INSERT INTO jobs (id, name, description, rank, master_level, base_hp, base_mp, base_attack, base_defense, hp_per_level, mp_per_level, attack_per_level, defense_per_level) VALUES
--- 戦士系
-('00000000-0000-0000-0000-000000000001', '戦士', '剣と盾を操る基本的な前衛職', 'beginner', 10, 35, 5, 12, 10, 3, 1, 2, 2),
-('00000000-0000-0000-0000-000000000002', '剣士', '剣術に特化した戦闘のプロ', 'beginner', 10, 33, 8, 14, 8, 3, 1, 3, 1),
-('00000000-0000-0000-0000-000000000003', '槍兵', '槍を使いリーチで攻める兵士', 'beginner', 10, 32, 6, 13, 9, 3, 1, 2, 2),
-('00000000-0000-0000-0000-000000000004', '斧使い', '重い斧で敵を叩き潰す豪傑', 'beginner', 10, 34, 5, 15, 7, 3, 1, 3, 1),
-('00000000-0000-0000-0000-000000000005', '格闘家', '己の拳で戦う武道の達人', 'beginner', 10, 30, 10, 13, 8, 2, 1, 3, 1),
-('00000000-0000-0000-0000-000000000006', '騎士見習い', '騎士を目指す若き兵士', 'beginner', 10, 33, 7, 11, 12, 3, 1, 2, 2),
-('00000000-0000-0000-0000-000000000007', '傭兵', '金で雇われる戦いのプロ', 'beginner', 10, 32, 6, 14, 9, 3, 1, 2, 2),
-('00000000-0000-0000-0000-000000000008', '闘士', '闘技場で鍛え上げた戦士', 'beginner', 10, 31, 8, 13, 9, 2, 1, 3, 2),
--- 魔法使い系
-('00000000-0000-0000-0000-000000000009', '魔法使い', '攻撃魔法を操る魔術師', 'beginner', 10, 20, 20, 5, 5, 1, 3, 1, 1),
-('00000000-0000-0000-0000-000000000010', '魔術師', '多様な魔法を研究する学者', 'beginner', 10, 22, 18, 6, 6, 1, 3, 1, 1),
-('00000000-0000-0000-0000-000000000011', '風水師', '風と水の力を操る術者', 'beginner', 10, 24, 17, 7, 7, 1, 3, 1, 1),
-('00000000-0000-0000-0000-000000000012', '召喚士見習い', '魔物を呼び出す見習い術者', 'beginner', 10, 23, 19, 5, 6, 1, 3, 1, 1),
-('00000000-0000-0000-0000-000000000013', '錬金術師', '物質を変換する魔法学者', 'beginner', 10, 25, 16, 8, 7, 2, 2, 1, 1),
-('00000000-0000-0000-0000-000000000014', '呪術師', '呪いの力を操る闇の術者', 'beginner', 10, 21, 19, 6, 5, 1, 3, 1, 1),
-('00000000-0000-0000-0000-000000000015', '精霊使い', '精霊と契約し力を借りる者', 'beginner', 10, 23, 18, 6, 6, 1, 3, 1, 1),
-('00000000-0000-0000-0000-000000000016', '占い師', '星の力で未来を読む者', 'beginner', 10, 22, 17, 5, 6, 1, 3, 1, 1),
--- 僧侶系
-('00000000-0000-0000-0000-000000000017', '僧侶', '回復魔法で仲間を癒す聖職者', 'beginner', 10, 25, 18, 6, 8, 2, 3, 1, 1),
-('00000000-0000-0000-0000-000000000018', '神官', '神に仕え聖なる力を振るう者', 'beginner', 10, 26, 17, 7, 9, 2, 2, 1, 2),
-('00000000-0000-0000-0000-000000000019', '修道士', '修行により心身を鍛えた僧', 'beginner', 10, 28, 15, 9, 10, 2, 2, 1, 2),
-('00000000-0000-0000-0000-000000000020', '巫女', '神楽を舞い神の力を降ろす者', 'beginner', 10, 24, 19, 5, 7, 1, 3, 1, 1),
-('00000000-0000-0000-0000-000000000021', '薬師', '薬草の知識で傷を癒す者', 'beginner', 10, 26, 16, 6, 7, 2, 2, 1, 1),
-('00000000-0000-0000-0000-000000000022', '聖歌隊', '歌の力で仲間を癒す者', 'beginner', 10, 23, 18, 5, 7, 1, 3, 1, 1),
-('00000000-0000-0000-0000-000000000023', '祈祷師', '祈りの力で加護を与える者', 'beginner', 10, 25, 17, 6, 8, 2, 2, 1, 2),
-('00000000-0000-0000-0000-000000000024', '退魔師', '邪悪を祓う聖なる戦士', 'beginner', 10, 27, 15, 9, 9, 2, 2, 2, 1),
--- 盗賊系
-('00000000-0000-0000-0000-000000000025', '盗賊', '素早さと技で敵を翻弄する者', 'beginner', 10, 25, 10, 10, 6, 2, 1, 2, 1),
-('00000000-0000-0000-0000-000000000026', '弓使い', '弓矢で遠距離から攻撃する射手', 'beginner', 10, 26, 10, 11, 7, 2, 1, 2, 1),
-('00000000-0000-0000-0000-000000000027', '狩人', '野生の知恵で獲物を追う者', 'beginner', 10, 28, 8, 12, 7, 2, 1, 2, 2),
-('00000000-0000-0000-0000-000000000028', '忍者見習い', '忍術を学ぶ若き忍び', 'beginner', 10, 24, 12, 11, 6, 2, 2, 2, 1),
-('00000000-0000-0000-0000-000000000029', '海賊', '海を渡り財宝を求める冒険者', 'beginner', 10, 30, 8, 12, 8, 2, 1, 2, 2),
-('00000000-0000-0000-0000-000000000030', '踊り子', '踊りで敵を惑わす芸人', 'beginner', 10, 23, 14, 8, 6, 1, 2, 2, 1),
-('00000000-0000-0000-0000-000000000031', '斥候', '偵察と情報収集に長けた者', 'beginner', 10, 25, 10, 10, 7, 2, 1, 2, 1),
-('00000000-0000-0000-0000-000000000032', '旅芸人', '各地を旅する多芸な芸人', 'beginner', 10, 26, 12, 9, 7, 2, 2, 1, 1),
--- 特殊系
-('00000000-0000-0000-0000-000000000033', '商人', '商売の才能で金を稼ぐ者', 'beginner', 10, 27, 10, 8, 8, 2, 1, 1, 2),
-('00000000-0000-0000-0000-000000000034', '鍛冶師', '武器や防具を打つ職人', 'beginner', 10, 30, 7, 10, 10, 2, 1, 2, 2),
-('00000000-0000-0000-0000-000000000035', '料理人', '料理で仲間を元気にする者', 'beginner', 10, 28, 10, 8, 8, 2, 1, 1, 1),
-('00000000-0000-0000-0000-000000000036', '吟遊詩人', '歌と詩で勇気を与える者', 'beginner', 10, 24, 15, 6, 6, 1, 2, 1, 1),
-('00000000-0000-0000-0000-000000000037', '学者', '知識と分析で仲間を導く者', 'beginner', 10, 22, 16, 5, 6, 1, 2, 1, 1),
-('00000000-0000-0000-0000-000000000038', '獣使い', '動物と心を通わせる者', 'beginner', 10, 28, 12, 9, 7, 2, 2, 2, 1),
-('00000000-0000-0000-0000-000000000039', '道化師', 'トリックで敵を翻弄する者', 'beginner', 10, 24, 14, 8, 6, 1, 2, 2, 1),
-('00000000-0000-0000-0000-000000000040', '冒険者', '何でもこなす万能な旅人', 'beginner', 10, 28, 12, 10, 8, 2, 2, 2, 1)
+-- Warrior types
+('bdd640fb-0667-4ad1-9c80-317fa3b1799d', 'Warrior', 'A basic frontline fighter with sword and shield', 'beginner', 10, 35, 5, 12, 10, 3, 1, 2, 2),
+('23b8c1e9-3924-46de-beb1-3b9046685257', 'Swordsman', 'A combat specialist focused on swordsmanship', 'beginner', 10, 33, 8, 14, 8, 3, 1, 3, 1),
+('bd9c66b3-ad3c-4d6d-9a3d-1fa7bc8960a9', 'Lancer', 'A soldier who attacks with long reach using a spear', 'beginner', 10, 32, 6, 13, 9, 3, 1, 2, 2),
+('972a8469-1641-4f82-8b9d-2434e465e150', 'Axe Fighter', 'A powerhouse who crushes enemies with a heavy axe', 'beginner', 10, 34, 5, 15, 7, 3, 1, 3, 1),
+('17fc695a-07a0-4a6e-8822-e8f36c031199', 'Martial Artist', 'A master of unarmed combat', 'beginner', 10, 30, 10, 13, 8, 2, 1, 3, 1),
+('9a1de644-815e-46d1-bb8f-aa1837f8a88b', 'Knight Apprentice', 'A young soldier aspiring to become a knight', 'beginner', 10, 33, 7, 11, 12, 3, 1, 2, 2),
+('b74d0fb1-32e7-4629-8fad-c1a606cb0fb3', 'Mercenary', 'A professional fighter for hire', 'beginner', 10, 32, 6, 14, 9, 3, 1, 2, 2),
+('6b65a6a4-8b81-48f6-b38a-088ca65ed389', 'Gladiator', 'A warrior forged in the arena', 'beginner', 10, 31, 8, 13, 9, 2, 1, 3, 2),
+-- Mage types
+('47378190-96da-4dac-b2ff-5d2a386ecbe0', 'Mage', 'A spellcaster who wields offensive magic', 'beginner', 10, 20, 20, 5, 5, 1, 3, 1, 1),
+('c241330b-01a9-471f-9e8a-774bcf36d58b', 'Sorcerer', 'A scholar who researches diverse magic', 'beginner', 10, 22, 18, 6, 6, 1, 3, 1, 1),
+('6c307511-b2b9-437a-a8df-6ec4ce4a2bbd', 'Geomancer', 'A practitioner who manipulates wind and water', 'beginner', 10, 24, 17, 7, 7, 1, 3, 1, 1),
+('371ecd7b-27cd-4130-8722-9389571aa876', 'Apprentice Summoner', 'A novice who calls forth creatures', 'beginner', 10, 23, 19, 5, 6, 1, 3, 1, 1),
+('1a2a73ed-562b-4f79-8374-59eef50bea63', 'Alchemist', 'A magical scholar who transmutes materials', 'beginner', 10, 25, 16, 8, 7, 2, 2, 1, 1),
+('5be6128e-18c2-4797-a142-ea7d17be3111', 'Hex Caster', 'A dark practitioner who wields curses', 'beginner', 10, 21, 19, 6, 5, 1, 3, 1, 1),
+('43b7a3a6-9a8d-4a03-980d-7b71d8f56413', 'Spirit Caller', 'One who borrows power from contracted spirits', 'beginner', 10, 23, 18, 6, 6, 1, 3, 1, 1),
+('759cde66-bacf-43d0-8b1f-9163ce9ff57f', 'Fortune Teller', 'One who reads the future through starlight', 'beginner', 10, 22, 17, 5, 6, 1, 3, 1, 1),
+-- Cleric types
+('ec1b8ca1-f91e-4d4c-9ff4-9b7889463e85', 'Cleric', 'A healer who mends allies with restorative magic', 'beginner', 10, 25, 18, 6, 8, 2, 3, 1, 1),
+('4b0dbb41-8d52-48f1-942c-3fe860e7a113', 'Priest', 'One who wields holy power in service of the divine', 'beginner', 10, 26, 17, 7, 9, 2, 2, 1, 2),
+('e2acf72f-9e57-4f7a-a0ee-89aed453dd32', 'Monk', 'A disciplined ascetic with a tempered body and mind', 'beginner', 10, 28, 15, 9, 10, 2, 2, 1, 2),
+('3139d32c-93cd-49bf-9c94-1cf0dc98d2c1', 'Shrine Maiden', 'One who channels divine power through sacred dance', 'beginner', 10, 24, 19, 5, 7, 1, 3, 1, 1),
+('a9488d99-0bbb-4599-91ce-5dd2b45ed1f0', 'Herbalist', 'A healer who uses knowledge of medicinal herbs', 'beginner', 10, 26, 16, 6, 7, 2, 2, 1, 1),
+('fc377a4c-4a15-444d-85e7-ce8a3a578a8e', 'Chorister', 'One who heals allies through the power of song', 'beginner', 10, 23, 18, 5, 7, 1, 3, 1, 1),
+('ddd1dfb2-3b98-4ef8-9af6-1a26146d3f31', 'Prayer Master', 'One who grants blessings through prayer', 'beginner', 10, 25, 17, 6, 8, 2, 2, 1, 2),
+('7412b293-4729-4739-a14f-f3d719db3ad0', 'Exorcist Apprentice', 'A holy warrior who banishes evil', 'beginner', 10, 27, 15, 9, 9, 2, 2, 2, 1),
+-- Rogue types
+('29a3b2e9-5d65-4441-9588-42dea2bc372f', 'Thief', 'A swift trickster who outwits enemies', 'beginner', 10, 25, 10, 10, 6, 2, 1, 2, 1),
+('ab9099a4-35a2-40ae-9af3-05535ec42e08', 'Archer', 'A marksman who strikes from a distance', 'beginner', 10, 26, 10, 11, 7, 2, 1, 2, 1),
+('aefcfad8-efc8-4849-b3aa-7efe4458a885', 'Hunter', 'A tracker who pursues prey with wilderness expertise', 'beginner', 10, 28, 8, 12, 7, 2, 1, 2, 2),
+('a28defe3-9bf0-4273-9247-6f57a5e5a5ab', 'Ninja Apprentice', 'A young shinobi learning the art of stealth', 'beginner', 10, 24, 12, 11, 6, 2, 2, 2, 1),
+('3eabedcb-baa8-4dd4-88bd-64072bcfbe01', 'Pirate', 'A seafaring adventurer seeking treasure', 'beginner', 10, 30, 8, 12, 8, 2, 1, 2, 2),
+('451b4cf3-6123-4df7-b656-af7229d4beef', 'Dancer', 'A performer who beguiles enemies through dance', 'beginner', 10, 23, 14, 8, 6, 1, 2, 2, 1),
+('b02b61c4-a3d7-4628-ace6-6fa2fd5166e6', 'Scout', 'A specialist in reconnaissance and intelligence', 'beginner', 10, 25, 10, 10, 7, 2, 1, 2, 1),
+('5304317f-af42-412f-b838-b3268e944239', 'Entertainer', 'A versatile traveling performer', 'beginner', 10, 26, 12, 9, 7, 2, 2, 1, 1),
+-- Special types
+('0e51f30d-c6a7-4e39-84b0-32ccd7c524a5', 'Merchant', 'One who profits through trade and commerce', 'beginner', 10, 27, 10, 8, 8, 2, 1, 1, 2),
+('ce177b4e-0837-48a3-9261-a7ab3aa2e4f9', 'Blacksmith', 'A craftsman who forges weapons and armor', 'beginner', 10, 30, 7, 10, 10, 2, 1, 2, 2),
+('10f1bc81-448a-4a9e-a6b2-bc5b50c187fc', 'Chef', 'One who revitalizes allies through cooking', 'beginner', 10, 28, 10, 8, 8, 2, 1, 1, 1),
+('9132b63e-f162-47e4-a9c3-49e03602f8ac', 'Bard', 'One who inspires courage through song and poetry', 'beginner', 10, 24, 15, 6, 6, 1, 2, 1, 1),
+('366eb16f-508e-4ad7-b7c9-3acfe059a0ee', 'Scholar', 'One who guides allies through knowledge and analysis', 'beginner', 10, 22, 16, 5, 6, 1, 2, 1, 1),
+('e27a984d-6548-41d0-bfcd-9eb1a7cad415', 'Beast Tamer', 'One who bonds with animals', 'beginner', 10, 28, 12, 9, 7, 2, 2, 2, 1),
+('24933b83-7577-40a9-a491-f0b2ea1fca65', 'Jester', 'A trickster who confounds enemies', 'beginner', 10, 24, 14, 8, 6, 1, 2, 2, 1),
+('beb79919-3f22-4af8-a3be-d01d43cf2fde', 'Adventurer', 'A versatile traveler who can handle anything', 'beginner', 10, 28, 12, 10, 8, 2, 2, 2, 1)
 ON CONFLICT DO NOTHING;
 
 -- ------------------------------------------------------------
--- 中級職（intermediate）30種 - master_level: 20
+-- Intermediate jobs (30 types) - master_level: 20
 -- ------------------------------------------------------------
 
 INSERT INTO jobs (id, name, description, rank, master_level, base_hp, base_mp, base_attack, base_defense, hp_per_level, mp_per_level, attack_per_level, defense_per_level) VALUES
--- 戦士系派生
-('00000000-0000-0000-0000-000000000041', '魔剣士', '剣と魔法を操る二刀流の使い手', 'intermediate', 20, 38, 25, 14, 10, 4, 4, 4, 3),
-('00000000-0000-0000-0000-000000000042', 'パラディン', '聖なる力で仲間を守る聖騎士', 'intermediate', 20, 42, 22, 12, 14, 4, 3, 3, 4),
-('00000000-0000-0000-0000-000000000043', 'バーサーカー', '怒りの力で戦う狂戦士', 'intermediate', 20, 45, 15, 18, 8, 5, 3, 5, 3),
-('00000000-0000-0000-0000-000000000044', 'ドラゴンナイト', '竜の力を宿した騎士', 'intermediate', 20, 43, 20, 15, 13, 4, 3, 4, 4),
-('00000000-0000-0000-0000-000000000045', '武闘家', '極限まで肉体を鍛えた拳士', 'intermediate', 20, 40, 18, 16, 10, 4, 3, 5, 3),
-('00000000-0000-0000-0000-000000000046', 'ガーディアン', '鉄壁の防御を誇る守護者', 'intermediate', 20, 44, 16, 10, 16, 5, 3, 3, 5),
--- 魔法使い系派生
-('00000000-0000-0000-0000-000000000047', '賢者', '攻撃と回復の両方を極めた魔導師', 'intermediate', 20, 35, 35, 8, 8, 3, 5, 3, 3),
-('00000000-0000-0000-0000-000000000048', '召喚士', '異界の者を呼び出す術者', 'intermediate', 20, 36, 33, 7, 7, 3, 5, 3, 3),
-('00000000-0000-0000-0000-000000000049', '魔導戦士', '魔力を纏い戦う魔法戦士', 'intermediate', 20, 40, 28, 12, 10, 4, 4, 4, 3),
-('00000000-0000-0000-0000-000000000050', 'ネクロマンサー', '死者を操る闇の魔術師', 'intermediate', 20, 35, 34, 9, 6, 3, 5, 3, 3),
-('00000000-0000-0000-0000-000000000051', 'エンチャンター', '付与魔法に長けた支援魔術師', 'intermediate', 20, 36, 32, 7, 8, 3, 5, 3, 3),
-('00000000-0000-0000-0000-000000000052', '時魔道士', '時間を操る禁断の魔術師', 'intermediate', 20, 35, 34, 8, 7, 3, 5, 3, 3),
--- 僧侶系派生
-('00000000-0000-0000-0000-000000000053', '司教', '高位の聖職者で強力な回復魔法を操る', 'intermediate', 20, 38, 30, 8, 10, 3, 4, 3, 4),
-('00000000-0000-0000-0000-000000000054', 'ヴァルキリー', '戦場を駆ける戦乙女', 'intermediate', 20, 40, 25, 13, 11, 4, 4, 4, 3),
-('00000000-0000-0000-0000-000000000055', 'エクソシスト', '悪魔祓いの専門家', 'intermediate', 20, 37, 28, 10, 9, 3, 4, 3, 3),
-('00000000-0000-0000-0000-000000000056', '聖騎士', '信仰の力で剣を振るう騎士', 'intermediate', 20, 41, 24, 12, 12, 4, 4, 3, 4),
-('00000000-0000-0000-0000-000000000057', 'ドルイド', '自然の力を操る賢者', 'intermediate', 20, 38, 30, 9, 9, 3, 5, 3, 3),
-('00000000-0000-0000-0000-000000000058', 'セージ', '古代の知識に通じた導師', 'intermediate', 20, 36, 32, 8, 8, 3, 5, 3, 3),
--- 盗賊系派生
-('00000000-0000-0000-0000-000000000059', 'アサシン', '暗殺術を極めた影の者', 'intermediate', 20, 37, 20, 16, 8, 4, 3, 5, 3),
-('00000000-0000-0000-0000-000000000060', '忍者', '忍術を極めた隠密の達人', 'intermediate', 20, 38, 22, 14, 9, 4, 3, 4, 3),
-('00000000-0000-0000-0000-000000000061', 'レンジャー', '野外戦闘の専門家', 'intermediate', 20, 39, 20, 13, 10, 4, 3, 4, 3),
-('00000000-0000-0000-0000-000000000062', 'スナイパー', '一撃必殺の射手', 'intermediate', 20, 36, 18, 17, 7, 3, 3, 5, 3),
-('00000000-0000-0000-0000-000000000063', 'トレジャーハンター', '財宝を求める冒険の達人', 'intermediate', 20, 38, 20, 12, 9, 4, 3, 4, 3),
-('00000000-0000-0000-0000-000000000064', '海賊王', '海を支配する大海賊', 'intermediate', 20, 42, 18, 14, 11, 4, 3, 4, 3),
--- 特殊系派生
-('00000000-0000-0000-0000-000000000065', 'ルーンナイト', 'ルーン文字の力を操る騎士', 'intermediate', 20, 40, 26, 12, 11, 4, 4, 4, 3),
-('00000000-0000-0000-0000-000000000066', '錬金戦士', '錬金術を戦闘に活かす者', 'intermediate', 20, 39, 24, 13, 10, 4, 4, 4, 3),
-('00000000-0000-0000-0000-000000000067', '獣王', '獣と共に戦う猛き王', 'intermediate', 20, 41, 20, 14, 10, 4, 3, 4, 3),
-('00000000-0000-0000-0000-000000000068', 'ダンサー', '戦いの舞で敵を圧倒する舞踏家', 'intermediate', 20, 36, 24, 11, 8, 3, 4, 4, 3),
-('00000000-0000-0000-0000-000000000069', 'マスターシーフ', '盗みの技を極めた大怪盗', 'intermediate', 20, 37, 22, 13, 8, 3, 3, 5, 3),
-('00000000-0000-0000-0000-000000000070', '軍師', '戦略で勝利を導く知将', 'intermediate', 20, 36, 30, 9, 9, 3, 5, 3, 3)
+-- Warrior derivatives
+('bf3c4c06-4343-48bc-89fa-6a688fb5d27b', 'Magic Swordsman', 'A dual-wielding master of sword and sorcery', 'intermediate', 20, 38, 25, 14, 10, 4, 4, 4, 3),
+('956269f0-e5d7-4875-adad-d6c795a76d79', 'Paladin', 'A holy knight who protects allies with divine power', 'intermediate', 20, 42, 22, 12, 14, 4, 3, 3, 4),
+('ff50bde4-3825-47b8-9cab-cc97663f1c97', 'Berserker', 'A frenzied warrior who fights with rage', 'intermediate', 20, 45, 15, 18, 8, 5, 3, 5, 3),
+('7e570ddf-8270-40a8-a369-b584ff5e9ff0', 'Dragon Knight', 'A knight imbued with draconic power', 'intermediate', 20, 43, 20, 15, 13, 4, 3, 4, 4),
+('dc713d96-0c0f-4195-817a-f08a1745d6d8', 'Battle Master', 'A fist fighter who has trained to the extreme', 'intermediate', 20, 40, 18, 16, 10, 4, 3, 5, 3),
+('28f49481-a0a0-4dc4-a720-9bdf1c11f735', 'Guardian', 'A protector boasting impenetrable defense', 'intermediate', 20, 44, 16, 10, 16, 5, 3, 3, 5),
+-- Mage derivatives
+('98ae4334-6c12-4ce8-ae34-0454cac5b68c', 'Sage', 'A mage who has mastered both offense and healing', 'intermediate', 20, 35, 35, 8, 8, 3, 5, 3, 3),
+('988c24c9-61b1-4d22-a280-1c4510435a10', 'Summoner', 'A caster who calls forth beings from other realms', 'intermediate', 20, 36, 33, 7, 7, 3, 5, 3, 3),
+('405cacec-8774-49a9-b7d2-1e02ff01cf99', 'Spell Blade', 'A magic warrior who fights cloaked in mana', 'intermediate', 20, 40, 28, 12, 10, 4, 4, 4, 3),
+('f143262f-dc5c-4eed-8da0-365bf89897b9', 'Necromancer', 'A dark mage who commands the dead', 'intermediate', 20, 35, 34, 9, 6, 3, 5, 3, 3),
+('1d53434b-b881-49b9-ae27-0da702f06b90', 'Enchanter', 'A support mage specializing in augmentation', 'intermediate', 20, 36, 32, 7, 8, 3, 5, 3, 3),
+('c0398710-8976-4334-a281-7efdae849217', 'Time Mage', 'A forbidden practitioner who manipulates time', 'intermediate', 20, 35, 34, 8, 7, 3, 5, 3, 3),
+-- Cleric derivatives
+('5715bd6f-a416-4293-84c2-e2e3444ea7c8', 'Bishop', 'A high-ranking cleric wielding powerful healing magic', 'intermediate', 20, 38, 30, 8, 10, 3, 4, 3, 4),
+('287d06ca-6f4c-469a-8b22-d3081c8eaee9', 'Valkyrie', 'A battle maiden who soars across the battlefield', 'intermediate', 20, 40, 25, 13, 11, 4, 4, 4, 3),
+('b8db0672-f42d-47cc-80d4-af5974273ca3', 'Exorcist', 'A specialist in banishing demons', 'intermediate', 20, 37, 28, 10, 9, 3, 4, 3, 3),
+('f8cda88b-436d-46e2-b83c-fe0be037e5ed', 'Holy Knight', 'A knight who wields a blade empowered by faith', 'intermediate', 20, 41, 24, 12, 12, 4, 4, 3, 4),
+('81f76d1c-2dbc-4134-830f-f46e8026695f', 'Druid', 'A wise one who commands the forces of nature', 'intermediate', 20, 38, 30, 9, 9, 3, 5, 3, 3),
+('a013ac6e-deda-4e16-9b3d-bd5ce9a1fa6f', 'High Sage', 'A mentor versed in ancient knowledge', 'intermediate', 20, 36, 32, 8, 8, 3, 5, 3, 3),
+-- Rogue derivatives
+('81f631d4-a392-41a7-9777-a4774c66e0a8', 'Assassin', 'A shadow master who has perfected the killing arts', 'intermediate', 20, 37, 20, 16, 8, 4, 3, 5, 3),
+('5fb8d16c-2720-497d-b2eb-d6899be578c7', 'Ninja', 'A master of stealth and ninjutsu', 'intermediate', 20, 38, 22, 14, 9, 4, 3, 4, 3),
+('f4188f3f-8a14-4e62-a95b-4715c333e861', 'Ranger', 'A specialist in wilderness combat', 'intermediate', 20, 39, 20, 13, 10, 4, 3, 4, 3),
+('eb2263dd-87c5-421e-ac24-a3c5c754108f', 'Sniper', 'A marksman capable of one-shot kills', 'intermediate', 20, 36, 18, 17, 7, 3, 3, 5, 3),
+('7d154385-52fb-443b-9954-6eb400257ad1', 'Treasure Hunter', 'A master adventurer who seeks fortune', 'intermediate', 20, 38, 20, 12, 9, 4, 3, 4, 3),
+('5cec4eb5-edd9-4831-9ca3-5cfb04fc6d82', 'Pirate King', 'A great pirate who rules the seas', 'intermediate', 20, 42, 18, 14, 11, 4, 3, 4, 3),
+-- Special derivatives
+('ce88cb2d-d4e8-4839-bc3e-058be0f3eab0', 'Rune Knight', 'A knight who wields the power of runes', 'intermediate', 20, 40, 26, 12, 11, 4, 4, 4, 3),
+('3da9c2a9-0ed4-4f1a-bd4c-bf374eb93eff', 'Alchemy Warrior', 'One who applies alchemy in combat', 'intermediate', 20, 39, 24, 13, 10, 4, 4, 4, 3),
+('14296c07-f26b-4776-913e-4de2e0c53cb8', 'Beast King', 'A fierce ruler who fights alongside beasts', 'intermediate', 20, 41, 20, 14, 10, 4, 3, 4, 3),
+('d0e6e660-7c69-4ee1-bb5e-4bcf15ed6269', 'War Dancer', 'A performer who overwhelms foes with battle dance', 'intermediate', 20, 36, 24, 11, 8, 3, 4, 4, 3),
+('885f6e66-c2b6-42c5-ba5d-310011b7e948', 'Master Thief', 'A phantom thief who has perfected the art of stealing', 'intermediate', 20, 37, 22, 13, 8, 3, 3, 5, 3),
+('a8e56e0c-20de-435d-a031-d750c40db9b4', 'Strategist', 'A tactician who leads to victory through strategy', 'intermediate', 20, 36, 30, 9, 9, 3, 5, 3, 3)
 ON CONFLICT DO NOTHING;
 
 -- ------------------------------------------------------------
--- 上級職（advanced）20種 - master_level: 30
+-- Advanced jobs (20 types) - master_level: 30
 -- ------------------------------------------------------------
 
 INSERT INTO jobs (id, name, description, rank, master_level, base_hp, base_mp, base_attack, base_defense, hp_per_level, mp_per_level, attack_per_level, defense_per_level) VALUES
-('00000000-0000-0000-0000-000000000071', '魔王', '魔の力を極めし王', 'advanced', 30, 50, 45, 18, 14, 5, 6, 5, 4),
-('00000000-0000-0000-0000-000000000072', '聖王', '聖なる光を纏いし王', 'advanced', 30, 52, 40, 16, 16, 5, 5, 5, 5),
-('00000000-0000-0000-0000-000000000073', '剣聖', '剣の道を極めた達人', 'advanced', 30, 48, 30, 22, 14, 5, 4, 6, 4),
-('00000000-0000-0000-0000-000000000074', '大魔導師', '最高位の魔法を操る者', 'advanced', 30, 42, 45, 12, 10, 4, 6, 4, 4),
-('00000000-0000-0000-0000-000000000075', '大僧正', '聖なる力の最高位者', 'advanced', 30, 45, 42, 10, 14, 5, 6, 4, 5),
-('00000000-0000-0000-0000-000000000076', '暗黒騎士', '闇の力を操る最強の騎士', 'advanced', 30, 50, 32, 20, 15, 5, 5, 6, 4),
-('00000000-0000-0000-0000-000000000077', '竜騎士', '竜と契約を結んだ騎士', 'advanced', 30, 52, 30, 19, 16, 6, 4, 5, 5),
-('00000000-0000-0000-0000-000000000078', '影王', '影を操る暗殺者の頂点', 'advanced', 30, 44, 35, 20, 11, 5, 5, 6, 4),
-('00000000-0000-0000-0000-000000000079', '召喚王', '最強の召喚獣を操る者', 'advanced', 30, 43, 44, 13, 11, 4, 6, 4, 4),
-('00000000-0000-0000-0000-000000000080', '武神', '武の極致に至りし者', 'advanced', 30, 50, 28, 22, 15, 6, 4, 6, 5),
-('00000000-0000-0000-0000-000000000081', '大賢者', '全ての知識を統べる者', 'advanced', 30, 44, 44, 11, 11, 4, 6, 4, 4),
-('00000000-0000-0000-0000-000000000082', '守護王', '絶対防御を誇る鉄壁の王', 'advanced', 30, 55, 28, 14, 20, 6, 4, 4, 6),
-('00000000-0000-0000-0000-000000000083', '天弓使い', '天を射抜く弓の達人', 'advanced', 30, 45, 30, 19, 12, 5, 4, 6, 4),
-('00000000-0000-0000-0000-000000000084', '魔獣使い', '魔獣を従える伝説の使い手', 'advanced', 30, 48, 34, 16, 13, 5, 5, 5, 4),
-('00000000-0000-0000-0000-000000000085', '時空魔導師', '時空を操る禁断の使い手', 'advanced', 30, 42, 44, 13, 10, 4, 6, 5, 4),
-('00000000-0000-0000-0000-000000000086', '英雄', '伝説に語られる真の英雄', 'advanced', 30, 50, 35, 18, 15, 5, 5, 5, 5),
-('00000000-0000-0000-0000-000000000087', '覇王', '武力で全てを制する覇者', 'advanced', 30, 52, 28, 21, 16, 6, 4, 6, 5),
-('00000000-0000-0000-0000-000000000088', '聖女', '聖なる奇跡を起こす者', 'advanced', 30, 44, 42, 10, 13, 4, 6, 4, 5),
-('00000000-0000-0000-0000-000000000089', '死神', '命を刈り取る恐怖の存在', 'advanced', 30, 46, 36, 19, 10, 5, 5, 6, 4),
-('00000000-0000-0000-0000-000000000090', '万能師', '全ての技を使いこなす者', 'advanced', 30, 48, 38, 15, 13, 5, 5, 5, 5)
+('2a45c2ab-8cbf-4db0-b264-accc79ac1b1e', 'Demon Lord', 'A king who has mastered the power of darkness', 'advanced', 30, 50, 45, 18, 14, 5, 6, 5, 4),
+('9b49bd26-df57-459a-8715-a10343dac043', 'Holy King', 'A king cloaked in sacred light', 'advanced', 30, 52, 40, 16, 16, 5, 5, 5, 5),
+('edcd465e-3638-4821-b6e0-7cc06c52c49f', 'Sword Saint', 'A master who has reached the pinnacle of swordsmanship', 'advanced', 30, 48, 30, 22, 14, 5, 4, 6, 4),
+('b09b2a5c-badc-432a-8159-0f538a0f4efb', 'Archmage', 'One who wields the highest tier of magic', 'advanced', 30, 42, 45, 12, 10, 4, 6, 4, 4),
+('66245bfa-4fcc-439a-b683-d2e6337ea2df', 'Grand Cleric', 'The highest authority of holy power', 'advanced', 30, 45, 42, 10, 14, 5, 6, 4, 5),
+('5f987c71-a65e-488e-abf3-ad39fec21bbe', 'Dark Knight', 'The mightiest knight wielding the power of darkness', 'advanced', 30, 50, 32, 20, 15, 5, 5, 6, 4),
+('7394988f-847f-49b4-a64d-1bcb702753a1', 'Dragoon', 'A knight who has forged a pact with dragons', 'advanced', 30, 52, 30, 19, 16, 6, 4, 5, 5),
+('1064005c-3985-43cf-bf76-be1d1efa2197', 'Shadow King', 'The apex of assassins who commands shadows', 'advanced', 30, 44, 35, 20, 11, 5, 5, 6, 4),
+('8dcdcd03-969b-4662-8562-8059568cc69b', 'Summon King', 'One who commands the mightiest summons', 'advanced', 30, 43, 44, 13, 11, 4, 6, 4, 4),
+('01d74256-3860-4ab6-96a4-02f23ae8cc93', 'War God', 'One who has attained the pinnacle of martial arts', 'advanced', 30, 50, 28, 22, 15, 6, 4, 6, 5),
+('0f1259e0-a18f-46b6-b535-106e122c9a56', 'Grand Sage', 'One who presides over all knowledge', 'advanced', 30, 44, 44, 11, 11, 4, 6, 4, 4),
+('080aadfb-e7c9-4b26-9141-25c63a9bedd4', 'Shield King', 'An iron-walled king of absolute defense', 'advanced', 30, 55, 28, 14, 20, 6, 4, 4, 6),
+('839fbc50-1223-4513-9496-f63cdc1110c1', 'Sky Archer', 'A master archer who pierces the heavens', 'advanced', 30, 45, 30, 19, 12, 5, 4, 6, 4),
+('7c441fe7-ab42-40a7-874a-493b3ceddf2d', 'Monster Lord', 'A legendary tamer who commands magical beasts', 'advanced', 30, 48, 34, 16, 13, 5, 5, 5, 4),
+('b92da22b-21df-406f-8a0b-3c3336d8393a', 'Chrono Mage', 'A forbidden user who manipulates spacetime', 'advanced', 30, 42, 44, 13, 10, 4, 6, 5, 4),
+('93829b43-922f-415a-a1e3-db63ef7ddc76', 'Hero', 'A true hero spoken of in legends', 'advanced', 30, 50, 35, 18, 15, 5, 5, 5, 5),
+('7914c120-c8dc-419f-be35-11287900f7f9', 'Conqueror', 'A ruler who dominates all through might', 'advanced', 30, 52, 28, 21, 16, 6, 4, 6, 5),
+('1825bc54-30be-445f-a835-14f2ceb81f9d', 'Saint', 'One who performs sacred miracles', 'advanced', 30, 44, 42, 10, 13, 4, 6, 4, 5),
+('5ab33edf-6e59-4ed3-a8b3-17fa18d0752b', 'Reaper', 'A terrifying existence that harvests souls', 'advanced', 30, 46, 36, 19, 10, 5, 5, 6, 4),
+('dd2467ac-778e-4db3-a93d-ffbc6c6fa611', 'Omni Master', 'One who commands every technique', 'advanced', 30, 48, 38, 15, 13, 5, 5, 5, 5)
 ON CONFLICT DO NOTHING;
 
 -- ------------------------------------------------------------
--- 最上級職（master）10種 - master_level: 50
+-- Master jobs (10 types) - master_level: 50
 -- ------------------------------------------------------------
 
 INSERT INTO jobs (id, name, description, rank, master_level, base_hp, base_mp, base_attack, base_defense, hp_per_level, mp_per_level, attack_per_level, defense_per_level) VALUES
-('00000000-0000-0000-0000-000000000091', '神竜王', '竜と神の力を併せ持つ最強の存在', 'master', 50, 65, 55, 25, 22, 8, 8, 8, 7),
-('00000000-0000-0000-0000-000000000092', '天帝', '天を統べる至高の支配者', 'master', 50, 60, 60, 22, 20, 7, 9, 7, 7),
-('00000000-0000-0000-0000-000000000093', '魔神', '魔力の極致に至りし神', 'master', 50, 55, 60, 24, 18, 7, 9, 8, 6),
-('00000000-0000-0000-0000-000000000094', '剣神', '剣の道の究極に至りし者', 'master', 50, 60, 45, 28, 20, 8, 7, 9, 7),
-('00000000-0000-0000-0000-000000000095', '聖帝', '聖なる力の究極の体現者', 'master', 50, 58, 55, 20, 22, 7, 8, 7, 8),
-('00000000-0000-0000-0000-000000000096', '冥王', '冥界を統べる絶対的存在', 'master', 50, 56, 58, 24, 19, 7, 9, 8, 7),
-('00000000-0000-0000-0000-000000000097', '創造神', '万物を創り出す創世の力を持つ者', 'master', 50, 55, 60, 20, 20, 7, 9, 7, 7),
-('00000000-0000-0000-0000-000000000098', '破壊神', '全てを破壊する究極の力を持つ者', 'master', 50, 62, 50, 28, 18, 8, 8, 9, 6),
-('00000000-0000-0000-0000-000000000099', '運命神', '運命を操る超越者', 'master', 50, 55, 58, 22, 20, 7, 9, 8, 7),
-('00000000-0000-0000-0000-000000000100', '超越者', '全ての職業を極めし究極の存在', 'master', 50, 62, 58, 25, 22, 8, 9, 8, 8)
+('a748dbcf-ac61-4e63-8dde-29a6baa4b71a', 'Divine Dragon King', 'The mightiest being possessing both dragon and divine power', 'master', 50, 65, 55, 25, 22, 8, 8, 8, 7),
+('0f844fef-1931-49ee-a56c-0941fbf24050', 'Celestial Emperor', 'The supreme sovereign who rules the heavens', 'master', 50, 60, 60, 22, 20, 7, 9, 7, 7),
+('ccf3a171-56dc-4907-ba6c-34ab6712303a', 'Demon God', 'A deity who has reached the pinnacle of magical power', 'master', 50, 55, 60, 24, 18, 7, 9, 8, 6),
+('310c0c00-3fa7-4104-9bf9-0e27dc96925e', 'Sword God', 'One who has attained the ultimate mastery of the blade', 'master', 50, 60, 45, 28, 20, 8, 7, 9, 7),
+('23e2fcb4-72d8-467d-894a-05e430b187ef', 'Holy Emperor', 'The ultimate embodiment of holy power', 'master', 50, 58, 55, 20, 22, 7, 8, 7, 8),
+('766ecb15-474e-4c19-aef9-12766c006f61', 'Nether King', 'An absolute ruler who governs the underworld', 'master', 50, 56, 58, 24, 19, 7, 9, 8, 7),
+('134c6c92-ec5b-427c-9fde-4fbf3ff350bf', 'Creator God', 'One who possesses the power of genesis to create all things', 'master', 50, 55, 60, 20, 20, 7, 9, 7, 7),
+('db20a56e-dc81-4fe7-8eda-8bbb71710434', 'Destroyer God', 'One who possesses the ultimate power to annihilate all', 'master', 50, 62, 50, 28, 18, 8, 8, 9, 6),
+('a6f2f7b8-0cf3-4b58-9910-8be58ce21ea3', 'Fate God', 'A transcendent being who manipulates destiny', 'master', 50, 55, 58, 22, 20, 7, 9, 8, 7),
+('03c72ba8-d605-4770-8a63-f881ffd0f9d5', 'Transcendent', 'The ultimate existence who has mastered every profession', 'master', 50, 62, 58, 25, 22, 8, 9, 8, 8)
 ON CONFLICT DO NOTHING;
 
 -- ============================================================
--- 転職条件（job_requirements テーブル）
+-- Job Requirements (job_requirements table)
 -- ============================================================
 
 -- ------------------------------------------------------------
--- 初級職 → 中級職（2職業の掛け合わせ）
+-- Beginner -> Intermediate (2-job combinations)
 -- ------------------------------------------------------------
 
 INSERT INTO job_requirements (job_id, required_job_id) VALUES
--- 魔剣士 ← 戦士 + 魔法使い
-('00000000-0000-0000-0000-000000000041', '00000000-0000-0000-0000-000000000001'),
-('00000000-0000-0000-0000-000000000041', '00000000-0000-0000-0000-000000000009'),
--- パラディン ← 戦士 + 僧侶
-('00000000-0000-0000-0000-000000000042', '00000000-0000-0000-0000-000000000001'),
-('00000000-0000-0000-0000-000000000042', '00000000-0000-0000-0000-000000000017'),
--- バーサーカー ← 戦士 + 格闘家
-('00000000-0000-0000-0000-000000000043', '00000000-0000-0000-0000-000000000001'),
-('00000000-0000-0000-0000-000000000043', '00000000-0000-0000-0000-000000000005'),
--- ドラゴンナイト ← 騎士見習い + 槍兵
-('00000000-0000-0000-0000-000000000044', '00000000-0000-0000-0000-000000000006'),
-('00000000-0000-0000-0000-000000000044', '00000000-0000-0000-0000-000000000003'),
--- 武闘家 ← 格闘家 + 闘士
-('00000000-0000-0000-0000-000000000045', '00000000-0000-0000-0000-000000000005'),
-('00000000-0000-0000-0000-000000000045', '00000000-0000-0000-0000-000000000008'),
--- ガーディアン ← 騎士見習い + 修道士
-('00000000-0000-0000-0000-000000000046', '00000000-0000-0000-0000-000000000006'),
-('00000000-0000-0000-0000-000000000046', '00000000-0000-0000-0000-000000000019'),
--- 賢者 ← 魔法使い + 僧侶
-('00000000-0000-0000-0000-000000000047', '00000000-0000-0000-0000-000000000009'),
-('00000000-0000-0000-0000-000000000047', '00000000-0000-0000-0000-000000000017'),
--- 召喚士 ← 召喚士見習い + 精霊使い
-('00000000-0000-0000-0000-000000000048', '00000000-0000-0000-0000-000000000012'),
-('00000000-0000-0000-0000-000000000048', '00000000-0000-0000-0000-000000000015'),
--- 魔導戦士 ← 剣士 + 魔術師
-('00000000-0000-0000-0000-000000000049', '00000000-0000-0000-0000-000000000002'),
-('00000000-0000-0000-0000-000000000049', '00000000-0000-0000-0000-000000000010'),
--- ネクロマンサー ← 呪術師 + 錬金術師
-('00000000-0000-0000-0000-000000000050', '00000000-0000-0000-0000-000000000014'),
-('00000000-0000-0000-0000-000000000050', '00000000-0000-0000-0000-000000000013'),
--- エンチャンター ← 魔術師 + 占い師
-('00000000-0000-0000-0000-000000000051', '00000000-0000-0000-0000-000000000010'),
-('00000000-0000-0000-0000-000000000051', '00000000-0000-0000-0000-000000000016'),
--- 時魔道士 ← 風水師 + 占い師
-('00000000-0000-0000-0000-000000000052', '00000000-0000-0000-0000-000000000011'),
-('00000000-0000-0000-0000-000000000052', '00000000-0000-0000-0000-000000000016'),
--- 司教 ← 僧侶 + 神官
-('00000000-0000-0000-0000-000000000053', '00000000-0000-0000-0000-000000000017'),
-('00000000-0000-0000-0000-000000000053', '00000000-0000-0000-0000-000000000018'),
--- ヴァルキリー ← 戦士 + 巫女
-('00000000-0000-0000-0000-000000000054', '00000000-0000-0000-0000-000000000001'),
-('00000000-0000-0000-0000-000000000054', '00000000-0000-0000-0000-000000000020'),
--- エクソシスト ← 退魔師 + 神官
-('00000000-0000-0000-0000-000000000055', '00000000-0000-0000-0000-000000000024'),
-('00000000-0000-0000-0000-000000000055', '00000000-0000-0000-0000-000000000018'),
--- 聖騎士 ← 騎士見習い + 僧侶
-('00000000-0000-0000-0000-000000000056', '00000000-0000-0000-0000-000000000006'),
-('00000000-0000-0000-0000-000000000056', '00000000-0000-0000-0000-000000000017'),
--- ドルイド ← 薬師 + 精霊使い
-('00000000-0000-0000-0000-000000000057', '00000000-0000-0000-0000-000000000021'),
-('00000000-0000-0000-0000-000000000057', '00000000-0000-0000-0000-000000000015'),
--- セージ ← 学者 + 祈祷師
-('00000000-0000-0000-0000-000000000058', '00000000-0000-0000-0000-000000000037'),
-('00000000-0000-0000-0000-000000000058', '00000000-0000-0000-0000-000000000023'),
--- アサシン ← 盗賊 + 弓使い
-('00000000-0000-0000-0000-000000000059', '00000000-0000-0000-0000-000000000025'),
-('00000000-0000-0000-0000-000000000059', '00000000-0000-0000-0000-000000000026'),
--- 忍者 ← 忍者見習い + 盗賊
-('00000000-0000-0000-0000-000000000060', '00000000-0000-0000-0000-000000000028'),
-('00000000-0000-0000-0000-000000000060', '00000000-0000-0000-0000-000000000025'),
--- レンジャー ← 狩人 + 弓使い
-('00000000-0000-0000-0000-000000000061', '00000000-0000-0000-0000-000000000027'),
-('00000000-0000-0000-0000-000000000061', '00000000-0000-0000-0000-000000000026'),
--- スナイパー ← 弓使い + 斥候
-('00000000-0000-0000-0000-000000000062', '00000000-0000-0000-0000-000000000026'),
-('00000000-0000-0000-0000-000000000062', '00000000-0000-0000-0000-000000000031'),
--- トレジャーハンター ← 盗賊 + 冒険者
-('00000000-0000-0000-0000-000000000063', '00000000-0000-0000-0000-000000000025'),
-('00000000-0000-0000-0000-000000000063', '00000000-0000-0000-0000-000000000040'),
--- 海賊王 ← 海賊 + 傭兵
-('00000000-0000-0000-0000-000000000064', '00000000-0000-0000-0000-000000000029'),
-('00000000-0000-0000-0000-000000000064', '00000000-0000-0000-0000-000000000007'),
--- ルーンナイト ← 剣士 + 風水師
-('00000000-0000-0000-0000-000000000065', '00000000-0000-0000-0000-000000000002'),
-('00000000-0000-0000-0000-000000000065', '00000000-0000-0000-0000-000000000011'),
--- 錬金戦士 ← 錬金術師 + 斧使い
-('00000000-0000-0000-0000-000000000066', '00000000-0000-0000-0000-000000000013'),
-('00000000-0000-0000-0000-000000000066', '00000000-0000-0000-0000-000000000004'),
--- 獣王 ← 獣使い + 狩人
-('00000000-0000-0000-0000-000000000067', '00000000-0000-0000-0000-000000000038'),
-('00000000-0000-0000-0000-000000000067', '00000000-0000-0000-0000-000000000027'),
--- ダンサー ← 踊り子 + 吟遊詩人
-('00000000-0000-0000-0000-000000000068', '00000000-0000-0000-0000-000000000030'),
-('00000000-0000-0000-0000-000000000068', '00000000-0000-0000-0000-000000000036'),
--- マスターシーフ ← 盗賊 + 道化師
-('00000000-0000-0000-0000-000000000069', '00000000-0000-0000-0000-000000000025'),
-('00000000-0000-0000-0000-000000000069', '00000000-0000-0000-0000-000000000039'),
--- 軍師 ← 学者 + 商人
-('00000000-0000-0000-0000-000000000070', '00000000-0000-0000-0000-000000000037'),
-('00000000-0000-0000-0000-000000000070', '00000000-0000-0000-0000-000000000033')
+-- Magic Swordsman <- Warrior + Mage
+('bf3c4c06-4343-48bc-89fa-6a688fb5d27b', 'bdd640fb-0667-4ad1-9c80-317fa3b1799d'),
+('bf3c4c06-4343-48bc-89fa-6a688fb5d27b', '47378190-96da-4dac-b2ff-5d2a386ecbe0'),
+-- Paladin <- Warrior + Cleric
+('956269f0-e5d7-4875-adad-d6c795a76d79', 'bdd640fb-0667-4ad1-9c80-317fa3b1799d'),
+('956269f0-e5d7-4875-adad-d6c795a76d79', 'ec1b8ca1-f91e-4d4c-9ff4-9b7889463e85'),
+-- Berserker <- Warrior + Martial Artist
+('ff50bde4-3825-47b8-9cab-cc97663f1c97', 'bdd640fb-0667-4ad1-9c80-317fa3b1799d'),
+('ff50bde4-3825-47b8-9cab-cc97663f1c97', '17fc695a-07a0-4a6e-8822-e8f36c031199'),
+-- Dragon Knight <- Knight Apprentice + Lancer
+('7e570ddf-8270-40a8-a369-b584ff5e9ff0', '9a1de644-815e-46d1-bb8f-aa1837f8a88b'),
+('7e570ddf-8270-40a8-a369-b584ff5e9ff0', 'bd9c66b3-ad3c-4d6d-9a3d-1fa7bc8960a9'),
+-- Battle Master <- Martial Artist + Gladiator
+('dc713d96-0c0f-4195-817a-f08a1745d6d8', '17fc695a-07a0-4a6e-8822-e8f36c031199'),
+('dc713d96-0c0f-4195-817a-f08a1745d6d8', '6b65a6a4-8b81-48f6-b38a-088ca65ed389'),
+-- Guardian <- Knight Apprentice + Monk
+('28f49481-a0a0-4dc4-a720-9bdf1c11f735', '9a1de644-815e-46d1-bb8f-aa1837f8a88b'),
+('28f49481-a0a0-4dc4-a720-9bdf1c11f735', 'e2acf72f-9e57-4f7a-a0ee-89aed453dd32'),
+-- Sage <- Mage + Cleric
+('98ae4334-6c12-4ce8-ae34-0454cac5b68c', '47378190-96da-4dac-b2ff-5d2a386ecbe0'),
+('98ae4334-6c12-4ce8-ae34-0454cac5b68c', 'ec1b8ca1-f91e-4d4c-9ff4-9b7889463e85'),
+-- Summoner <- Apprentice Summoner + Spirit Caller
+('988c24c9-61b1-4d22-a280-1c4510435a10', '371ecd7b-27cd-4130-8722-9389571aa876'),
+('988c24c9-61b1-4d22-a280-1c4510435a10', '43b7a3a6-9a8d-4a03-980d-7b71d8f56413'),
+-- Spell Blade <- Swordsman + Sorcerer
+('405cacec-8774-49a9-b7d2-1e02ff01cf99', '23b8c1e9-3924-46de-beb1-3b9046685257'),
+('405cacec-8774-49a9-b7d2-1e02ff01cf99', 'c241330b-01a9-471f-9e8a-774bcf36d58b'),
+-- Necromancer <- Hex Caster + Alchemist
+('f143262f-dc5c-4eed-8da0-365bf89897b9', '5be6128e-18c2-4797-a142-ea7d17be3111'),
+('f143262f-dc5c-4eed-8da0-365bf89897b9', '1a2a73ed-562b-4f79-8374-59eef50bea63'),
+-- Enchanter <- Sorcerer + Fortune Teller
+('1d53434b-b881-49b9-ae27-0da702f06b90', 'c241330b-01a9-471f-9e8a-774bcf36d58b'),
+('1d53434b-b881-49b9-ae27-0da702f06b90', '759cde66-bacf-43d0-8b1f-9163ce9ff57f'),
+-- Time Mage <- Geomancer + Fortune Teller
+('c0398710-8976-4334-a281-7efdae849217', '6c307511-b2b9-437a-a8df-6ec4ce4a2bbd'),
+('c0398710-8976-4334-a281-7efdae849217', '759cde66-bacf-43d0-8b1f-9163ce9ff57f'),
+-- Bishop <- Cleric + Priest
+('5715bd6f-a416-4293-84c2-e2e3444ea7c8', 'ec1b8ca1-f91e-4d4c-9ff4-9b7889463e85'),
+('5715bd6f-a416-4293-84c2-e2e3444ea7c8', '4b0dbb41-8d52-48f1-942c-3fe860e7a113'),
+-- Valkyrie <- Warrior + Shrine Maiden
+('287d06ca-6f4c-469a-8b22-d3081c8eaee9', 'bdd640fb-0667-4ad1-9c80-317fa3b1799d'),
+('287d06ca-6f4c-469a-8b22-d3081c8eaee9', '3139d32c-93cd-49bf-9c94-1cf0dc98d2c1'),
+-- Exorcist <- Exorcist Apprentice + Priest
+('b8db0672-f42d-47cc-80d4-af5974273ca3', '7412b293-4729-4739-a14f-f3d719db3ad0'),
+('b8db0672-f42d-47cc-80d4-af5974273ca3', '4b0dbb41-8d52-48f1-942c-3fe860e7a113'),
+-- Holy Knight <- Knight Apprentice + Cleric
+('f8cda88b-436d-46e2-b83c-fe0be037e5ed', '9a1de644-815e-46d1-bb8f-aa1837f8a88b'),
+('f8cda88b-436d-46e2-b83c-fe0be037e5ed', 'ec1b8ca1-f91e-4d4c-9ff4-9b7889463e85'),
+-- Druid <- Herbalist + Spirit Caller
+('81f76d1c-2dbc-4134-830f-f46e8026695f', 'a9488d99-0bbb-4599-91ce-5dd2b45ed1f0'),
+('81f76d1c-2dbc-4134-830f-f46e8026695f', '43b7a3a6-9a8d-4a03-980d-7b71d8f56413'),
+-- High Sage <- Scholar + Prayer Master
+('a013ac6e-deda-4e16-9b3d-bd5ce9a1fa6f', '366eb16f-508e-4ad7-b7c9-3acfe059a0ee'),
+('a013ac6e-deda-4e16-9b3d-bd5ce9a1fa6f', 'ddd1dfb2-3b98-4ef8-9af6-1a26146d3f31'),
+-- Assassin <- Thief + Archer
+('81f631d4-a392-41a7-9777-a4774c66e0a8', '29a3b2e9-5d65-4441-9588-42dea2bc372f'),
+('81f631d4-a392-41a7-9777-a4774c66e0a8', 'ab9099a4-35a2-40ae-9af3-05535ec42e08'),
+-- Ninja <- Ninja Apprentice + Thief
+('5fb8d16c-2720-497d-b2eb-d6899be578c7', 'a28defe3-9bf0-4273-9247-6f57a5e5a5ab'),
+('5fb8d16c-2720-497d-b2eb-d6899be578c7', '29a3b2e9-5d65-4441-9588-42dea2bc372f'),
+-- Ranger <- Hunter + Archer
+('f4188f3f-8a14-4e62-a95b-4715c333e861', 'aefcfad8-efc8-4849-b3aa-7efe4458a885'),
+('f4188f3f-8a14-4e62-a95b-4715c333e861', 'ab9099a4-35a2-40ae-9af3-05535ec42e08'),
+-- Sniper <- Archer + Scout
+('eb2263dd-87c5-421e-ac24-a3c5c754108f', 'ab9099a4-35a2-40ae-9af3-05535ec42e08'),
+('eb2263dd-87c5-421e-ac24-a3c5c754108f', 'b02b61c4-a3d7-4628-ace6-6fa2fd5166e6'),
+-- Treasure Hunter <- Thief + Adventurer
+('7d154385-52fb-443b-9954-6eb400257ad1', '29a3b2e9-5d65-4441-9588-42dea2bc372f'),
+('7d154385-52fb-443b-9954-6eb400257ad1', 'beb79919-3f22-4af8-a3be-d01d43cf2fde'),
+-- Pirate King <- Pirate + Mercenary
+('5cec4eb5-edd9-4831-9ca3-5cfb04fc6d82', '3eabedcb-baa8-4dd4-88bd-64072bcfbe01'),
+('5cec4eb5-edd9-4831-9ca3-5cfb04fc6d82', 'b74d0fb1-32e7-4629-8fad-c1a606cb0fb3'),
+-- Rune Knight <- Swordsman + Geomancer
+('ce88cb2d-d4e8-4839-bc3e-058be0f3eab0', '23b8c1e9-3924-46de-beb1-3b9046685257'),
+('ce88cb2d-d4e8-4839-bc3e-058be0f3eab0', '6c307511-b2b9-437a-a8df-6ec4ce4a2bbd'),
+-- Alchemy Warrior <- Alchemist + Axe Fighter
+('3da9c2a9-0ed4-4f1a-bd4c-bf374eb93eff', '1a2a73ed-562b-4f79-8374-59eef50bea63'),
+('3da9c2a9-0ed4-4f1a-bd4c-bf374eb93eff', '972a8469-1641-4f82-8b9d-2434e465e150'),
+-- Beast King <- Beast Tamer + Hunter
+('14296c07-f26b-4776-913e-4de2e0c53cb8', 'e27a984d-6548-41d0-bfcd-9eb1a7cad415'),
+('14296c07-f26b-4776-913e-4de2e0c53cb8', 'aefcfad8-efc8-4849-b3aa-7efe4458a885'),
+-- War Dancer <- Dancer + Bard
+('d0e6e660-7c69-4ee1-bb5e-4bcf15ed6269', '451b4cf3-6123-4df7-b656-af7229d4beef'),
+('d0e6e660-7c69-4ee1-bb5e-4bcf15ed6269', '9132b63e-f162-47e4-a9c3-49e03602f8ac'),
+-- Master Thief <- Thief + Jester
+('885f6e66-c2b6-42c5-ba5d-310011b7e948', '29a3b2e9-5d65-4441-9588-42dea2bc372f'),
+('885f6e66-c2b6-42c5-ba5d-310011b7e948', '24933b83-7577-40a9-a491-f0b2ea1fca65'),
+-- Strategist <- Scholar + Merchant
+('a8e56e0c-20de-435d-a031-d750c40db9b4', '366eb16f-508e-4ad7-b7c9-3acfe059a0ee'),
+('a8e56e0c-20de-435d-a031-d750c40db9b4', '0e51f30d-c6a7-4e39-84b0-32ccd7c524a5')
 ON CONFLICT DO NOTHING;
 
 -- ------------------------------------------------------------
--- 中級職 → 上級職（2〜3職業の掛け合わせ）
+-- Intermediate -> Advanced (2-3 job combinations)
 -- ------------------------------------------------------------
 
 INSERT INTO job_requirements (job_id, required_job_id) VALUES
--- 魔王 ← 賢者 + ネクロマンサー + 時魔道士
-('00000000-0000-0000-0000-000000000071', '00000000-0000-0000-0000-000000000047'),
-('00000000-0000-0000-0000-000000000071', '00000000-0000-0000-0000-000000000050'),
-('00000000-0000-0000-0000-000000000071', '00000000-0000-0000-0000-000000000052'),
--- 聖王 ← パラディン + 司教 + 聖騎士
-('00000000-0000-0000-0000-000000000072', '00000000-0000-0000-0000-000000000042'),
-('00000000-0000-0000-0000-000000000072', '00000000-0000-0000-0000-000000000053'),
-('00000000-0000-0000-0000-000000000072', '00000000-0000-0000-0000-000000000056'),
--- 剣聖 ← 魔剣士 + 武闘家
-('00000000-0000-0000-0000-000000000073', '00000000-0000-0000-0000-000000000041'),
-('00000000-0000-0000-0000-000000000073', '00000000-0000-0000-0000-000000000045'),
--- 大魔導師 ← 賢者 + エンチャンター + 召喚士
-('00000000-0000-0000-0000-000000000074', '00000000-0000-0000-0000-000000000047'),
-('00000000-0000-0000-0000-000000000074', '00000000-0000-0000-0000-000000000051'),
-('00000000-0000-0000-0000-000000000074', '00000000-0000-0000-0000-000000000048'),
--- 大僧正 ← 司教 + ドルイド + セージ
-('00000000-0000-0000-0000-000000000075', '00000000-0000-0000-0000-000000000053'),
-('00000000-0000-0000-0000-000000000075', '00000000-0000-0000-0000-000000000057'),
-('00000000-0000-0000-0000-000000000075', '00000000-0000-0000-0000-000000000058'),
--- 暗黒騎士 ← バーサーカー + ネクロマンサー
-('00000000-0000-0000-0000-000000000076', '00000000-0000-0000-0000-000000000043'),
-('00000000-0000-0000-0000-000000000076', '00000000-0000-0000-0000-000000000050'),
--- 竜騎士 ← ドラゴンナイト + ガーディアン
-('00000000-0000-0000-0000-000000000077', '00000000-0000-0000-0000-000000000044'),
-('00000000-0000-0000-0000-000000000077', '00000000-0000-0000-0000-000000000046'),
--- 影王 ← アサシン + 忍者 + マスターシーフ
-('00000000-0000-0000-0000-000000000078', '00000000-0000-0000-0000-000000000059'),
-('00000000-0000-0000-0000-000000000078', '00000000-0000-0000-0000-000000000060'),
-('00000000-0000-0000-0000-000000000078', '00000000-0000-0000-0000-000000000069'),
--- 召喚王 ← 召喚士 + エンチャンター
-('00000000-0000-0000-0000-000000000079', '00000000-0000-0000-0000-000000000048'),
-('00000000-0000-0000-0000-000000000079', '00000000-0000-0000-0000-000000000051'),
--- 武神 ← 武闘家 + バーサーカー + ガーディアン
-('00000000-0000-0000-0000-000000000080', '00000000-0000-0000-0000-000000000045'),
-('00000000-0000-0000-0000-000000000080', '00000000-0000-0000-0000-000000000043'),
-('00000000-0000-0000-0000-000000000080', '00000000-0000-0000-0000-000000000046'),
--- 大賢者 ← 賢者 + セージ + 軍師
-('00000000-0000-0000-0000-000000000081', '00000000-0000-0000-0000-000000000047'),
-('00000000-0000-0000-0000-000000000081', '00000000-0000-0000-0000-000000000058'),
-('00000000-0000-0000-0000-000000000081', '00000000-0000-0000-0000-000000000070'),
--- 守護王 ← ガーディアン + パラディン + 聖騎士
-('00000000-0000-0000-0000-000000000082', '00000000-0000-0000-0000-000000000046'),
-('00000000-0000-0000-0000-000000000082', '00000000-0000-0000-0000-000000000042'),
-('00000000-0000-0000-0000-000000000082', '00000000-0000-0000-0000-000000000056'),
--- 天弓使い ← スナイパー + レンジャー
-('00000000-0000-0000-0000-000000000083', '00000000-0000-0000-0000-000000000062'),
-('00000000-0000-0000-0000-000000000083', '00000000-0000-0000-0000-000000000061'),
--- 魔獣使い ← 獣王 + 召喚士
-('00000000-0000-0000-0000-000000000084', '00000000-0000-0000-0000-000000000067'),
-('00000000-0000-0000-0000-000000000084', '00000000-0000-0000-0000-000000000048'),
--- 時空魔導師 ← 時魔道士 + 賢者 + エンチャンター
-('00000000-0000-0000-0000-000000000085', '00000000-0000-0000-0000-000000000052'),
-('00000000-0000-0000-0000-000000000085', '00000000-0000-0000-0000-000000000047'),
-('00000000-0000-0000-0000-000000000085', '00000000-0000-0000-0000-000000000051'),
--- 英雄 ← 魔剣士 + パラディン + レンジャー
-('00000000-0000-0000-0000-000000000086', '00000000-0000-0000-0000-000000000041'),
-('00000000-0000-0000-0000-000000000086', '00000000-0000-0000-0000-000000000042'),
-('00000000-0000-0000-0000-000000000086', '00000000-0000-0000-0000-000000000061'),
--- 覇王 ← バーサーカー + ドラゴンナイト + 海賊王
-('00000000-0000-0000-0000-000000000087', '00000000-0000-0000-0000-000000000043'),
-('00000000-0000-0000-0000-000000000087', '00000000-0000-0000-0000-000000000044'),
-('00000000-0000-0000-0000-000000000087', '00000000-0000-0000-0000-000000000064'),
--- 聖女 ← 司教 + ヴァルキリー + ドルイド
-('00000000-0000-0000-0000-000000000088', '00000000-0000-0000-0000-000000000053'),
-('00000000-0000-0000-0000-000000000088', '00000000-0000-0000-0000-000000000054'),
-('00000000-0000-0000-0000-000000000088', '00000000-0000-0000-0000-000000000057'),
--- 死神 ← アサシン + ネクロマンサー + エクソシスト
-('00000000-0000-0000-0000-000000000089', '00000000-0000-0000-0000-000000000059'),
-('00000000-0000-0000-0000-000000000089', '00000000-0000-0000-0000-000000000050'),
-('00000000-0000-0000-0000-000000000089', '00000000-0000-0000-0000-000000000055'),
--- 万能師 ← 魔導戦士 + ルーンナイト + トレジャーハンター
-('00000000-0000-0000-0000-000000000090', '00000000-0000-0000-0000-000000000049'),
-('00000000-0000-0000-0000-000000000090', '00000000-0000-0000-0000-000000000065'),
-('00000000-0000-0000-0000-000000000090', '00000000-0000-0000-0000-000000000063')
+-- Demon Lord <- Sage + Necromancer + Time Mage
+('2a45c2ab-8cbf-4db0-b264-accc79ac1b1e', '98ae4334-6c12-4ce8-ae34-0454cac5b68c'),
+('2a45c2ab-8cbf-4db0-b264-accc79ac1b1e', 'f143262f-dc5c-4eed-8da0-365bf89897b9'),
+('2a45c2ab-8cbf-4db0-b264-accc79ac1b1e', 'c0398710-8976-4334-a281-7efdae849217'),
+-- Holy King <- Paladin + Bishop + Holy Knight
+('9b49bd26-df57-459a-8715-a10343dac043', '956269f0-e5d7-4875-adad-d6c795a76d79'),
+('9b49bd26-df57-459a-8715-a10343dac043', '5715bd6f-a416-4293-84c2-e2e3444ea7c8'),
+('9b49bd26-df57-459a-8715-a10343dac043', 'f8cda88b-436d-46e2-b83c-fe0be037e5ed'),
+-- Sword Saint <- Magic Swordsman + Battle Master
+('edcd465e-3638-4821-b6e0-7cc06c52c49f', 'bf3c4c06-4343-48bc-89fa-6a688fb5d27b'),
+('edcd465e-3638-4821-b6e0-7cc06c52c49f', 'dc713d96-0c0f-4195-817a-f08a1745d6d8'),
+-- Archmage <- Sage + Enchanter + Summoner
+('b09b2a5c-badc-432a-8159-0f538a0f4efb', '98ae4334-6c12-4ce8-ae34-0454cac5b68c'),
+('b09b2a5c-badc-432a-8159-0f538a0f4efb', '1d53434b-b881-49b9-ae27-0da702f06b90'),
+('b09b2a5c-badc-432a-8159-0f538a0f4efb', '988c24c9-61b1-4d22-a280-1c4510435a10'),
+-- Grand Cleric <- Bishop + Druid + High Sage
+('66245bfa-4fcc-439a-b683-d2e6337ea2df', '5715bd6f-a416-4293-84c2-e2e3444ea7c8'),
+('66245bfa-4fcc-439a-b683-d2e6337ea2df', '81f76d1c-2dbc-4134-830f-f46e8026695f'),
+('66245bfa-4fcc-439a-b683-d2e6337ea2df', 'a013ac6e-deda-4e16-9b3d-bd5ce9a1fa6f'),
+-- Dark Knight <- Berserker + Necromancer
+('5f987c71-a65e-488e-abf3-ad39fec21bbe', 'ff50bde4-3825-47b8-9cab-cc97663f1c97'),
+('5f987c71-a65e-488e-abf3-ad39fec21bbe', 'f143262f-dc5c-4eed-8da0-365bf89897b9'),
+-- Dragoon <- Dragon Knight + Guardian
+('7394988f-847f-49b4-a64d-1bcb702753a1', '7e570ddf-8270-40a8-a369-b584ff5e9ff0'),
+('7394988f-847f-49b4-a64d-1bcb702753a1', '28f49481-a0a0-4dc4-a720-9bdf1c11f735'),
+-- Shadow King <- Assassin + Ninja + Master Thief
+('1064005c-3985-43cf-bf76-be1d1efa2197', '81f631d4-a392-41a7-9777-a4774c66e0a8'),
+('1064005c-3985-43cf-bf76-be1d1efa2197', '5fb8d16c-2720-497d-b2eb-d6899be578c7'),
+('1064005c-3985-43cf-bf76-be1d1efa2197', '885f6e66-c2b6-42c5-ba5d-310011b7e948'),
+-- Summon King <- Summoner + Enchanter
+('8dcdcd03-969b-4662-8562-8059568cc69b', '988c24c9-61b1-4d22-a280-1c4510435a10'),
+('8dcdcd03-969b-4662-8562-8059568cc69b', '1d53434b-b881-49b9-ae27-0da702f06b90'),
+-- War God <- Battle Master + Berserker + Guardian
+('01d74256-3860-4ab6-96a4-02f23ae8cc93', 'dc713d96-0c0f-4195-817a-f08a1745d6d8'),
+('01d74256-3860-4ab6-96a4-02f23ae8cc93', 'ff50bde4-3825-47b8-9cab-cc97663f1c97'),
+('01d74256-3860-4ab6-96a4-02f23ae8cc93', '28f49481-a0a0-4dc4-a720-9bdf1c11f735'),
+-- Grand Sage <- Sage + High Sage + Strategist
+('0f1259e0-a18f-46b6-b535-106e122c9a56', '98ae4334-6c12-4ce8-ae34-0454cac5b68c'),
+('0f1259e0-a18f-46b6-b535-106e122c9a56', 'a013ac6e-deda-4e16-9b3d-bd5ce9a1fa6f'),
+('0f1259e0-a18f-46b6-b535-106e122c9a56', 'a8e56e0c-20de-435d-a031-d750c40db9b4'),
+-- Shield King <- Guardian + Paladin + Holy Knight
+('080aadfb-e7c9-4b26-9141-25c63a9bedd4', '28f49481-a0a0-4dc4-a720-9bdf1c11f735'),
+('080aadfb-e7c9-4b26-9141-25c63a9bedd4', '956269f0-e5d7-4875-adad-d6c795a76d79'),
+('080aadfb-e7c9-4b26-9141-25c63a9bedd4', 'f8cda88b-436d-46e2-b83c-fe0be037e5ed'),
+-- Sky Archer <- Sniper + Ranger
+('839fbc50-1223-4513-9496-f63cdc1110c1', 'eb2263dd-87c5-421e-ac24-a3c5c754108f'),
+('839fbc50-1223-4513-9496-f63cdc1110c1', 'f4188f3f-8a14-4e62-a95b-4715c333e861'),
+-- Monster Lord <- Beast King + Summoner
+('7c441fe7-ab42-40a7-874a-493b3ceddf2d', '14296c07-f26b-4776-913e-4de2e0c53cb8'),
+('7c441fe7-ab42-40a7-874a-493b3ceddf2d', '988c24c9-61b1-4d22-a280-1c4510435a10'),
+-- Chrono Mage <- Time Mage + Sage + Enchanter
+('b92da22b-21df-406f-8a0b-3c3336d8393a', 'c0398710-8976-4334-a281-7efdae849217'),
+('b92da22b-21df-406f-8a0b-3c3336d8393a', '98ae4334-6c12-4ce8-ae34-0454cac5b68c'),
+('b92da22b-21df-406f-8a0b-3c3336d8393a', '1d53434b-b881-49b9-ae27-0da702f06b90'),
+-- Hero <- Magic Swordsman + Paladin + Ranger
+('93829b43-922f-415a-a1e3-db63ef7ddc76', 'bf3c4c06-4343-48bc-89fa-6a688fb5d27b'),
+('93829b43-922f-415a-a1e3-db63ef7ddc76', '956269f0-e5d7-4875-adad-d6c795a76d79'),
+('93829b43-922f-415a-a1e3-db63ef7ddc76', 'f4188f3f-8a14-4e62-a95b-4715c333e861'),
+-- Conqueror <- Berserker + Dragon Knight + Pirate King
+('7914c120-c8dc-419f-be35-11287900f7f9', 'ff50bde4-3825-47b8-9cab-cc97663f1c97'),
+('7914c120-c8dc-419f-be35-11287900f7f9', '7e570ddf-8270-40a8-a369-b584ff5e9ff0'),
+('7914c120-c8dc-419f-be35-11287900f7f9', '5cec4eb5-edd9-4831-9ca3-5cfb04fc6d82'),
+-- Saint <- Bishop + Valkyrie + Druid
+('1825bc54-30be-445f-a835-14f2ceb81f9d', '5715bd6f-a416-4293-84c2-e2e3444ea7c8'),
+('1825bc54-30be-445f-a835-14f2ceb81f9d', '287d06ca-6f4c-469a-8b22-d3081c8eaee9'),
+('1825bc54-30be-445f-a835-14f2ceb81f9d', '81f76d1c-2dbc-4134-830f-f46e8026695f'),
+-- Reaper <- Assassin + Necromancer + Exorcist
+('5ab33edf-6e59-4ed3-a8b3-17fa18d0752b', '81f631d4-a392-41a7-9777-a4774c66e0a8'),
+('5ab33edf-6e59-4ed3-a8b3-17fa18d0752b', 'f143262f-dc5c-4eed-8da0-365bf89897b9'),
+('5ab33edf-6e59-4ed3-a8b3-17fa18d0752b', 'b8db0672-f42d-47cc-80d4-af5974273ca3'),
+-- Omni Master <- Spell Blade + Rune Knight + Treasure Hunter
+('dd2467ac-778e-4db3-a93d-ffbc6c6fa611', '405cacec-8774-49a9-b7d2-1e02ff01cf99'),
+('dd2467ac-778e-4db3-a93d-ffbc6c6fa611', 'ce88cb2d-d4e8-4839-bc3e-058be0f3eab0'),
+('dd2467ac-778e-4db3-a93d-ffbc6c6fa611', '7d154385-52fb-443b-9954-6eb400257ad1')
 ON CONFLICT DO NOTHING;
 
 -- ------------------------------------------------------------
--- 上級職 → 最上級職（2〜3職業の掛け合わせ）
+-- Advanced -> Master (2-3 job combinations)
 -- ------------------------------------------------------------
 
 INSERT INTO job_requirements (job_id, required_job_id) VALUES
--- 神竜王 ← 竜騎士 + 聖王 + 魔王
-('00000000-0000-0000-0000-000000000091', '00000000-0000-0000-0000-000000000077'),
-('00000000-0000-0000-0000-000000000091', '00000000-0000-0000-0000-000000000072'),
-('00000000-0000-0000-0000-000000000091', '00000000-0000-0000-0000-000000000071'),
--- 天帝 ← 聖王 + 大賢者 + 守護王
-('00000000-0000-0000-0000-000000000092', '00000000-0000-0000-0000-000000000072'),
-('00000000-0000-0000-0000-000000000092', '00000000-0000-0000-0000-000000000081'),
-('00000000-0000-0000-0000-000000000092', '00000000-0000-0000-0000-000000000082'),
--- 魔神 ← 魔王 + 大魔導師 + 時空魔導師
-('00000000-0000-0000-0000-000000000093', '00000000-0000-0000-0000-000000000071'),
-('00000000-0000-0000-0000-000000000093', '00000000-0000-0000-0000-000000000074'),
-('00000000-0000-0000-0000-000000000093', '00000000-0000-0000-0000-000000000085'),
--- 剣神 ← 剣聖 + 武神 + 覇王
-('00000000-0000-0000-0000-000000000094', '00000000-0000-0000-0000-000000000073'),
-('00000000-0000-0000-0000-000000000094', '00000000-0000-0000-0000-000000000080'),
-('00000000-0000-0000-0000-000000000094', '00000000-0000-0000-0000-000000000087'),
--- 聖帝 ← 聖王 + 大僧正 + 聖女
-('00000000-0000-0000-0000-000000000095', '00000000-0000-0000-0000-000000000072'),
-('00000000-0000-0000-0000-000000000095', '00000000-0000-0000-0000-000000000075'),
-('00000000-0000-0000-0000-000000000095', '00000000-0000-0000-0000-000000000088'),
--- 冥王 ← 魔王 + 暗黒騎士 + 死神
-('00000000-0000-0000-0000-000000000096', '00000000-0000-0000-0000-000000000071'),
-('00000000-0000-0000-0000-000000000096', '00000000-0000-0000-0000-000000000076'),
-('00000000-0000-0000-0000-000000000096', '00000000-0000-0000-0000-000000000089'),
--- 創造神 ← 大魔導師 + 召喚王 + 大賢者
-('00000000-0000-0000-0000-000000000097', '00000000-0000-0000-0000-000000000074'),
-('00000000-0000-0000-0000-000000000097', '00000000-0000-0000-0000-000000000079'),
-('00000000-0000-0000-0000-000000000097', '00000000-0000-0000-0000-000000000081'),
--- 破壊神 ← 覇王 + 武神 + 暗黒騎士
-('00000000-0000-0000-0000-000000000098', '00000000-0000-0000-0000-000000000087'),
-('00000000-0000-0000-0000-000000000098', '00000000-0000-0000-0000-000000000080'),
-('00000000-0000-0000-0000-000000000098', '00000000-0000-0000-0000-000000000076'),
--- 運命神 ← 時空魔導師 + 大賢者 + 万能師
-('00000000-0000-0000-0000-000000000099', '00000000-0000-0000-0000-000000000085'),
-('00000000-0000-0000-0000-000000000099', '00000000-0000-0000-0000-000000000081'),
-('00000000-0000-0000-0000-000000000099', '00000000-0000-0000-0000-000000000090'),
--- 超越者 ← 英雄 + 万能師 + 大賢者
-('00000000-0000-0000-0000-000000000100', '00000000-0000-0000-0000-000000000086'),
-('00000000-0000-0000-0000-000000000100', '00000000-0000-0000-0000-000000000090'),
-('00000000-0000-0000-0000-000000000100', '00000000-0000-0000-0000-000000000081')
+-- Divine Dragon King <- Dragoon + Holy King + Demon Lord
+('a748dbcf-ac61-4e63-8dde-29a6baa4b71a', '7394988f-847f-49b4-a64d-1bcb702753a1'),
+('a748dbcf-ac61-4e63-8dde-29a6baa4b71a', '9b49bd26-df57-459a-8715-a10343dac043'),
+('a748dbcf-ac61-4e63-8dde-29a6baa4b71a', '2a45c2ab-8cbf-4db0-b264-accc79ac1b1e'),
+-- Celestial Emperor <- Holy King + Grand Sage + Shield King
+('0f844fef-1931-49ee-a56c-0941fbf24050', '9b49bd26-df57-459a-8715-a10343dac043'),
+('0f844fef-1931-49ee-a56c-0941fbf24050', '0f1259e0-a18f-46b6-b535-106e122c9a56'),
+('0f844fef-1931-49ee-a56c-0941fbf24050', '080aadfb-e7c9-4b26-9141-25c63a9bedd4'),
+-- Demon God <- Demon Lord + Archmage + Chrono Mage
+('ccf3a171-56dc-4907-ba6c-34ab6712303a', '2a45c2ab-8cbf-4db0-b264-accc79ac1b1e'),
+('ccf3a171-56dc-4907-ba6c-34ab6712303a', 'b09b2a5c-badc-432a-8159-0f538a0f4efb'),
+('ccf3a171-56dc-4907-ba6c-34ab6712303a', 'b92da22b-21df-406f-8a0b-3c3336d8393a'),
+-- Sword God <- Sword Saint + War God + Conqueror
+('310c0c00-3fa7-4104-9bf9-0e27dc96925e', 'edcd465e-3638-4821-b6e0-7cc06c52c49f'),
+('310c0c00-3fa7-4104-9bf9-0e27dc96925e', '01d74256-3860-4ab6-96a4-02f23ae8cc93'),
+('310c0c00-3fa7-4104-9bf9-0e27dc96925e', '7914c120-c8dc-419f-be35-11287900f7f9'),
+-- Holy Emperor <- Holy King + Grand Cleric + Saint
+('23e2fcb4-72d8-467d-894a-05e430b187ef', '9b49bd26-df57-459a-8715-a10343dac043'),
+('23e2fcb4-72d8-467d-894a-05e430b187ef', '66245bfa-4fcc-439a-b683-d2e6337ea2df'),
+('23e2fcb4-72d8-467d-894a-05e430b187ef', '1825bc54-30be-445f-a835-14f2ceb81f9d'),
+-- Nether King <- Demon Lord + Dark Knight + Reaper
+('766ecb15-474e-4c19-aef9-12766c006f61', '2a45c2ab-8cbf-4db0-b264-accc79ac1b1e'),
+('766ecb15-474e-4c19-aef9-12766c006f61', '5f987c71-a65e-488e-abf3-ad39fec21bbe'),
+('766ecb15-474e-4c19-aef9-12766c006f61', '5ab33edf-6e59-4ed3-a8b3-17fa18d0752b'),
+-- Creator God <- Archmage + Summon King + Grand Sage
+('134c6c92-ec5b-427c-9fde-4fbf3ff350bf', 'b09b2a5c-badc-432a-8159-0f538a0f4efb'),
+('134c6c92-ec5b-427c-9fde-4fbf3ff350bf', '8dcdcd03-969b-4662-8562-8059568cc69b'),
+('134c6c92-ec5b-427c-9fde-4fbf3ff350bf', '0f1259e0-a18f-46b6-b535-106e122c9a56'),
+-- Destroyer God <- Conqueror + War God + Dark Knight
+('db20a56e-dc81-4fe7-8eda-8bbb71710434', '7914c120-c8dc-419f-be35-11287900f7f9'),
+('db20a56e-dc81-4fe7-8eda-8bbb71710434', '01d74256-3860-4ab6-96a4-02f23ae8cc93'),
+('db20a56e-dc81-4fe7-8eda-8bbb71710434', '5f987c71-a65e-488e-abf3-ad39fec21bbe'),
+-- Fate God <- Chrono Mage + Grand Sage + Omni Master
+('a6f2f7b8-0cf3-4b58-9910-8be58ce21ea3', 'b92da22b-21df-406f-8a0b-3c3336d8393a'),
+('a6f2f7b8-0cf3-4b58-9910-8be58ce21ea3', '0f1259e0-a18f-46b6-b535-106e122c9a56'),
+('a6f2f7b8-0cf3-4b58-9910-8be58ce21ea3', 'dd2467ac-778e-4db3-a93d-ffbc6c6fa611'),
+-- Transcendent <- Hero + Omni Master + Grand Sage
+('03c72ba8-d605-4770-8a63-f881ffd0f9d5', '93829b43-922f-415a-a1e3-db63ef7ddc76'),
+('03c72ba8-d605-4770-8a63-f881ffd0f9d5', 'dd2467ac-778e-4db3-a93d-ffbc6c6fa611'),
+('03c72ba8-d605-4770-8a63-f881ffd0f9d5', '0f1259e0-a18f-46b6-b535-106e122c9a56')
 ON CONFLICT DO NOTHING;
