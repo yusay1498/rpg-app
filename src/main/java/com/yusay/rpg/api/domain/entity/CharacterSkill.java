@@ -1,6 +1,9 @@
 package com.yusay.rpg.api.domain.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "character_skills")
@@ -18,6 +21,10 @@ public class CharacterSkill {
     @MapsId("skillId")
     @JoinColumn(name = "skill_id", nullable = false)
     private Skill skill;
+
+    @CreationTimestamp
+    @Column(name = "learned_at", nullable = false, updatable = false)
+    private LocalDateTime learnedAt;
 
     public CharacterSkillId getId() {
         return id;
@@ -41,5 +48,9 @@ public class CharacterSkill {
 
     public void setSkill(Skill skill) {
         this.skill = skill;
+    }
+
+    public LocalDateTime getLearnedAt() {
+        return learnedAt;
     }
 }

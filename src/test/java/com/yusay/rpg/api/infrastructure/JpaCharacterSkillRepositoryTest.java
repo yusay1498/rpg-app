@@ -128,6 +128,7 @@ class JpaCharacterSkillRepositoryTest {
         assertThat(result).hasValueSatisfying(cs -> {
             assertThat(cs.getId().getCharacterId()).isEqualTo("660e8400-e29b-41d4-a716-446655440001");
             assertThat(cs.getId().getSkillId()).isEqualTo("aa0e8400-e29b-41d4-a716-446655440001");
+            assertThat(cs.getLearnedAt()).isNotNull();
         });
     }
 

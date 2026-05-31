@@ -155,6 +155,7 @@ CREATE TABLE IF NOT EXISTS character_jobs (
 CREATE TABLE IF NOT EXISTS character_skills (
     character_id VARCHAR(36) NOT NULL REFERENCES characters(id) ON DELETE CASCADE,
     skill_id     VARCHAR(36) NOT NULL REFERENCES skills(id) ON DELETE RESTRICT,
+    learned_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (character_id, skill_id)
 );
 
