@@ -2,6 +2,7 @@ package com.yusay.rpg.api.presentation;
 
 import com.yusay.rpg.api.application.JobApplicationService;
 import com.yusay.rpg.api.domain.entity.Job;
+import com.yusay.rpg.api.domain.entity.JobRank;
 import com.yusay.rpg.api.domain.exception.JobNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,8 @@ class JobRestControllerTest {
         warrior.setMpPerLevel(1);
         warrior.setAttackPerLevel(1);
         warrior.setDefensePerLevel(1);
+        warrior.setRank(JobRank.BEGINNER);
+        warrior.setMasterLevel(10);
         Job mage = new Job();
         mage.setId("550e8400-e29b-41d4-a716-446655440002");
         mage.setName("mage");
@@ -52,6 +55,8 @@ class JobRestControllerTest {
         mage.setMpPerLevel(1);
         mage.setAttackPerLevel(1);
         mage.setDefensePerLevel(1);
+        mage.setRank(JobRank.BEGINNER);
+        mage.setMasterLevel(10);
         Mockito.when(jobApplicationService.list()).thenReturn(List.of(warrior, mage));
 
         // When
@@ -74,7 +79,9 @@ class JobRestControllerTest {
                         "hpPerLevel": 1,
                         "mpPerLevel": 1,
                         "attackPerLevel": 1,
-                        "defensePerLevel": 1
+                        "defensePerLevel": 1,
+                        "rank": "beginner",
+                        "masterLevel": 10
                     },
                     {
                         "id": "550e8400-e29b-41d4-a716-446655440002",
@@ -87,7 +94,9 @@ class JobRestControllerTest {
                         "hpPerLevel": 1,
                         "mpPerLevel": 1,
                         "attackPerLevel": 1,
-                        "defensePerLevel": 1
+                        "defensePerLevel": 1,
+                        "rank": "beginner",
+                        "masterLevel": 10
                     }
                 ]
                 """;
@@ -113,6 +122,8 @@ class JobRestControllerTest {
         testJob.setMpPerLevel(1);
         testJob.setAttackPerLevel(1);
         testJob.setDefensePerLevel(1);
+        testJob.setRank(JobRank.BEGINNER);
+        testJob.setMasterLevel(10);
 
         Mockito.when(jobApplicationService.lookup("550e1400-e29b-41d4-a716-446655440001"))
                 .thenReturn(testJob);
@@ -134,7 +145,9 @@ class JobRestControllerTest {
                     "hpPerLevel": 1,
                     "mpPerLevel": 1,
                     "attackPerLevel": 1,
-                    "defensePerLevel": 1
+                    "defensePerLevel": 1,
+                    "rank": "beginner",
+                    "masterLevel": 10
                 }
                 """;
 
