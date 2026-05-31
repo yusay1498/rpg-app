@@ -133,7 +133,7 @@ class CharacterRestControllerTest {
     @DisplayName("存在しないIDの場合、404を返す")
     void givenNonExistentId_whenGetById_thenReturnStatus404() {
         // Given
-        String nonExistentId = "non-existent-id";
+        String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
         Mockito.when(characterApplicationService.lookup(nonExistentId))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
@@ -167,7 +167,7 @@ class CharacterRestControllerTest {
         newCharacter.setDefense(15);
         newCharacter.setGold(0);
         newCharacter.setStatus(CharacterStatus.ALIVE);
-        Mockito.when(characterApplicationService.create(Mockito.any(Character.class)))
+        Mockito.when(characterApplicationService.create("Jiro", "550e8400-e29b-41d4-a716-446655440001"))
                 .thenReturn(newCharacter);
 
         // When
@@ -178,17 +178,7 @@ class CharacterRestControllerTest {
                 .content("""
                         {
                             "name": "Jiro",
-                            "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
-                            "level": 1,
-                            "exp": 0,
-                            "hp": 25,
-                            "maxHp": 25,
-                            "mp": 10,
-                            "maxMp": 10,
-                            "attack": 15,
-                            "defense": 15,
-                            "gold": 0,
-                            "status": "alive"
+                            "jobId": "550e8400-e29b-41d4-a716-446655440001"
                         }
                         """)
                 .exchange();
@@ -201,11 +191,18 @@ class CharacterRestControllerTest {
     }
 
     @Test
-    @DisplayName("リクエストボディにidが含まれる場合、400を返す")
-    void givenRequestWithId_whenCreate_thenReturnStatus400() {
+    @DisplayName("リクエストボディにidが含まれる場合でもnameとjobIdだけ使われる")
+    void givenRequestWithId_whenCreate_thenIgnoreIdAndReturn201() {
         // Given
-        Mockito.when(characterApplicationService.create(Mockito.any(Character.class)))
-                .thenThrow(new IllegalArgumentException("id must be null or blank when creating a character"));
+        Job warrior = new Job();
+        warrior.setId("550e8400-e29b-41d4-a716-446655440001");
+        Character newCharacter = new Character();
+        newCharacter.setId("660e8400-e29b-41d4-a716-446655440099");
+        newCharacter.setName("Jiro");
+        newCharacter.setJob(warrior);
+        newCharacter.setStatus(CharacterStatus.ALIVE);
+        Mockito.when(characterApplicationService.create("Jiro", "550e8400-e29b-41d4-a716-446655440001"))
+                .thenReturn(newCharacter);
 
         // When
         MvcTestResult actual = mockMvcTester
@@ -214,55 +211,14 @@ class CharacterRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
-                            "id": "660e8400-e29b-41d4-a716-446655440099",
                             "name": "Jiro",
-                            "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
-                            "level": 1,
-                            "exp": 0,
-                            "hp": 25,
-                            "maxHp": 25,
-                            "mp": 10,
-                            "maxMp": 10,
-                            "attack": 15,
-                            "defense": 15,
-                            "gold": 0,
-                            "status": "alive"
+                            "jobId": "550e8400-e29b-41d4-a716-446655440001"
                         }
                         """)
                 .exchange();
 
         // Then
-        assertThat(actual).hasStatus(400);
-    }
-
-    @Test
-    @DisplayName("不正なstatusが指定された場合、400を返す")
-    void givenInvalidStatus_whenCreate_thenReturnStatus400() {
-        // When
-        MvcTestResult actual = mockMvcTester
-                .post()
-                .uri("/characters")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                        {
-                            "name": "Jiro",
-                            "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
-                            "level": 1,
-                            "exp": 0,
-                            "hp": 25,
-                            "maxHp": 25,
-                            "mp": 10,
-                            "maxMp": 10,
-                            "attack": 15,
-                            "defense": 15,
-                            "gold": 0,
-                            "status": "UNKNOWN"
-                        }
-                        """)
-                .exchange();
-
-        // Then
-        assertThat(actual).hasStatus(400);
+        assertThat(actual).hasStatus(201);
     }
 
     @Test
@@ -276,17 +232,7 @@ class CharacterRestControllerTest {
                 .content("""
                         {
                             "name": "",
-                            "job": { "id": "550e8400-e29b-41d4-a716-446655440001" },
-                            "level": 1,
-                            "exp": 0,
-                            "hp": 25,
-                            "maxHp": 25,
-                            "mp": 10,
-                            "maxMp": 10,
-                            "attack": 15,
-                            "defense": 15,
-                            "gold": 0,
-                            "status": "alive"
+                            "jobId": "550e8400-e29b-41d4-a716-446655440001"
                         }
                         """)
                 .exchange();
@@ -296,8 +242,8 @@ class CharacterRestControllerTest {
     }
 
     @Test
-    @DisplayName("jobがnullの場合、@NotNull違反で400を返す")
-    void givenNullJob_whenCreate_thenReturnStatus400() {
+    @DisplayName("jobIdがnullの場合、@NotBlank違反で400を返す")
+    void givenNullJobId_whenCreate_thenReturnStatus400() {
         // When
         MvcTestResult actual = mockMvcTester
                 .post()
@@ -305,17 +251,7 @@ class CharacterRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
-                            "name": "Jiro",
-                            "level": 1,
-                            "exp": 0,
-                            "hp": 25,
-                            "maxHp": 25,
-                            "mp": 10,
-                            "maxMp": 10,
-                            "attack": 15,
-                            "defense": 15,
-                            "gold": 0,
-                            "status": "alive"
+                            "name": "Jiro"
                         }
                         """)
                 .exchange();
@@ -350,7 +286,7 @@ class CharacterRestControllerTest {
     @DisplayName("存在しないIDの場合、404を返す")
     void givenNonExistentId_whenPatchName_thenReturnStatus404() {
         // Given
-        String nonExistentId = "non-existent-id";
+        String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
         Mockito.when(characterApplicationService.rename(Mockito.eq(nonExistentId), Mockito.anyString()))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
@@ -411,7 +347,7 @@ class CharacterRestControllerTest {
     @DisplayName("存在しないIDの場合、404を返す")
     void givenNonExistentId_whenDelete_thenReturnStatus404() {
         // Given
-        String nonExistentId = "non-existent-id";
+        String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
         Mockito.doThrow(new CharacterNotFoundException(nonExistentId))
                 .when(characterApplicationService).delete(nonExistentId);
 
@@ -468,7 +404,7 @@ class CharacterRestControllerTest {
     @DisplayName("存在しないキャラクターIDの場合、404を返す")
     void givenNonExistentCharacterId_whenGetJobs_thenReturnStatus404() {
         // Given
-        String nonExistentId = "non-existent-id";
+        String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
         Mockito.when(characterApplicationService.listJobs(nonExistentId))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
@@ -497,10 +433,10 @@ class CharacterRestControllerTest {
         // When
         MvcTestResult actual = mockMvcTester
                 .post()
-                .uri("/characters/{id}/job/change", characterId)
+                .uri("/characters/{id}/jobs", characterId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                        { "job": { "id": "550e8400-e29b-41d4-a716-446655440002" } }
+                        { "jobId": "550e8400-e29b-41d4-a716-446655440002" }
                         """)
                 .exchange();
 
@@ -516,17 +452,17 @@ class CharacterRestControllerTest {
     @DisplayName("存在しないキャラクターIDの場合、404を返す")
     void givenNonExistentCharacterId_whenPostChangeJob_thenReturnStatus404() {
         // Given
-        String nonExistentId = "non-existent-id";
+        String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
         Mockito.when(characterApplicationService.changeJob(Mockito.eq(nonExistentId), Mockito.anyString()))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
         // When
         MvcTestResult actual = mockMvcTester
                 .post()
-                .uri("/characters/{id}/job/change", nonExistentId)
+                .uri("/characters/{id}/jobs", nonExistentId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                        { "job": { "id": "550e8400-e29b-41d4-a716-446655440002" } }
+                        { "jobId": "550e8400-e29b-41d4-a716-446655440002" }
                         """)
                 .exchange();
 
@@ -539,17 +475,17 @@ class CharacterRestControllerTest {
     void givenNonExistentJobId_whenPostChangeJob_thenReturnStatus404() {
         // Given
         String characterId  = "660e8400-e29b-41d4-a716-446655440001";
-        String nonExistentJobId = "non-existent-job-id";
+        String nonExistentJobId = "550e8400-e29b-41d4-a716-446655440099";
         Mockito.when(characterApplicationService.changeJob(characterId, nonExistentJobId))
                 .thenThrow(new JobNotFoundException(nonExistentJobId));
 
         // When
         MvcTestResult actual = mockMvcTester
                 .post()
-                .uri("/characters/{id}/job/change", characterId)
+                .uri("/characters/{id}/jobs", characterId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                        { "job": { "id": "non-existent-job-id" } }
+                        { "jobId": "550e8400-e29b-41d4-a716-446655440099" }
                         """)
                 .exchange();
 
@@ -569,10 +505,10 @@ class CharacterRestControllerTest {
         // When
         MvcTestResult actual = mockMvcTester
                 .post()
-                .uri("/characters/{id}/job/change", characterId)
+                .uri("/characters/{id}/jobs", characterId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                        { "job": { "id": "550e8400-e29b-41d4-a716-446655440002" } }
+                        { "jobId": "550e8400-e29b-41d4-a716-446655440002" }
                         """)
                 .exchange();
 
@@ -592,10 +528,10 @@ class CharacterRestControllerTest {
         // When
         MvcTestResult actual = mockMvcTester
                 .post()
-                .uri("/characters/{id}/job/change", characterId)
+                .uri("/characters/{id}/jobs", characterId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
-                        { "job": { "id": "550e8400-e29b-41d4-a716-446655440001" } }
+                        { "jobId": "550e8400-e29b-41d4-a716-446655440001" }
                         """)
                 .exchange();
 
@@ -609,7 +545,7 @@ class CharacterRestControllerTest {
         // When
         MvcTestResult actual = mockMvcTester
                 .post()
-                .uri("/characters/{id}/job/change", "660e8400-e29b-41d4-a716-446655440001")
+                .uri("/characters/{id}/jobs", "660e8400-e29b-41d4-a716-446655440001")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ invalid json }")
                 .exchange();
@@ -621,24 +557,22 @@ class CharacterRestControllerTest {
     }
 
     @Test
-    @DisplayName("jobフィールドがnullの場合、serviceのバリデーションを通じて400を返す")
-    void givenNullJob_whenPostChangeJob_thenReturnStatus400() {
-        // Given
-        String characterId = "660e8400-e29b-41d4-a716-446655440001";
-        Mockito.when(characterApplicationService.changeJob(Mockito.eq(characterId), Mockito.isNull()))
-                .thenThrow(new IllegalArgumentException("jobId must not be null or blank when changing job"));
-
+    @DisplayName("jobIdフィールドが空の場合、@NotBlank違反で400を返す")
+    void givenBlankJobId_whenPostChangeJob_thenReturnStatus400() {
         // When
         MvcTestResult actual = mockMvcTester
                 .post()
-                .uri("/characters/{id}/job/change", characterId)
+                .uri("/characters/{id}/jobs", "660e8400-e29b-41d4-a716-446655440001")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}")
+                .content("""
+                        { "jobId": "" }
+                        """)
                 .exchange();
 
         // Then
         assertThat(actual).hasStatus(400);
-        Mockito.verify(characterApplicationService).changeJob(characterId, null);
+        Mockito.verify(characterApplicationService, Mockito.never())
+                .changeJob(Mockito.any(), Mockito.any());
     }
 
     // ========== GET /{id}/skills ==========
@@ -686,7 +620,7 @@ class CharacterRestControllerTest {
     @DisplayName("存在しないキャラクターIDの場合、404を返す")
     void givenNonExistentCharacterId_whenGetSkills_thenReturnStatus404() {
         // Given
-        String nonExistentId = "non-existent-id";
+        String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
         Mockito.when(characterApplicationService.listSkills(nonExistentId))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
@@ -729,7 +663,7 @@ class CharacterRestControllerTest {
     @DisplayName("存在しないキャラクターIDの場合、404を返す")
     void givenNonExistentCharacterId_whenLearnSkill_thenReturnStatus404() {
         // Given
-        String nonExistentId = "non-existent-id";
+        String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
         String skillId       = "aa0e8400-e29b-41d4-a716-446655440001";
         Mockito.when(characterApplicationService.learnSkill(nonExistentId, skillId))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));

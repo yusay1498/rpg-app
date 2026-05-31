@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "characters")
@@ -169,5 +170,32 @@ public class Character {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public static Character createNew(String name, Job job) {
+        Character character = new Character();
+        character.setId(UUID.randomUUID().toString());
+        character.setName(name);
+        character.setJob(job);
+        character.setLevel(1);
+        character.setExp(0);
+        character.setHp(job.getBaseHp());
+        character.setMaxHp(job.getBaseHp());
+        character.setMp(job.getBaseMp());
+        character.setMaxMp(job.getBaseMp());
+        character.setAttack(job.getBaseAttack());
+        character.setDefense(job.getBaseDefense());
+        character.setSpeed(job.getBaseSpeed());
+        character.setSkillPoints(0);
+        character.setGold(0);
+        character.setStatus(CharacterStatus.ALIVE);
+        return character;
+    }
+
+    public void consumeSkillPoints(int cost) {
+        if (this.skillPoints < cost) {
+            throw new IllegalStateException("Insufficient skill points");
+        }
+        this.skillPoints -= cost;
     }
 }

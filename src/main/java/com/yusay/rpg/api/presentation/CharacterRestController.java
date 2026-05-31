@@ -1,10 +1,10 @@
 package com.yusay.rpg.api.presentation;
 
-import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.application.CharacterApplicationService;
-import com.yusay.rpg.api.domain.entity.CharacterJob;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/characters")
+@Validated
 public class CharacterRestController {
 
     private final CharacterApplicationService characterApplicationService;
@@ -22,14 +23,15 @@ public class CharacterRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CharacterResponse> getById(@PathVariable String id) {
+    public ResponseEntity<CharacterResponse> getById(
+            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
         return ResponseEntity.ok(CharacterResponse.from(characterApplicationService.lookup(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid Character character) {
+    public ResponseEntity<Void> create(@RequestBody @Valid CharacterCreateRequest request) {
         CharacterResponse newCharacter = CharacterResponse
-                .from(characterApplicationService.create(character));
+                .from(characterApplicationService.create(request.name(), request.jobId()));
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -41,8 +43,8 @@ public class CharacterRestController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> patchName(
-            @PathVariable String id,
+    public ResponseEntity<Void> renameCharacter(
+            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
             @RequestBody @Valid CharacterRenameRequest request
     ) {
         characterApplicationService.rename(id, request.name());
@@ -50,13 +52,15 @@ public class CharacterRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(
+            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
         characterApplicationService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/jobs")
-    public ResponseEntity<List<CharacterJobResponse>> getJobs(@PathVariable String id) {
+    public ResponseEntity<List<CharacterJobResponse>> getJobs(
+            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
         return ResponseEntity.ok(
                 characterApplicationService.listJobs(id).stream()
                         .map(CharacterJobResponse::from)
@@ -64,25 +68,25 @@ public class CharacterRestController {
         );
     }
 
-    @PostMapping("/{id}/job/change")
-    public ResponseEntity<Void> postChangeJob(
-            @PathVariable String id,
-            @RequestBody @Valid CharacterJob request
+    @PostMapping("/{id}/jobs")
+    public ResponseEntity<Void> changeJob(
+            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
+            @RequestBody @Valid JobChangeRequest request
     ) {
-        CharacterJob newCharacterJob = characterApplicationService
-                .changeJob(id, request.getJob() != null ? request.getJob().getId() : null);
+        characterApplicationService.changeJob(id, request.jobId());
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequestUri()
-                .build()
-                .toUri()
-                .resolve("../jobs");
+                .fromCurrentContextPath()
+                .path("/characters/{id}/jobs")
+                .buildAndExpand(id)
+                .toUri();
 
         return ResponseEntity.created(location).build();
     }
 
     @GetMapping("/{id}/skills")
-    public ResponseEntity<List<CharacterSkillResponse>> getSkills(@PathVariable String id) {
+    public ResponseEntity<List<CharacterSkillResponse>> getSkills(
+            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
         return ResponseEntity.ok(
                 characterApplicationService.listSkills(id).stream()
                         .map(CharacterSkillResponse::from)
@@ -92,16 +96,16 @@ public class CharacterRestController {
 
     @PostMapping("/{id}/skills/{skillId}")
     public ResponseEntity<Void> learnSkill(
-            @PathVariable String id,
+            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
             @PathVariable String skillId
     ) {
         characterApplicationService.learnSkill(id, skillId);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequestUri()
-                .build()
-                .toUri()
-                .resolve("../skills");
+                .fromCurrentContextPath()
+                .path("/characters/{id}/skills")
+                .buildAndExpand(id)
+                .toUri();
 
         return ResponseEntity.created(location).build();
     }

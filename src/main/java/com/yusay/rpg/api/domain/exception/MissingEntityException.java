@@ -1,8 +1,10 @@
 package com.yusay.rpg.api.domain.exception;
 
-public abstract class MissingEntityException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public abstract class MissingEntityException extends BusinessException {
 
     protected MissingEntityException(String message) {
-        super(message);
+        super(message, HttpStatus.NOT_FOUND);
     }
 }
