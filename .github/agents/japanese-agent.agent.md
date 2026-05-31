@@ -6,6 +6,7 @@
 
 name: japanese-code-development-agent
 description: Japanese language–focused development agent
+model: claude-sonnet-4
 ---
 
 # Japanese Code Development Agent
