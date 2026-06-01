@@ -193,8 +193,11 @@ public class Character {
     }
 
     public void consumeSkillPoints(int cost) {
+        if (cost <= 0) {
+            throw new IllegalArgumentException("cost must be positive");
+        }
         if (this.skillPoints < cost) {
-            throw new IllegalStateException("Insufficient skill points");
+            throw new IllegalArgumentException("Insufficient skill points");
         }
         this.skillPoints -= cost;
     }

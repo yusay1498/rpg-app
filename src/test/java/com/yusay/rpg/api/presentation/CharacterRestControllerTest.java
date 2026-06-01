@@ -219,6 +219,7 @@ class CharacterRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                         {
+                            "id": "999e8400-e29b-41d4-a716-446655440000",
                             "name": "Jiro",
                             "jobId": "550e8400-e29b-41d4-a716-446655440001"
                         }
@@ -691,7 +692,7 @@ class CharacterRestControllerTest {
     void givenNonExistentSkillId_whenLearnSkill_thenReturnStatus404() {
         // Given
         String characterId       = "660e8400-e29b-41d4-a716-446655440001";
-        String nonExistentSkillId = "non-existent-skill-id";
+        String nonExistentSkillId = "990e8400-e29b-41d4-a716-446655440099";
         Mockito.when(characterSkillService.learnSkill(characterId, nonExistentSkillId))
                 .thenThrow(new SkillNotFoundException(nonExistentSkillId));
 

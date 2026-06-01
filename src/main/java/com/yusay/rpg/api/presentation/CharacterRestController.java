@@ -39,7 +39,7 @@ public class CharacterRestController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid CharacterCreateRequest request) {
+    public ResponseEntity<Void> post(@RequestBody @Valid CharacterCreateRequest request) {
         CharacterResponse newCharacter = CharacterResponse
                 .from(characterApplicationService.create(request.name(), request.jobId()));
 
@@ -79,7 +79,7 @@ public class CharacterRestController {
     }
 
     @PostMapping("/{id}/jobs")
-    public ResponseEntity<Void> changeJob(
+    public ResponseEntity<Void> postJob(
             @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
             @RequestBody @Valid JobChangeRequest request
     ) {
@@ -105,9 +105,9 @@ public class CharacterRestController {
     }
 
     @PostMapping("/{id}/skills/{skillId}")
-    public ResponseEntity<Void> learnSkill(
+    public ResponseEntity<Void> postSkill(
             @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
-            @PathVariable String skillId
+            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String skillId
     ) {
         characterSkillService.learnSkill(id, skillId);
 

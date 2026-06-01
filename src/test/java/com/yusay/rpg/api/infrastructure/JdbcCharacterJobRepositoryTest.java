@@ -7,9 +7,7 @@ import com.yusay.rpg.api.domain.repository.CharacterJobRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
-import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureJdbc;
-import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
+import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -22,21 +20,15 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-@AutoConfigureJdbc
+@JdbcTest
 @Import({TestcontainersConfiguration.class, JdbcCharacterJobRepository.class})
-class JpaCharacterJobRepositoryTest {
+class JdbcCharacterJobRepositoryTest {
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
-        registry.add("spring.jpa.show-sql", () -> true);
         registry.add("spring.sql.init.mode", () -> "always");
         registry.add("spring.sql.init.data-locations", () -> "");
     }
-
-    @Autowired
-    TestEntityManager testEntityManager;
 
     @Autowired
     CharacterJobRepository characterJobRepository;
@@ -139,24 +131,13 @@ class JpaCharacterJobRepositoryTest {
     """)
     void givenCharacterJob_whenSave_thenPersistCharacterJob() {
         // Given
-        var character = testEntityManager.find(
-                com.yusay.rpg.api.domain.entity.Character.class,
-                "660e8400-e29b-41d4-a716-446655440001"
-        );
-        var job = testEntityManager.find(
-                com.yusay.rpg.api.domain.entity.Job.class,
-                "550e8400-e29b-41d4-a716-446655440001"
-        );
         CharacterJob characterJob = new CharacterJob();
         characterJob.setId(new CharacterJobId("660e8400-e29b-41d4-a716-446655440001", "550e8400-e29b-41d4-a716-446655440001"));
-        characterJob.setCharacter(character);
-        characterJob.setJob(job);
         characterJob.setMastered(false);
         characterJob.setMaxLevel(1);
 
         // When
         CharacterJob saved = characterJobRepository.save(characterJob);
-        testEntityManager.flush();
 
         // Then: 返却値の検証
         assertThat(saved.getId().getCharacterId()).isEqualTo("660e8400-e29b-41d4-a716-446655440001");
@@ -165,7 +146,6 @@ class JpaCharacterJobRepositoryTest {
         assertThat(saved.getMaxLevel()).isEqualTo(1);
 
         // Then: DB永続化の検証
-        testEntityManager.clear();
         Map<String, Object> row = jdbcClient
                 .sql("SELECT * FROM character_jobs WHERE character_id = :cid AND job_id = :jid")
                 .param("cid", "660e8400-e29b-41d4-a716-446655440001")
