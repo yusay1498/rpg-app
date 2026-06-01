@@ -1,5 +1,8 @@
 package com.yusay.rpg.api.presentation;
 
+import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
+import com.yusay.rpg.api.domain.exception.MissingEntityException;
+import com.yusay.rpg.api.domain.exception.SkillAlreadyLearnedException;
 import com.yusay.rpg.api.domain.exception.BusinessException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -17,10 +20,28 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    @ExceptionHandler(MissingEntityException.class)
+    public ResponseEntity<ProblemDetail> handleMissingEntity(MissingEntityException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND,
+                e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler({JobAlreadyOwnedException.class, SkillAlreadyLearnedException.class})
+    public ResponseEntity<ProblemDetail> handleConflict(BusinessException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ProblemDetail> handleBusinessException(BusinessException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                e.getHttpStatus(),
+                HttpStatus.BAD_REQUEST,
                 e.getMessage()
         );
         return ResponseEntity.of(problemDetail).build();

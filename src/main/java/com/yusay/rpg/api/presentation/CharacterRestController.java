@@ -1,6 +1,8 @@
 package com.yusay.rpg.api.presentation;
 
 import com.yusay.rpg.api.application.CharacterApplicationService;
+import com.yusay.rpg.api.application.CharacterJobService;
+import com.yusay.rpg.api.application.CharacterSkillService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +19,17 @@ import java.util.List;
 public class CharacterRestController {
 
     private final CharacterApplicationService characterApplicationService;
+    private final CharacterJobService characterJobService;
+    private final CharacterSkillService characterSkillService;
 
-    public CharacterRestController(CharacterApplicationService characterApplicationService) {
+    public CharacterRestController(
+            CharacterApplicationService characterApplicationService,
+            CharacterJobService characterJobService,
+            CharacterSkillService characterSkillService
+    ) {
         this.characterApplicationService = characterApplicationService;
+        this.characterJobService = characterJobService;
+        this.characterSkillService = characterSkillService;
     }
 
     @GetMapping("/{id}")
@@ -43,7 +53,7 @@ public class CharacterRestController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> renameCharacter(
+    public ResponseEntity<Void> rename(
             @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
             @RequestBody @Valid CharacterRenameRequest request
     ) {
@@ -62,7 +72,7 @@ public class CharacterRestController {
     public ResponseEntity<List<CharacterJobResponse>> getJobs(
             @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
         return ResponseEntity.ok(
-                characterApplicationService.listJobs(id).stream()
+                characterJobService.listJobs(id).stream()
                         .map(CharacterJobResponse::from)
                         .toList()
         );
@@ -73,7 +83,7 @@ public class CharacterRestController {
             @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
             @RequestBody @Valid JobChangeRequest request
     ) {
-        characterApplicationService.changeJob(id, request.jobId());
+        characterJobService.changeJob(id, request.jobId());
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
@@ -88,7 +98,7 @@ public class CharacterRestController {
     public ResponseEntity<List<CharacterSkillResponse>> getSkills(
             @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
         return ResponseEntity.ok(
-                characterApplicationService.listSkills(id).stream()
+                characterSkillService.listSkills(id).stream()
                         .map(CharacterSkillResponse::from)
                         .toList()
         );
@@ -99,7 +109,7 @@ public class CharacterRestController {
             @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
             @PathVariable String skillId
     ) {
-        characterApplicationService.learnSkill(id, skillId);
+        characterSkillService.learnSkill(id, skillId);
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()

@@ -1,6 +1,8 @@
 package com.yusay.rpg.api.presentation;
 
 import com.yusay.rpg.api.application.CharacterApplicationService;
+import com.yusay.rpg.api.application.CharacterJobService;
+import com.yusay.rpg.api.application.CharacterSkillService;
 import com.yusay.rpg.api.domain.entity.Character;
 import com.yusay.rpg.api.domain.entity.CharacterJob;
 import com.yusay.rpg.api.domain.entity.CharacterJobId;
@@ -41,6 +43,12 @@ class CharacterRestControllerTest {
 
     @MockitoBean
     private CharacterApplicationService characterApplicationService;
+
+    @MockitoBean
+    private CharacterJobService characterJobService;
+
+    @MockitoBean
+    private CharacterSkillService characterSkillService;
 
     @Test
     @DisplayName("成功した場合、指定したキャラクターと200番を返す")
@@ -375,7 +383,7 @@ class CharacterRestControllerTest {
         characterJob.setJob(newJob);
         characterJob.setMastered(true);
         characterJob.setMaxLevel(10);
-        Mockito.when(characterApplicationService.listJobs(characterId)).thenReturn(List.of(characterJob));
+        Mockito.when(characterJobService.listJobs(characterId)).thenReturn(List.of(characterJob));
 
         // When
         MvcTestResult actual = mockMvcTester
@@ -384,7 +392,7 @@ class CharacterRestControllerTest {
                 .exchange();
 
         // Then
-        Mockito.verify(characterApplicationService).listJobs(characterId);
+        Mockito.verify(characterJobService).listJobs(characterId);
         assertThat(actual)
                 .hasStatusOk()
                 .bodyJson()
@@ -405,7 +413,7 @@ class CharacterRestControllerTest {
     void givenNonExistentCharacterId_whenGetJobs_thenReturnStatus404() {
         // Given
         String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
-        Mockito.when(characterApplicationService.listJobs(nonExistentId))
+        Mockito.when(characterJobService.listJobs(nonExistentId))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
         // When
@@ -427,7 +435,7 @@ class CharacterRestControllerTest {
         CharacterJobId characterJobId = new CharacterJobId(characterId, jobId);
         CharacterJob characterJob = new CharacterJob();
         characterJob.setId(characterJobId);
-        Mockito.when(characterApplicationService.changeJob(characterId, jobId))
+        Mockito.when(characterJobService.changeJob(characterId, jobId))
                 .thenReturn(characterJob);
 
         // When
@@ -441,7 +449,7 @@ class CharacterRestControllerTest {
                 .exchange();
 
         // Then
-        Mockito.verify(characterApplicationService).changeJob(characterId, jobId);
+        Mockito.verify(characterJobService).changeJob(characterId, jobId);
         assertThat(actual)
                 .hasStatus(201)
                 .headers()
@@ -453,7 +461,7 @@ class CharacterRestControllerTest {
     void givenNonExistentCharacterId_whenPostChangeJob_thenReturnStatus404() {
         // Given
         String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
-        Mockito.when(characterApplicationService.changeJob(Mockito.eq(nonExistentId), Mockito.anyString()))
+        Mockito.when(characterJobService.changeJob(Mockito.eq(nonExistentId), Mockito.anyString()))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
         // When
@@ -476,7 +484,7 @@ class CharacterRestControllerTest {
         // Given
         String characterId  = "660e8400-e29b-41d4-a716-446655440001";
         String nonExistentJobId = "550e8400-e29b-41d4-a716-446655440099";
-        Mockito.when(characterApplicationService.changeJob(characterId, nonExistentJobId))
+        Mockito.when(characterJobService.changeJob(characterId, nonExistentJobId))
                 .thenThrow(new JobNotFoundException(nonExistentJobId));
 
         // When
@@ -499,7 +507,7 @@ class CharacterRestControllerTest {
         // Given
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String jobId       = "550e8400-e29b-41d4-a716-446655440002";
-        Mockito.when(characterApplicationService.changeJob(characterId, jobId))
+        Mockito.when(characterJobService.changeJob(characterId, jobId))
                 .thenThrow(new JobChangeRequirementNotMetException(characterId, jobId));
 
         // When
@@ -522,7 +530,7 @@ class CharacterRestControllerTest {
         // Given
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String jobId       = "550e8400-e29b-41d4-a716-446655440001";
-        Mockito.when(characterApplicationService.changeJob(characterId, jobId))
+        Mockito.when(characterJobService.changeJob(characterId, jobId))
                 .thenThrow(new JobAlreadyOwnedException(characterId, jobId));
 
         // When
@@ -552,7 +560,7 @@ class CharacterRestControllerTest {
 
         // Then
         assertThat(actual).hasStatus(400);
-        Mockito.verify(characterApplicationService, Mockito.never())
+        Mockito.verify(characterJobService, Mockito.never())
                 .changeJob(Mockito.any(), Mockito.any());
     }
 
@@ -571,7 +579,7 @@ class CharacterRestControllerTest {
 
         // Then
         assertThat(actual).hasStatus(400);
-        Mockito.verify(characterApplicationService, Mockito.never())
+        Mockito.verify(characterJobService, Mockito.never())
                 .changeJob(Mockito.any(), Mockito.any());
     }
 
@@ -591,7 +599,7 @@ class CharacterRestControllerTest {
         Mockito.when(characterSkill.getId()).thenReturn(csId);
         Mockito.when(characterSkill.getSkill()).thenReturn(skill);
         Mockito.when(characterSkill.getLearnedAt()).thenReturn(learnedAt);
-        Mockito.when(characterApplicationService.listSkills(characterId))
+        Mockito.when(characterSkillService.listSkills(characterId))
                 .thenReturn(List.of(characterSkill));
 
         // When
@@ -601,7 +609,7 @@ class CharacterRestControllerTest {
                 .exchange();
 
         // Then
-        Mockito.verify(characterApplicationService).listSkills(characterId);
+        Mockito.verify(characterSkillService).listSkills(characterId);
         assertThat(actual)
                 .hasStatusOk()
                 .bodyJson()
@@ -621,7 +629,7 @@ class CharacterRestControllerTest {
     void givenNonExistentCharacterId_whenGetSkills_thenReturnStatus404() {
         // Given
         String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
-        Mockito.when(characterApplicationService.listSkills(nonExistentId))
+        Mockito.when(characterSkillService.listSkills(nonExistentId))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
         // When
@@ -642,7 +650,7 @@ class CharacterRestControllerTest {
         // Given
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String skillId     = "aa0e8400-e29b-41d4-a716-446655440001";
-        Mockito.when(characterApplicationService.learnSkill(characterId, skillId))
+        Mockito.when(characterSkillService.learnSkill(characterId, skillId))
                 .thenReturn(Mockito.mock(CharacterSkill.class));
 
         // When
@@ -652,7 +660,7 @@ class CharacterRestControllerTest {
                 .exchange();
 
         // Then
-        Mockito.verify(characterApplicationService).learnSkill(characterId, skillId);
+        Mockito.verify(characterSkillService).learnSkill(characterId, skillId);
         assertThat(actual)
                 .hasStatus(201)
                 .headers()
@@ -665,7 +673,7 @@ class CharacterRestControllerTest {
         // Given
         String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
         String skillId       = "aa0e8400-e29b-41d4-a716-446655440001";
-        Mockito.when(characterApplicationService.learnSkill(nonExistentId, skillId))
+        Mockito.when(characterSkillService.learnSkill(nonExistentId, skillId))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
         // When
@@ -684,7 +692,7 @@ class CharacterRestControllerTest {
         // Given
         String characterId       = "660e8400-e29b-41d4-a716-446655440001";
         String nonExistentSkillId = "non-existent-skill-id";
-        Mockito.when(characterApplicationService.learnSkill(characterId, nonExistentSkillId))
+        Mockito.when(characterSkillService.learnSkill(characterId, nonExistentSkillId))
                 .thenThrow(new SkillNotFoundException(nonExistentSkillId));
 
         // When
@@ -703,7 +711,7 @@ class CharacterRestControllerTest {
         // Given
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String skillId     = "aa0e8400-e29b-41d4-a716-446655440001";
-        Mockito.when(characterApplicationService.learnSkill(characterId, skillId))
+        Mockito.when(characterSkillService.learnSkill(characterId, skillId))
                 .thenThrow(new SkillAlreadyLearnedException(characterId, skillId));
 
         // When
@@ -722,7 +730,7 @@ class CharacterRestControllerTest {
         // Given
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String skillId     = "aa0e8400-e29b-41d4-a716-446655440001";
-        Mockito.when(characterApplicationService.learnSkill(characterId, skillId))
+        Mockito.when(characterSkillService.learnSkill(characterId, skillId))
                 .thenThrow(new SkillNotAvailableException(characterId, skillId));
 
         // When
@@ -741,7 +749,7 @@ class CharacterRestControllerTest {
         // Given
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String skillId     = "aa0e8400-e29b-41d4-a716-446655440001";
-        Mockito.when(characterApplicationService.learnSkill(characterId, skillId))
+        Mockito.when(characterSkillService.learnSkill(characterId, skillId))
                 .thenThrow(new SkillLearnRequirementNotMetException(characterId, skillId));
 
         // When

@@ -8,8 +8,6 @@ import com.yusay.rpg.api.domain.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @Transactional
 public class CharacterApplicationService {
@@ -17,21 +15,15 @@ public class CharacterApplicationService {
     private final CharacterRepository characterRepository;
     private final JobRepository jobRepository;
     private final CharacterJobRepository characterJobRepository;
-    private final CharacterJobService characterJobService;
-    private final CharacterSkillService characterSkillService;
 
     public CharacterApplicationService(
             CharacterRepository characterRepository,
             JobRepository jobRepository,
-            CharacterJobRepository characterJobRepository,
-            CharacterJobService characterJobService,
-            CharacterSkillService characterSkillService
+            CharacterJobRepository characterJobRepository
     ) {
         this.characterRepository = characterRepository;
         this.jobRepository = jobRepository;
         this.characterJobRepository = characterJobRepository;
-        this.characterJobService = characterJobService;
-        this.characterSkillService = characterSkillService;
     }
 
     public Character lookup(String id) {
@@ -88,24 +80,6 @@ public class CharacterApplicationService {
         characterRepository.findById(id)
                 .orElseThrow(() -> new CharacterNotFoundException(id));
         characterRepository.deleteById(id);
-    }
-
-    @Transactional(readOnly = true)
-    public List<CharacterJob> listJobs(String characterId) {
-        return characterJobService.listJobs(characterId);
-    }
-
-    public CharacterJob changeJob(String characterId, String jobId) {
-        return characterJobService.changeJob(characterId, jobId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<CharacterSkill> listSkills(String characterId) {
-        return characterSkillService.listSkills(characterId);
-    }
-
-    public CharacterSkill learnSkill(String characterId, String skillId) {
-        return characterSkillService.learnSkill(characterId, skillId);
     }
 }
 

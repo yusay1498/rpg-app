@@ -20,7 +20,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -112,7 +112,7 @@ class CharacterJobServiceTest {
         when(characterRepository.findById(characterId)).thenReturn(Optional.of(character));
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(newJob));
         when(jobRequirementRepository.findRequiredJobs(jobId)).thenReturn(List.of(warrior));
-        when(characterJobRepository.findMasteredJobIdsByCharacterId(characterId)).thenReturn(Set.of(warriorId));
+        when(characterJobRepository.findMasteredJobIdsByCharacterId(characterId)).thenReturn(List.of(warriorId));
         when(characterJobRepository.findById(new CharacterJobId(characterId, jobId))).thenReturn(Optional.empty());
         when(characterJobRepository.save(any(CharacterJob.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -150,7 +150,7 @@ class CharacterJobServiceTest {
         when(characterRepository.findById(characterId)).thenReturn(Optional.of(character));
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(newJob));
         when(jobRequirementRepository.findRequiredJobs(jobId)).thenReturn(List.of());
-        when(characterJobRepository.findMasteredJobIdsByCharacterId(characterId)).thenReturn(Set.of());
+        when(characterJobRepository.findMasteredJobIdsByCharacterId(characterId)).thenReturn(List.of());
         when(characterJobRepository.findById(new CharacterJobId(characterId, jobId))).thenReturn(Optional.empty());
         when(characterJobRepository.save(any(CharacterJob.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -224,7 +224,7 @@ class CharacterJobServiceTest {
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(newJob));
         when(characterJobRepository.findById(new CharacterJobId(characterId, jobId))).thenReturn(Optional.empty());
         when(jobRequirementRepository.findRequiredJobs(jobId)).thenReturn(List.of(requiredJob));
-        when(characterJobRepository.findMasteredJobIdsByCharacterId(characterId)).thenReturn(Set.of());
+        when(characterJobRepository.findMasteredJobIdsByCharacterId(characterId)).thenReturn(List.of());
 
         // When / Then
         assertThatThrownBy(() -> service.changeJob(characterId, jobId))

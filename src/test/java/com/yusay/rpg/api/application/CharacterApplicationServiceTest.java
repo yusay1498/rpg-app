@@ -34,7 +34,7 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
         Job warrior = new Job();
         warrior.setId("550e8400-e29b-41d4-a716-446655440001");
@@ -81,7 +81,7 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
         String nonExistentId = "non-existent-id";
         when(characterRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -100,7 +100,7 @@ class CharacterApplicationServiceTest {
         JobRepository jobRepository = mock(JobRepository.class);
         CharacterJobRepository characterJobRepository = mock(CharacterJobRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, jobRepository, characterJobRepository, mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, jobRepository, characterJobRepository
         );
         Job warrior = new Job();
         warrior.setId("550e8400-e29b-41d4-a716-446655440001");
@@ -151,7 +151,7 @@ class CharacterApplicationServiceTest {
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         JobRepository jobRepository = mock(JobRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, jobRepository, mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, jobRepository, mock(CharacterJobRepository.class)
         );
         when(jobRepository.findById("non-existent-job-id")).thenReturn(Optional.empty());
 
@@ -166,7 +166,7 @@ class CharacterApplicationServiceTest {
     void givenNullJob_whenCreate_thenThrowIllegalArgumentException() {
         // Given
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
         // When / Then
         assertThatThrownBy(() -> characterApplicationService.create("Taro", null))
@@ -181,7 +181,7 @@ class CharacterApplicationServiceTest {
     void givenBlankJobId_whenCreate_thenThrowIllegalArgumentException(String jobId) {
         // Given
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                mock(CharacterRepository.class), mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
 
         // When / Then
@@ -196,7 +196,7 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
         Job warrior = new Job();
         warrior.setId("550e8400-e29b-41d4-a716-446655440001");
@@ -227,7 +227,7 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
         Character input = new Character();
         input.setId("non-existent-id");
@@ -247,7 +247,7 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
 
         // When / Then
@@ -263,7 +263,7 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
 
         // When / Then
@@ -277,7 +277,7 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
         String id = "660e8400-e29b-41d4-a716-446655440001";
         when(characterRepository.findById(id)).thenReturn(Optional.of(new Character()));
@@ -295,7 +295,7 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
         String nonExistentId = "non-existent-id";
         when(characterRepository.findById(nonExistentId)).thenReturn(Optional.empty());
@@ -314,7 +314,7 @@ class CharacterApplicationServiceTest {
         // Given
         CharacterRepository characterRepository = mock(CharacterRepository.class);
         CharacterApplicationService characterApplicationService = new CharacterApplicationService(
-                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class), mock(CharacterJobService.class), mock(CharacterSkillService.class)
+                characterRepository, mock(JobRepository.class), mock(CharacterJobRepository.class)
         );
 
         // When / Then
