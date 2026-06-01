@@ -4,6 +4,7 @@ import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
 import com.yusay.rpg.api.domain.exception.MissingEntityException;
 import com.yusay.rpg.api.domain.exception.SkillAlreadyLearnedException;
 import com.yusay.rpg.api.domain.exception.BusinessException;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,9 +76,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ProblemDetail> handleConstraintViolation(ConstraintViolationException e) {
+        List<String> validationErrors = e.getConstraintViolations().stream()
+                .map(violation -> extractParameter(violation) + ": " + violation.getMessage())
+                .toList();
+        String detail;
+        if (validationErrors.isEmpty()) {
+            log.warn("Validation failed without constraint violations", e);
+            detail = "Validation failed";
+        } else {
+            detail = String.join(", ", validationErrors);
+        }
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
-                e.getMessage()
+                detail
         );
         return ResponseEntity.of(problemDetail).build();
     }
@@ -108,5 +119,17 @@ public class GlobalExceptionHandler {
                 "Internal server error"
         );
         return ResponseEntity.of(problemDetail).build();
+    }
+
+    private String extractParameter(ConstraintViolation<?> violation) {
+        String propertyPath = violation.getPropertyPath().toString();
+        int lastDotIndex = propertyPath.lastIndexOf('.');
+        if (lastDotIndex >= 0 && lastDotIndex < propertyPath.length() - 1) {
+            return propertyPath.substring(lastDotIndex + 1);
+        }
+        if (propertyPath.isBlank()) {
+            return "parameter";
+        }
+        return propertyPath;
     }
 }
