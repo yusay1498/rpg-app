@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -67,7 +68,9 @@ public class CharacterJobService {
 
         List<Job> requiredJobs = jobRequirementRepository.findRequiredJobs(jobId);
 
-        List<String> masteredJobIds = characterJobRepository.findMasteredJobIdsByCharacterId(characterId);
+        Set<String> masteredJobIds = Set.copyOf(
+                characterJobRepository.findMasteredJobIdsByCharacterId(characterId)
+        );
 
         boolean meetsRequirements = requiredJobs.stream()
                 .map(Job::getId)

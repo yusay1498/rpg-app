@@ -34,7 +34,7 @@ public class CharacterRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CharacterResponse> getById(
-            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
+            @PathVariable @Pattern(regexp = "(?i)^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") String id) {
         return ResponseEntity.ok(CharacterResponse.from(characterApplicationService.lookup(id)));
     }
 
@@ -54,7 +54,7 @@ public class CharacterRestController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> patchName(
-            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
+            @PathVariable @Pattern(regexp = "(?i)^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") String id,
             @RequestBody @Valid CharacterRenameRequest request
     ) {
         characterApplicationService.rename(id, request.name());
@@ -63,14 +63,14 @@ public class CharacterRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
+            @PathVariable @Pattern(regexp = "(?i)^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") String id) {
         characterApplicationService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/jobs")
     public ResponseEntity<List<CharacterJobResponse>> getJobs(
-            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
+            @PathVariable @Pattern(regexp = "(?i)^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") String id) {
         return ResponseEntity.ok(
                 characterJobService.list(id).stream()
                         .map(CharacterJobResponse::from)
@@ -80,7 +80,7 @@ public class CharacterRestController {
 
     @PostMapping("/{id}/jobs")
     public ResponseEntity<Void> postJob(
-            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
+            @PathVariable @Pattern(regexp = "(?i)^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") String id,
             @RequestBody @Valid JobChangeRequest request
     ) {
         characterJobService.changeJob(id, request.jobId());
@@ -96,7 +96,7 @@ public class CharacterRestController {
 
     @GetMapping("/{id}/skills")
     public ResponseEntity<List<CharacterSkillResponse>> getSkills(
-            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
+            @PathVariable @Pattern(regexp = "(?i)^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") String id) {
         return ResponseEntity.ok(
                 characterSkillService.listSkills(id).stream()
                         .map(CharacterSkillResponse::from)
@@ -106,8 +106,8 @@ public class CharacterRestController {
 
     @PostMapping("/{id}/skills/{skillId}")
     public ResponseEntity<Void> postSkill(
-            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
-            @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String skillId
+            @PathVariable @Pattern(regexp = "(?i)^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") String id,
+            @PathVariable @Pattern(regexp = "(?i)^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$") String skillId
     ) {
         characterSkillService.learnSkill(id, skillId);
 

@@ -73,22 +73,29 @@ public class JdbcCharacterJobRepository implements CharacterJobRepository {
                         character_jobs.character_id,
                         character_jobs.job_id,
                         character_jobs.mastered,
-                        character_jobs.max_level
+                        character_jobs.max_level,
+                        jobs.name AS job_name
                     FROM
                         character_jobs
+                        JOIN jobs ON character_jobs.job_id = jobs.id
                     WHERE
                         character_jobs.character_id = :characterId
                         AND character_jobs.job_id = :jobId
                     """)
                 .param("characterId", id.characterId())
                 .param("jobId", id.jobId())
-                .query((rs, rowNum) -> new CharacterJob(
-                        new CharacterJobId(rs.getString("character_id"), rs.getString("job_id")),
-                        null,
-                        null,
-                        rs.getBoolean("mastered"),
-                        rs.getInt("max_level")
-                ))
+                .query((rs, rowNum) -> {
+                    Job job = new Job();
+                    job.setId(rs.getString("job_id"));
+                    job.setName(rs.getString("job_name"));
+                    return new CharacterJob(
+                            new CharacterJobId(rs.getString("character_id"), rs.getString("job_id")),
+                            null,
+                            job,
+                            rs.getBoolean("mastered"),
+                            rs.getInt("max_level")
+                    );
+                })
                 .optional();
     }
 
