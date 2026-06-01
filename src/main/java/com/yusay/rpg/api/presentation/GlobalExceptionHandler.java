@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -51,10 +52,20 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
-        List<String> fieldErrors = e.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+        List<String> validationErrors = Stream.concat(
+                        e.getBindingResult().getFieldErrors().stream()
+                                .map(error -> error.getField() + ": " + error.getDefaultMessage()),
+                        e.getBindingResult().getGlobalErrors().stream()
+                                .map(error -> error.getObjectName() + ": " + error.getDefaultMessage())
+                )
                 .toList();
-        String detail = fieldErrors.isEmpty() ? e.getMessage() : String.join(", ", fieldErrors);
+        String detail;
+        if (validationErrors.isEmpty()) {
+            log.warn("Validation failed without binding errors", e);
+            detail = "Validation failed";
+        } else {
+            detail = String.join(", ", validationErrors);
+        }
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
                 detail
