@@ -46,7 +46,7 @@ class JdbcCharacterJobRepositoryTest {
     """)
     void givenCharacterJobs_whenFindByIdCharacterId_thenReturnList() {
         // Given
-        var characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
 
         // When
         List<CharacterJob> result = characterJobRepository.findByIdCharacterId("660e8400-e29b-41d4-a716-446655440001");
@@ -72,7 +72,7 @@ class JdbcCharacterJobRepositoryTest {
     @DisplayName("該当するCharacterJobが存在しない場合、空リストを返す")
     void givenNoCharacterJobs_whenFindByIdCharacterId_thenReturnEmptyList() {
         // Given
-        var characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
 
         // When
         List<CharacterJob> result = characterJobRepository.findByIdCharacterId("non-existent-id");
@@ -93,7 +93,7 @@ class JdbcCharacterJobRepositoryTest {
     """)
     void givenCharacterJob_whenFindById_thenReturnCharacterJob() {
         // Given
-        var characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
         CharacterJobId id = new CharacterJobId(
                 "660e8400-e29b-41d4-a716-446655440001",
                 "550e8400-e29b-41d4-a716-446655440001"
@@ -115,7 +115,7 @@ class JdbcCharacterJobRepositoryTest {
     @DisplayName("存在しない複合IDの場合、空のOptionalを返す")
     void givenNonExistentId_whenFindById_thenReturnEmpty() {
         // Given
-        var characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
         CharacterJobId id = new CharacterJobId("non-existent", "non-existent");
 
         // When
@@ -135,7 +135,7 @@ class JdbcCharacterJobRepositoryTest {
     """)
     void givenCharacterJob_whenSave_thenPersistCharacterJob() {
         // Given
-        var characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
         CharacterJob characterJob = new CharacterJob(
                 new CharacterJobId("660e8400-e29b-41d4-a716-446655440001", "550e8400-e29b-41d4-a716-446655440001"),
                 null,
@@ -178,7 +178,7 @@ class JdbcCharacterJobRepositoryTest {
     """)
     void givenExistingCharacterJob_whenSave_thenUpdateCharacterJob() {
         // Given
-        var characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
         CharacterJob characterJob = new CharacterJob(
                 new CharacterJobId("660e8400-e29b-41d4-a716-446655440001", "550e8400-e29b-41d4-a716-446655440001"),
                 null,
