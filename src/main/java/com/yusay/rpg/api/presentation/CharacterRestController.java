@@ -53,7 +53,7 @@ public class CharacterRestController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> rename(
+    public ResponseEntity<Void> patchName(
             @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id,
             @RequestBody @Valid CharacterRenameRequest request
     ) {
