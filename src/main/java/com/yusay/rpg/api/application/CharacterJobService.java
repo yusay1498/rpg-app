@@ -39,7 +39,7 @@ public class CharacterJobService {
     }
 
     @Transactional(readOnly = true)
-    public List<CharacterJob> listJobs(String characterId) {
+    public List<CharacterJob> list(String characterId) {
         if (characterId == null || characterId.isBlank()) {
             throw new IllegalArgumentException("characterId must not be null or blank when listing jobs");
         }

@@ -94,23 +94,33 @@ public class JdbcCharacterJobRepository implements CharacterJobRepository {
 
     @Override
     public CharacterJob save(CharacterJob characterJob) {
-        int rowsAffected = jdbcClient.sql("""
-                    INSERT INTO character_jobs (character_id, job_id, mastered, max_level)
-                    VALUES (:characterId, :jobId, :mastered, :maxLevel)
-                    ON CONFLICT (character_id, job_id)
-                    DO UPDATE SET mastered = :mastered, max_level = :maxLevel
-                    """)
-                .param("characterId", characterJob.id().characterId())
-                .param("jobId", characterJob.id().jobId())
-                .param("mastered", characterJob.mastered())
-                .param("maxLevel", characterJob.maxLevel())
-                .update();
+        Optional<CharacterJob> existing = findById(characterJob.id());
 
-        if (rowsAffected == 0) {
-            throw new IllegalStateException("Failed to persist CharacterJob: character_id="
-                    + characterJob.id().characterId() + ", job_id=" + characterJob.id().jobId());
+        if (existing.isPresent()) {
+            jdbcClient.sql("""
+                        UPDATE character_jobs
+                        SET mastered = :mastered, max_level = :maxLevel
+                        WHERE character_id = :characterId AND job_id = :jobId
+                        """)
+                    .param("characterId", characterJob.id().characterId())
+                    .param("jobId", characterJob.id().jobId())
+                    .param("mastered", characterJob.mastered())
+                    .param("maxLevel", characterJob.maxLevel())
+                    .update();
+        } else {
+            jdbcClient.sql("""
+                        INSERT INTO character_jobs (character_id, job_id, mastered, max_level)
+                        VALUES (:characterId, :jobId, :mastered, :maxLevel)
+                        """)
+                    .param("characterId", characterJob.id().characterId())
+                    .param("jobId", characterJob.id().jobId())
+                    .param("mastered", characterJob.mastered())
+                    .param("maxLevel", characterJob.maxLevel())
+                    .update();
         }
 
-        return characterJob;
+        return findById(characterJob.id())
+                .orElseThrow(() -> new IllegalStateException("Failed to persist CharacterJob: character_id="
+                        + characterJob.id().characterId() + ", job_id=" + characterJob.id().jobId()));
     }
 }

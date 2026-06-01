@@ -386,7 +386,7 @@ class CharacterRestControllerTest {
                 true,
                 10
         );
-        Mockito.when(characterJobService.listJobs(characterId)).thenReturn(List.of(characterJob));
+        Mockito.when(characterJobService.list(characterId)).thenReturn(List.of(characterJob));
 
         // When
         MvcTestResult actual = mockMvcTester
@@ -395,7 +395,7 @@ class CharacterRestControllerTest {
                 .exchange();
 
         // Then
-        Mockito.verify(characterJobService).listJobs(characterId);
+        Mockito.verify(characterJobService).list(characterId);
         assertThat(actual)
                 .hasStatusOk()
                 .bodyJson()
@@ -416,7 +416,7 @@ class CharacterRestControllerTest {
     void givenNonExistentCharacterId_whenGetJobs_thenReturnStatus404() {
         // Given
         String nonExistentId = "660e8400-e29b-41d4-a716-446655440099";
-        Mockito.when(characterJobService.listJobs(nonExistentId))
+        Mockito.when(characterJobService.list(nonExistentId))
                 .thenThrow(new CharacterNotFoundException(nonExistentId));
 
         // When

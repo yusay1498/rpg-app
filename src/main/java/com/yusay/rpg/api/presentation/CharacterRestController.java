@@ -72,7 +72,7 @@ public class CharacterRestController {
     public ResponseEntity<List<CharacterJobResponse>> getJobs(
             @PathVariable @Pattern(regexp = "^[0-9a-f\\-]{36}$") String id) {
         return ResponseEntity.ok(
-                characterJobService.listJobs(id).stream()
+                characterJobService.list(id).stream()
                         .map(CharacterJobResponse::from)
                         .toList()
         );

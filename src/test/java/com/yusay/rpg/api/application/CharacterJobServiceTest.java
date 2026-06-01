@@ -54,7 +54,7 @@ class CharacterJobServiceTest {
         when(characterJobRepository.findByIdCharacterId(characterId)).thenReturn(List.of(characterJob));
 
         // When
-        List<CharacterJob> result = service.listJobs(characterId);
+        List<CharacterJob> result = service.list(characterId);
 
         // Then
         verify(characterJobRepository).findByIdCharacterId(characterId);
@@ -72,7 +72,7 @@ class CharacterJobServiceTest {
         when(characterRepository.findById("non-existent-id")).thenReturn(Optional.empty());
 
         // When / Then
-        assertThatThrownBy(() -> service.listJobs("non-existent-id"))
+        assertThatThrownBy(() -> service.list("non-existent-id"))
                 .isInstanceOf(CharacterNotFoundException.class);
     }
 
@@ -87,7 +87,7 @@ class CharacterJobServiceTest {
         );
 
         // When / Then
-        assertThatThrownBy(() -> service.listJobs(characterId))
+        assertThatThrownBy(() -> service.list(characterId))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
