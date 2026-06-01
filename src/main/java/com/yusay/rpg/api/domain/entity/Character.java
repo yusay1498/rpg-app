@@ -197,7 +197,9 @@ public class Character {
             throw new IllegalArgumentException("cost must be positive");
         }
         if (this.skillPoints < cost) {
-            throw new IllegalArgumentException("Insufficient skill points");
+            throw new IllegalArgumentException(
+                    "Insufficient skill points: current=" + this.skillPoints + ", cost=" + cost
+            );
         }
         this.skillPoints -= cost;
     }
