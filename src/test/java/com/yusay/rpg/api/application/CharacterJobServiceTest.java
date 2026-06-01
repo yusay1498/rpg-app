@@ -20,7 +20,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,8 +44,13 @@ class CharacterJobServiceTest {
         when(characterRepository.findById(characterId)).thenReturn(Optional.of(new Character()));
         Job warrior = new Job();
         warrior.setId("550e8400-e29b-41d4-a716-446655440001");
-        CharacterJob characterJob = new CharacterJob();
-        characterJob.setId(new CharacterJobId(characterId, warrior.getId()));
+        CharacterJob characterJob = new CharacterJob(
+                new CharacterJobId(characterId, warrior.getId()),
+                null,
+                warrior,
+                false,
+                1
+        );
         when(characterJobRepository.findByIdCharacterId(characterId)).thenReturn(List.of(characterJob));
 
         // When
@@ -124,8 +128,8 @@ class CharacterJobServiceTest {
         assertThat(character.getJob()).isEqualTo(newJob);
         assertThat(character.getLevel()).isEqualTo(1);
         verify(characterJobRepository).save(any(CharacterJob.class));
-        assertThat(result.getId().getCharacterId()).isEqualTo(characterId);
-        assertThat(result.getId().getJobId()).isEqualTo(jobId);
+        assertThat(result.id().characterId()).isEqualTo(characterId);
+        assertThat(result.id().jobId()).isEqualTo(jobId);
     }
 
     @Test
@@ -162,8 +166,8 @@ class CharacterJobServiceTest {
         assertThat(character.getJob()).isEqualTo(newJob);
         assertThat(character.getLevel()).isEqualTo(1);
         verify(characterJobRepository).save(any(CharacterJob.class));
-        assertThat(result.getId().getCharacterId()).isEqualTo(characterId);
-        assertThat(result.getId().getJobId()).isEqualTo(jobId);
+        assertThat(result.id().characterId()).isEqualTo(characterId);
+        assertThat(result.id().jobId()).isEqualTo(jobId);
     }
 
     @Test
@@ -253,7 +257,9 @@ class CharacterJobServiceTest {
         when(characterRepository.findById(characterId)).thenReturn(Optional.of(character));
         when(jobRepository.findById(jobId)).thenReturn(Optional.of(existingJob));
         when(characterJobRepository.findById(new CharacterJobId(characterId, jobId)))
-                .thenReturn(Optional.of(new CharacterJob()));
+                .thenReturn(Optional.of(new CharacterJob(
+                        new CharacterJobId(characterId, jobId), null, null, false, 1
+                )));
 
         // When / Then
         assertThatThrownBy(() -> service.changeJob(characterId, jobId))

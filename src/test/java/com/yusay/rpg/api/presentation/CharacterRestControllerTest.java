@@ -379,11 +379,13 @@ class CharacterRestControllerTest {
         Job newJob = new Job();
         newJob.setId(jobId);
         newJob.setName("mage");
-        CharacterJob characterJob = new CharacterJob();
-        characterJob.setId(new CharacterJobId(characterId, jobId));
-        characterJob.setJob(newJob);
-        characterJob.setMastered(true);
-        characterJob.setMaxLevel(10);
+        CharacterJob characterJob = new CharacterJob(
+                new CharacterJobId(characterId, jobId),
+                null,
+                newJob,
+                true,
+                10
+        );
         Mockito.when(characterJobService.listJobs(characterId)).thenReturn(List.of(characterJob));
 
         // When
@@ -434,8 +436,7 @@ class CharacterRestControllerTest {
         String characterId = "660e8400-e29b-41d4-a716-446655440001";
         String jobId       = "550e8400-e29b-41d4-a716-446655440002";
         CharacterJobId characterJobId = new CharacterJobId(characterId, jobId);
-        CharacterJob characterJob = new CharacterJob();
-        characterJob.setId(characterJobId);
+        CharacterJob characterJob = new CharacterJob(characterJobId, null, null, false, 1);
         Mockito.when(characterJobService.changeJob(characterId, jobId))
                 .thenReturn(characterJob);
 

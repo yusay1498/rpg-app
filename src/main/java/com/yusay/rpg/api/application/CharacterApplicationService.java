@@ -45,12 +45,13 @@ public class CharacterApplicationService {
         Character character = Character.createNew(name, job);
         Character savedCharacter = characterRepository.save(character);
 
-        CharacterJob characterJob = new CharacterJob();
-        characterJob.setId(new CharacterJobId(savedCharacter.getId(), job.getId()));
-        characterJob.setCharacter(savedCharacter);
-        characterJob.setJob(job);
-        characterJob.setMastered(false);
-        characterJob.setMaxLevel(1);
+        CharacterJob characterJob = new CharacterJob(
+                new CharacterJobId(savedCharacter.getId(), job.getId()),
+                savedCharacter,
+                job,
+                false,
+                1
+        );
         characterJobRepository.save(characterJob);
 
         return savedCharacter;

@@ -81,10 +81,13 @@ public class CharacterJobService {
         character.setLevel(1);
         characterRepository.save(character);
 
-        CharacterJob characterJob = new CharacterJob();
-        characterJob.setId(new CharacterJobId(characterId, jobId));
-        characterJob.setCharacter(character);
-        characterJob.setJob(newJob);
+        CharacterJob characterJob = new CharacterJob(
+                new CharacterJobId(characterId, jobId),
+                character,
+                newJob,
+                false,
+                1
+        );
         return characterJobRepository.save(characterJob);
     }
 }
