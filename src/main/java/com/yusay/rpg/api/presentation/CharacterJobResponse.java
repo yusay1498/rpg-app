@@ -10,10 +10,10 @@ public record CharacterJobResponse(
 
     public static CharacterJobResponse from(CharacterJob characterJob) {
         return new CharacterJobResponse(
-                characterJob.getId().getJobId(),
-                characterJob.getJob().getName(),
-                characterJob.isMastered(),
-                characterJob.getMaxLevel()
+                characterJob.id().jobId(),
+                characterJob.job().getName(),
+                characterJob.mastered(),
+                characterJob.maxLevel()
         );
     }
 }

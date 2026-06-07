@@ -1,12 +1,11 @@
 package com.yusay.rpg.api.presentation;
 
-import com.yusay.rpg.api.domain.exception.InsufficientSkillPointsException;
 import com.yusay.rpg.api.domain.exception.JobAlreadyOwnedException;
-import com.yusay.rpg.api.domain.exception.JobChangeRequirementNotMetException;
 import com.yusay.rpg.api.domain.exception.MissingEntityException;
 import com.yusay.rpg.api.domain.exception.SkillAlreadyLearnedException;
-import com.yusay.rpg.api.domain.exception.SkillLearnRequirementNotMetException;
-import com.yusay.rpg.api.domain.exception.SkillNotAvailableException;
+import com.yusay.rpg.api.domain.exception.BusinessException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,9 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,11 +33,62 @@ public class GlobalExceptionHandler {
         return ResponseEntity.of(problemDetail).build();
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ProblemDetail> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+    @ExceptionHandler({JobAlreadyOwnedException.class, SkillAlreadyLearnedException.class})
+    public ResponseEntity<ProblemDetail> handleConflict(BusinessException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ProblemDetail> handleBusinessException(BusinessException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
                 e.getMessage()
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ProblemDetail> handleMethodArgumentNotValid(MethodArgumentNotValidException e) {
+        List<String> validationErrors = Stream.concat(
+                        e.getBindingResult().getFieldErrors().stream()
+                                .map(error -> error.getField() + ": " + error.getDefaultMessage()),
+                        e.getBindingResult().getGlobalErrors().stream()
+                                .map(error -> error.getObjectName() + ": " + error.getDefaultMessage())
+                )
+                .toList();
+        String detail;
+        if (validationErrors.isEmpty()) {
+            log.warn("Validation failed without binding errors", e);
+            detail = "Validation failed";
+        } else {
+            detail = String.join(", ", validationErrors);
+        }
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                detail
+        );
+        return ResponseEntity.of(problemDetail).build();
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ProblemDetail> handleConstraintViolation(ConstraintViolationException e) {
+        List<String> validationErrors = e.getConstraintViolations().stream()
+                .map(violation -> extractParameter(violation) + ": " + violation.getMessage())
+                .toList();
+        String detail;
+        if (validationErrors.isEmpty()) {
+            log.warn("Validation failed without constraint violations", e);
+            detail = "Validation failed";
+        } else {
+            detail = String.join(", ", validationErrors);
+        }
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                detail
         );
         return ResponseEntity.of(problemDetail).build();
     }
@@ -58,60 +111,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.of(problemDetail).build();
     }
 
-    @ExceptionHandler(JobChangeRequirementNotMetException.class)
-    public ResponseEntity<ProblemDetail> handleJobChangeRequirementNotMet(JobChangeRequirementNotMetException e) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()
-        );
-        return ResponseEntity.of(problemDetail).build();
-    }
-
-    @ExceptionHandler(JobAlreadyOwnedException.class)
-    public ResponseEntity<ProblemDetail> handleJobAlreadyOwned(JobAlreadyOwnedException e) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.CONFLICT,
-                e.getMessage()
-        );
-        return ResponseEntity.of(problemDetail).build();
-    }
-
-    @ExceptionHandler(SkillAlreadyLearnedException.class)
-    public ResponseEntity<ProblemDetail> handleSkillAlreadyLearned(SkillAlreadyLearnedException e) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.CONFLICT,
-                e.getMessage()
-        );
-        return ResponseEntity.of(problemDetail).build();
-    }
-
-    @ExceptionHandler(SkillNotAvailableException.class)
-    public ResponseEntity<ProblemDetail> handleSkillNotAvailable(SkillNotAvailableException e) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()
-        );
-        return ResponseEntity.of(problemDetail).build();
-    }
-
-    @ExceptionHandler(SkillLearnRequirementNotMetException.class)
-    public ResponseEntity<ProblemDetail> handleSkillLearnRequirementNotMet(SkillLearnRequirementNotMetException e) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()
-        );
-        return ResponseEntity.of(problemDetail).build();
-    }
-
-    @ExceptionHandler(InsufficientSkillPointsException.class)
-    public ResponseEntity<ProblemDetail> handleInsufficientSkillPoints(InsufficientSkillPointsException e) {
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage()
-        );
-        return ResponseEntity.of(problemDetail).build();
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ProblemDetail> handleException(Exception e) {
         log.error("Unexpected error occurred", e);
@@ -120,5 +119,17 @@ public class GlobalExceptionHandler {
                 "Internal server error"
         );
         return ResponseEntity.of(problemDetail).build();
+    }
+
+    private String extractParameter(ConstraintViolation<?> violation) {
+        String propertyPath = violation.getPropertyPath().toString();
+        int lastDotIndex = propertyPath.lastIndexOf('.');
+        if (lastDotIndex >= 0 && lastDotIndex < propertyPath.length() - 1) {
+            return propertyPath.substring(lastDotIndex + 1);
+        }
+        if (propertyPath.isBlank()) {
+            return "parameter";
+        }
+        return propertyPath;
     }
 }

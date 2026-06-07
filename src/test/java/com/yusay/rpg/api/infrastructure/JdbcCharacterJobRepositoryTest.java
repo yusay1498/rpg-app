@@ -3,12 +3,10 @@ package com.yusay.rpg.api.infrastructure;
 import com.yusay.rpg.api.config.TestcontainersConfiguration;
 import com.yusay.rpg.api.domain.entity.CharacterJob;
 import com.yusay.rpg.api.domain.entity.CharacterJobId;
-import com.yusay.rpg.api.domain.repository.CharacterJobRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
-import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
+import org.springframework.boot.jdbc.test.autoconfigure.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -21,23 +19,15 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@JdbcTest
 @Import(TestcontainersConfiguration.class)
-class JpaCharacterJobRepositoryTest {
+class JdbcCharacterJobRepositoryTest {
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
-        registry.add("spring.jpa.show-sql", () -> true);
         registry.add("spring.sql.init.mode", () -> "always");
         registry.add("spring.sql.init.data-locations", () -> "");
     }
-
-    @Autowired
-    TestEntityManager testEntityManager;
-
-    @Autowired
-    CharacterJobRepository characterJobRepository;
 
     @Autowired
     JdbcClient jdbcClient;
@@ -55,29 +45,35 @@ class JpaCharacterJobRepositoryTest {
                    ('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002', true, 5);
     """)
     void givenCharacterJobs_whenFindByIdCharacterId_thenReturnList() {
+        // Given
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+
         // When
         List<CharacterJob> result = characterJobRepository.findByIdCharacterId("660e8400-e29b-41d4-a716-446655440001");
 
         // Then
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(cj -> cj.getId().getCharacterId())
+        assertThat(result).extracting(cj -> cj.id().characterId())
                 .containsOnly("660e8400-e29b-41d4-a716-446655440001");
-        assertThat(result).extracting(cj -> cj.getId().getJobId())
+        assertThat(result).extracting(cj -> cj.id().jobId())
                 .containsExactlyInAnyOrder(
                         "550e8400-e29b-41d4-a716-446655440001",
                         "550e8400-e29b-41d4-a716-446655440002"
                 );
-        assertThat(result).filteredOn(cj -> cj.getId().getJobId().equals("550e8400-e29b-41d4-a716-446655440002"))
+        assertThat(result).filteredOn(cj -> cj.id().jobId().equals("550e8400-e29b-41d4-a716-446655440002"))
                 .singleElement()
                 .satisfies(cj -> {
-                    assertThat(cj.isMastered()).isTrue();
-                    assertThat(cj.getMaxLevel()).isEqualTo(5);
+                    assertThat(cj.mastered()).isTrue();
+                    assertThat(cj.maxLevel()).isEqualTo(5);
                 });
     }
 
     @Test
     @DisplayName("該当するCharacterJobが存在しない場合、空リストを返す")
     void givenNoCharacterJobs_whenFindByIdCharacterId_thenReturnEmptyList() {
+        // Given
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+
         // When
         List<CharacterJob> result = characterJobRepository.findByIdCharacterId("non-existent-id");
 
@@ -97,6 +93,7 @@ class JpaCharacterJobRepositoryTest {
     """)
     void givenCharacterJob_whenFindById_thenReturnCharacterJob() {
         // Given
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
         CharacterJobId id = new CharacterJobId(
                 "660e8400-e29b-41d4-a716-446655440001",
                 "550e8400-e29b-41d4-a716-446655440001"
@@ -107,10 +104,10 @@ class JpaCharacterJobRepositoryTest {
 
         // Then
         assertThat(result).hasValueSatisfying(cj -> {
-            assertThat(cj.getId().getCharacterId()).isEqualTo("660e8400-e29b-41d4-a716-446655440001");
-            assertThat(cj.getId().getJobId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
-            assertThat(cj.isMastered()).isTrue();
-            assertThat(cj.getMaxLevel()).isEqualTo(3);
+            assertThat(cj.id().characterId()).isEqualTo("660e8400-e29b-41d4-a716-446655440001");
+            assertThat(cj.id().jobId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
+            assertThat(cj.mastered()).isTrue();
+            assertThat(cj.maxLevel()).isEqualTo(3);
         });
     }
 
@@ -118,6 +115,7 @@ class JpaCharacterJobRepositoryTest {
     @DisplayName("存在しない複合IDの場合、空のOptionalを返す")
     void givenNonExistentId_whenFindById_thenReturnEmpty() {
         // Given
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
         CharacterJobId id = new CharacterJobId("non-existent", "non-existent");
 
         // When
@@ -137,35 +135,27 @@ class JpaCharacterJobRepositoryTest {
     """)
     void givenCharacterJob_whenSave_thenPersistCharacterJob() {
         // Given
-        var character = testEntityManager.find(
-                com.yusay.rpg.api.domain.entity.Character.class,
-                "660e8400-e29b-41d4-a716-446655440001"
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+        CharacterJob characterJob = new CharacterJob(
+                new CharacterJobId("660e8400-e29b-41d4-a716-446655440001", "550e8400-e29b-41d4-a716-446655440001"),
+                null,
+                null,
+                false,
+                1
         );
-        var job = testEntityManager.find(
-                com.yusay.rpg.api.domain.entity.Job.class,
-                "550e8400-e29b-41d4-a716-446655440001"
-        );
-        CharacterJob characterJob = new CharacterJob();
-        characterJob.setId(new CharacterJobId("660e8400-e29b-41d4-a716-446655440001", "550e8400-e29b-41d4-a716-446655440001"));
-        characterJob.setCharacter(character);
-        characterJob.setJob(job);
-        characterJob.setMastered(false);
-        characterJob.setMaxLevel(1);
 
         // When
         CharacterJob saved = characterJobRepository.save(characterJob);
-        testEntityManager.flush();
 
         // Then: 返却値の検証
-        assertThat(saved.getId().getCharacterId()).isEqualTo("660e8400-e29b-41d4-a716-446655440001");
-        assertThat(saved.getId().getJobId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
-        assertThat(saved.isMastered()).isFalse();
-        assertThat(saved.getMaxLevel()).isEqualTo(1);
+        assertThat(saved.id().characterId()).isEqualTo("660e8400-e29b-41d4-a716-446655440001");
+        assertThat(saved.id().jobId()).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
+        assertThat(saved.mastered()).isFalse();
+        assertThat(saved.maxLevel()).isEqualTo(1);
 
         // Then: DB永続化の検証
-        testEntityManager.clear();
         Map<String, Object> row = jdbcClient
-                .sql("SELECT * FROM character_jobs WHERE character_id = :cid AND job_id = :jid")
+                .sql("SELECT character_id, job_id, mastered, max_level FROM character_jobs WHERE character_id = :cid AND job_id = :jid")
                 .param("cid", "660e8400-e29b-41d4-a716-446655440001")
                 .param("jid", "550e8400-e29b-41d4-a716-446655440001")
                 .query()
@@ -174,5 +164,44 @@ class JpaCharacterJobRepositoryTest {
         assertThat(row.get("job_id")).isEqualTo("550e8400-e29b-41d4-a716-446655440001");
         assertThat(row.get("mastered")).isEqualTo(false);
         assertThat(row.get("max_level")).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("既存のCharacterJobを更新するとDBの値が変更される")
+    @Sql(statements = """
+            INSERT INTO jobs (id, name, description, base_hp, base_mp, base_attack, base_defense)
+            VALUES ('550e8400-e29b-41d4-a716-446655440001', 'warrior', '戦士', 30, 5, 20, 20);
+            INSERT INTO characters (id, name, job_id, level, exp, hp, max_hp, mp, max_mp, attack, defense, gold, status)
+            VALUES ('660e8400-e29b-41d4-a716-446655440001', 'Taro', '550e8400-e29b-41d4-a716-446655440001', 1, 0, 30, 30, 5, 5, 20, 20, 0, 'alive');
+            INSERT INTO character_jobs (character_id, job_id, mastered, max_level)
+            VALUES ('660e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440001', false, 1);
+    """)
+    void givenExistingCharacterJob_whenSave_thenUpdateCharacterJob() {
+        // Given
+        JdbcCharacterJobRepository characterJobRepository = new JdbcCharacterJobRepository(jdbcClient);
+        CharacterJob characterJob = new CharacterJob(
+                new CharacterJobId("660e8400-e29b-41d4-a716-446655440001", "550e8400-e29b-41d4-a716-446655440001"),
+                null,
+                null,
+                true,
+                5
+        );
+
+        // When
+        CharacterJob saved = characterJobRepository.save(characterJob);
+
+        // Then: 返却値の検証
+        assertThat(saved.mastered()).isTrue();
+        assertThat(saved.maxLevel()).isEqualTo(5);
+
+        // Then: DB更新の検証
+        Map<String, Object> row = jdbcClient
+                .sql("SELECT character_id, job_id, mastered, max_level FROM character_jobs WHERE character_id = :cid AND job_id = :jid")
+                .param("cid", "660e8400-e29b-41d4-a716-446655440001")
+                .param("jid", "550e8400-e29b-41d4-a716-446655440001")
+                .query()
+                .singleRow();
+        assertThat(row.get("mastered")).isEqualTo(true);
+        assertThat(row.get("max_level")).isEqualTo(5);
     }
 }

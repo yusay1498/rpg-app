@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface CharacterJobRepository {
     List<CharacterJob> findByIdCharacterId(String characterId);
+    List<String> findMasteredJobIdsByCharacterId(String characterId);
     Optional<CharacterJob> findById(CharacterJobId id);
     CharacterJob save(CharacterJob characterJob);
 }
